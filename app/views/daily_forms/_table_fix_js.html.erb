@@ -1,0 +1,33 @@
+<script>
+	var baseHeight = $('.nav-box').height() + $('.heading-box').height();
+	var scrollCriteria = $('.table-head').position().top - baseHeight
+	var headWidth = $('.table-head').width();
+
+	$(window).scroll(function(){
+		var scroll = getScroll();
+		if (scroll.top < scrollCriteria){
+			$('.table-head').css({position: 'static',
+														width: 'auto', 
+														'z-index': 'auto',
+														top:'0px'});
+			$('.table-body').css({'padding-top': '0px'})
+
+		}else{
+			$('.table-head').css({position: 'fixed',
+														width: headWidth + 'px', 
+														'z-index': '1',
+														top: baseHeight + 'px'});
+			$('.table-body').css({'padding-top': $('.table-head').height()})
+		}
+	});
+
+	function getScroll () {
+    var b = document.body;
+    var e = document.documentElement;
+    return {
+        left: parseFloat( window.pageXOffset || b.scrollLeft || e.scrollLeft ),
+        top: parseFloat( window.pageYOffset || b.scrollTop || e.scrollTop )
+    };
+	}
+
+</script>

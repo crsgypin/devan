@@ -1,0 +1,161 @@
+$navHeight: 60px;
+$headerHeight: 60px;
+$contentTop: $navHeight + $headerHeight;
+
+.nav-box{
+	background-color: #9b3f9b;
+	height: $navHeight;
+	position:fixed;
+	top:0px;
+	left: 0px;
+	width: 100%;
+	z-index: 1;
+
+	.nav{
+		padding: 0px;
+		margin:0 auto;
+		width:1000px;
+
+		.brand{
+			color:white;
+			width:40%;
+			float: left;
+			margin: 10px 0 0 0;
+		}
+
+		.function{
+			float:right;
+			padding: 0;	
+			height: $navHeight;
+			text-align: right;
+
+			.user-box{
+				padding: 5px 0 0 0;
+				
+				p{
+					color: #ADD8E6;
+					font-size: 1.2em;
+
+					a{
+						color: #ADD8E6;
+						font-size: 1.2em;
+					}
+				}
+			}
+
+			.item-list{
+				padding: 2px 0 0 0;
+
+				li{
+					display: inline-block;
+					list-style: none;
+					margin-left: 10px;
+
+					a{
+						color:white;
+						font-size:1.0em;
+					}
+				}
+			}
+		}
+	}
+}
+
+.heading-box{
+	position:fixed;
+	height: $headerHeight;
+	top: $navHeight;
+	left: 0px;
+	width: 100%;
+	background-color: #DBD5F7;
+	z-index: 1;
+
+	.heading-inner {
+		margin:0px auto;
+		width:1000px;
+
+		.info-box{
+			float: left;
+			width: 70%;
+
+			.title{
+				float: left;
+				width: 70%;
+				height: $headerHeight/2;
+				padding: 5px 0 0 0;
+				font-size: 1.8em;
+			}
+
+			.message{
+				float: left;
+				width: 30%;
+				padding: 10px 0 0 0;
+				font-size: 1.1em;
+				font-weight: bold;
+				font-style: italic;
+				height: $headerHeight/2;
+
+				.success{
+					color:#57CA3C;
+				}
+				.fail{
+					color:red;
+				}
+			}
+
+			ul.sub-nav{
+				float: left;
+				font-size: 1.0em;
+				height: $headerHeight/2;
+				width: 100%;
+				padding: 8px 0 0 0;
+
+				li{
+					display: inline-block;
+					margin-right: 20px;
+					list-style-type: none;
+	
+					a{
+						color:green;
+					}
+
+					a.selected{
+						color:#0066FF;
+					}
+				}
+			}
+		}
+
+		.submit-box{
+			float: right;
+			width: 30%;
+			margin: 10px 0px;
+			height: $headerHeight - 20px;		
+			text-align: right;	
+		}
+	
+	}
+
+	.heading-inner::after{
+		display: block;
+		content: "";
+		clear: both;
+	}
+
+
+}
+
+.content-box{
+	margin-top: $contentTop;
+	width: 100%;
+	
+	.content-inner{
+		margin:0px auto;
+		width:1000px;
+		padding: 30px 0 200px;
+		
+
+	}
+
+}
+

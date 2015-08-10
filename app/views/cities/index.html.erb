@@ -1,0 +1,47 @@
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+			  縣市
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to "縣市", cities_path %> </li>
+			</ul>			
+		</div>
+
+		<div class="submit-box"> 
+			<%= link_to "新增縣市", new_city_path ,:class=>"btn btn-primary" %>
+		</div>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+		
+		<div class="city">
+			<div class="content">
+				<table class="table">
+					<% @cities.each do |city| %>
+						<tr>
+							<td> <%= city.name %></td>
+							<td> 
+								<%= link_to "內容", city_path(city), :class=>"btn btn-warning btn-xs" %>
+							</td>
+						</tr>
+					<% end %>
+				</table>
+			</div>
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+
+

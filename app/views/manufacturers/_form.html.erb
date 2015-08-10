@@ -1,0 +1,92 @@
+<%# form, cities %>
+
+<table class="table table-striped manufacturer-new-table">
+	<tr>
+		<td> 廠商名</td>
+		<td> <%= form.text_field :name,:required=>true,:class=>"t-field" %> </td>
+	</tr>
+
+	<tr>
+		<td> 電話 </td>
+		<td> <%= text_field_tag "manufacturer[phones_attributes][0][number]", @manufacturer.phones[0].try(:number),:class=>"t-field" %> </td>
+	</tr>
+
+	<tr>
+		<td> 傳真 </td>
+		<td> <%= text_field_tag "manufacturer[faxes_attributes][0][number]", @manufacturer.faxes[0].try(:number),:class=>"t-field" %> </td>
+	</tr>
+
+	<tr>
+		<td> 描述 </td>
+		<td> <%= form.text_field :description,:class=>"t-area" %> </td>
+	</tr>
+
+	<tr>
+		<td> 縣市 </td>
+		<td> <%= select_tag "manufacturer[addresses_attributes][0][city_id]", options_from_collection_for_select(City.all, "id", "name"),:class=>"manufacturer-city-select"%> </td>
+	</tr>
+
+	<tr>
+		<td> 市/鎮/區 </td>
+		<td> <%= select_tag "manufacturer[addresses_attributes][0][district_id]",
+			 options_from_collection_for_select(City.all.first.districts, "id", "name"),:class=>"manufacturer-district-select"%> </td>
+	</tr>
+
+	<tr>
+		<td> 地址 </td>
+		<td> <%= text_field_tag "manufacturer[addresses_attributes][0][address]", @manufacturer.addresses[0].try(:address),:class=>"t-area" %> </td>
+	</tr>
+</table>
+
+	<h3> 表單欄位設定 </h3>	
+	<table class="table table-bordered">
+		<tr>
+			<td></td>
+			<td>欄位名稱</td>
+			<td>欄位說明</td>
+		</tr>
+	<% 8.times do |index| %>
+		<tr>
+			<td> 
+				<%= "表單欄位#{index+1}" %>
+				<%= hidden_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][id]", 
+					@manufacturer.manufacturer_keys[index].try(:id) %>
+				<%= hidden_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][mapping_key]", 
+					index+1 %>
+			</td>
+
+			<td>
+			 <%= text_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][name]", 
+					@manufacturer.manufacturer_keys[index].try(:name) %>
+			</td>
+
+			<td> 
+				<%= text_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][note]", 
+						@manufacturer.manufacturer_keys[index].try(:note) %> 
+			</td>
+		</tr>
+		<% end %>
+	</table>	
+
+<div class="manufacturer-store" style="display:none;"><%=city_district_list%></div>
+
+<script>
+
+	$('.manufacturer-city-select').change(function(e){
+		var list = $.parseJSON($('.manufacturer-store').text());
+		var index = parseInt($(this).val());
+		var districts = list[index];
+		var options = ""
+		districts.forEach(function(district){
+
+			options += "<option value=" + district['id'] + ">" + district['name'] + "</option>"
+		})
+
+		$('.manufacturer-district-select').html(options)
+	})
+
+
+</script>
+
+
+

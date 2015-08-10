@@ -1,0 +1,48 @@
+<%= form_for @district, :url=>district_path(@district), :method=>:patch do |form| %>
+	<div class="heading-box">
+		<div class="heading-inner">
+			<div class="info-box">
+				<h2 class="title">
+				  <%= "編輯 #{@district.city.name} #{@district.name}" %>
+				</h2>
+
+				<div class="message">
+					<% if flash[:success].present? %>
+						<div class="success"> <%= flash[:success] %> </div>
+					<% elsif flash[:fail].present? %>
+						<div class="fail"> <%= flash[:fail] %> </div>
+					<% end %>
+				</div>
+
+				<ul class="sub-nav">
+					<li> <%= link_to "縣市", districts_path %> </li>
+				</ul>			
+			</div>
+
+			<div class="submit-box"> 
+				<%= form.submit "繳交表單", :class=>"btn btn-primary"	%>
+			</div>
+		</div>
+	</div>
+
+	<div class="content-box">
+		<div class="content-inner">
+		
+			<table class="table table-striped">
+				<tr>
+					<td> <%= form.label :city_id, "縣市" %> </td>
+					<td> <%= form.collection_select :city_id, City.all, :id, :name, :class=>"t-field" %> </td>
+				</tr>
+				<tr>
+					<td> <%= form.label :name, "地區名" %> </td>
+					<td> <%= form.text_field :name, :class=>"t-field" %> </td>
+				</tr>
+				<tr>
+					<td> <%= form.label :postal_code, "郵遞區號" %> </td>
+					<td> <%= form.text_field :postal_code, :class=>"t-field" %> </td>
+				</tr>
+			</table>			
+		</div>
+	</div>
+
+<% end %>

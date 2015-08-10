@@ -1,0 +1,50 @@
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+			  <%= "#{@district.city.name} #{@district.name}" %>
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to "縣市", districts_path %> </li>
+			</ul>			
+		</div>
+
+		<div class="submit-box"> 
+			<%= link_to "移除這地區資料",district_path(@district), :method=>:delete,:class=>"btn btn-danger", :data=>{:confirm=>"#{@district.name}即將被移除"} %>
+			<%= link_to "修改這地區資料", edit_district_path(@district), :class=>"btn btn-warning" %>
+		</div>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+
+		<div class="district">		
+			<table class="table table-striped content">
+				<tr>
+					<td>縣市</td>
+					<td> <%= @district.city.name %>
+				</tr>
+				<tr>
+					<td>地區 </td>
+					<td> <%= @district.name %> </td>
+				</tr>
+				<tr>
+					<td>郵遞區號</td>
+					<td> <%= @district.postal_code %></td>
+				</tr>
+			</table>
+		</div>
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+

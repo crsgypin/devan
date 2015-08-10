@@ -1,0 +1,30 @@
+<%# form_value, form_keys %>
+
+<div class="single-content" row="<%=form_value_counter +1%>">
+	<div class="cell index-col" col=1>
+		<%= form_value.form_value_index %>
+	</div>
+
+	<div class="cell customer-col" col=2>
+		<%= form_value.customer_name %>
+	</div>
+
+	<div class="cell delivery-person-col" col=3>
+		<%= form_value.delivery_person_name %>
+	</div>
+
+	<% index = 4 %>
+	<% form_keys.each do |form_key| %>
+		<% if form_key.name.present? %>
+			<% key_name = "key#{form_key.mapping_key}" %>
+			<div class="cell number-col" col=<%=index%>>
+				<%= form_value[key_name] %>
+				<% index+=1 %>
+			</div>
+		<% end %>
+	<% end %>
+
+	<div class="cell note-col" col=<%= index %>>
+		<%= form_value.note %>
+	</div>
+</div>	<%# single-content %>

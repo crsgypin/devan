@@ -1,0 +1,82 @@
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+			  客戶- <%= @customer.name %>
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to "回客戶清單", customers_path %> </li>
+			</ul>			
+		</div>
+
+		<div class="submit-box"> 
+			<%= link_to "修改資料", edit_customer_path(@customer), :class=>"btn btn-danger" %>
+		</div>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+	
+		<table class="table table-striped customer-new-table">
+			<tr>
+				<td> 編號 </td>
+				<td> <%= @customer.code %> </td>
+			</tr>
+
+			<tr>
+				<td> 名字</td>
+				<td> <%= @customer.name %> </td>
+			</tr>
+
+			<tr>
+				<td> 電話 </td>
+				<td> <%= @customer.phones.first.try(:number) %> </td>
+			</tr>
+
+			<tr>
+				<td> 傳真 </td>
+				<td> <%= @customer.faxes.first.try(:number) %> </td>
+			</tr>
+
+			<tr>
+				<td> 描述 </td>
+				<td> <%= @customer.description %> </td>
+			</tr>
+
+			<tr>
+				<td> 縣市 </td>
+				<td> <%= @customer.addresses.first.city.try(:name) if @customer.addresses.first %></td>
+			</tr>
+
+			<tr>
+				<td> 市/鎮/區 </td>
+				<td> <%= @customer.addresses.first.district.try(:name) if @customer.addresses.first %></td>
+			</tr>
+
+			<tr>
+				<td> 地址 </td>
+				<td> <%= @customer.addresses.first.try(:address) %> </td>
+			</tr>
+
+			<tr>
+				<td> 狀態 </td>
+				<td> <%= @customer.status %> </td>
+			</tr>
+			
+		</table>
+	
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+
+

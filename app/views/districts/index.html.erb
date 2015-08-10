@@ -1,0 +1,63 @@
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+			  地區
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to "縣市", districts_path %> </li>
+			</ul>			
+		</div>
+
+		<div class="submit-box"> 
+			<%= link_to "新增地區", new_district_path ,:class=>"btn btn-primary" %>
+		</div>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+
+		<div class="district">		
+			<table class="table table-striped content">
+				<tr>
+					<td>縣市</td>
+					<td>市/鎮/區</td>
+					<td>郵遞區號</td>
+					<td></td>
+				</tr>
+
+				<% @districts.each do |district| %>
+					<tr>
+						<td>
+							<%= district.city.name %>
+						</td>
+						<td>
+							<%= district.name %>
+						</td>
+						<td>
+							<%= district.postal_code %>
+						</td>
+						<td>
+							<%= link_to "內容", district_path(district), :class=>"btn btn-warning btn-xs" %>
+						</td>
+					</tr>
+				<% end %>
+			</table>
+		</div>
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+
+
+
+

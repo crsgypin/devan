@@ -1,0 +1,52 @@
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+			  廠商總表
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to "廠商清單", manufacturers_path %> </li>
+			</ul>			
+		</div>
+
+		<div class="submit-box"> 
+			<%= link_to "新增廠商", new_manufacturer_path ,:class=>"btn btn-primary" %>
+		</div>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+	
+		<table class="table table-striped manufacturer-index-table">
+			<tr>
+				<td width="20%"> 名字 </td>
+				<td width="20%"> 描述 </td>
+				<td width="10%"></td>
+			</tr>
+
+			<% @manufacturers.each do |manufacturer| %>
+				<tr>
+					<td> <%= manufacturer.name %> </td>
+					<td> <%= manufacturer.phones.map{|p| p.number}.join(',') %> </td>
+					<td> 
+						<%= link_to "詳細內容",manufacturer_path(manufacturer), :class=>"btn btn-primary" %>
+					</td>
+				</tr>
+			<% end %>
+
+		</table>
+
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+

@@ -1,0 +1,56 @@
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+				<%= @delivery_person.name %>
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to "回清單", delivery_people_path %> </li>
+			</ul>			
+		</div>
+
+		<div class="submit-box">
+			<%= link_to "移除這送貨員資料",delivery_person_path(@delivery_person), :method=>:delete,:class=>"btn btn-danger", :data=>{:confirm=>"#{@delivery_person.name}即將被移除"} %>
+			<%= link_to "修改這送貨員資料", edit_delivery_person_path(@delivery_person), :class=>"btn btn-warning" %>
+		</div>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+		
+		<div class="delivery-person">
+			<table class="table table-striped">
+				<tr>
+					<td> 編號 </td>
+					<td> <%= @delivery_person.code %> </td>
+				</tr>
+				<tr>
+					<td> 名字 </td>
+					<td> <%= @delivery_person.name %></td>
+				</tr>
+				<tr>
+					<td> 狀態 </td>
+					<td> <%= @delivery_person.status %></td>
+				</tr>
+				<tr>
+					<td> 使用者帳號 </td>
+					<td> <%= @delivery_person.user_email %></td>
+				</tr>
+
+			</table>
+		</div>
+	
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+
+

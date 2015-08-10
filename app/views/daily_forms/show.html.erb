@@ -1,0 +1,108 @@
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+			  <%= @daily_form.manufacturer.name %>
+			  <%= @daily_form.date %>
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to "回報表清單", daily_forms_path %> </li>
+			</ul>			
+		</div>
+
+		<div class="submit-box"> 
+			<%= link_to "移除這份表單",daily_form_path(@daily_form), :method=>:delete,:class=>"btn btn-danger", :data=>{:confirm=>"表單即將被移除"} %>
+			<%= link_to "編輯這份表單",edit_daily_form_path(@daily_form),:class=>"btn btn-warning" %>
+		</div>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+
+		<div class="daily-form-single">
+
+			<div class="table-head">
+				<div class="table-calc">
+					<div class="cell index-col" col="1"></div>
+					<div class="cell customer-col" col="2"></div>
+					<div class="cell delivery-person-col" col="3"></div>
+
+					<% index = 4 %>
+					<% @manufacturer.manufacturer_keys.each do |key| %>
+						<% if key.name.present? %>
+							<div class="cell number-col", col="<%= index%>"> 
+								
+								<% index+=1 %>
+							</div>
+						<% end %>
+					<% end %>
+					<div class="cell note-col" col=<%=index%>></div>					
+				</div>
+
+				<div class="table-title">
+					<div class="cell index-col" col="1">編號</div>
+					<div class="cell customer-col" col="2">客戶</div>
+					<div class="cell delivery-person-col" col="3">送貨員</div>
+					
+					<% index = 4 %>
+					<% @manufacturer.manufacturer_keys.each do |key| %>
+						<% if key.name.present? %>
+							<div class="cell number-col", col="<%= index%>"> 
+								<%= key.name %>
+								<% index+=1 %>
+							</div>
+						<% end %>
+					<% end %>
+
+					<div class="cell note-col" col=<%=index%>>備註</div>
+				</div>
+			</div> <%# table head %>
+
+			<div class="table-body">
+				<%= render :partial => "daily_forms/single_row_show", :collection => @daily_form.form_values, :as => :form_value, :locals=>{:form_keys=> @manufacturer.manufacturer_keys} %>
+			</div> <%# table body %>
+
+		</div> <%# daily-form-single %>
+
+	</div> <%# content box %>
+</div>  <%# content inner %>
+
+<script>
+
+	$(document).ready(function(){
+
+		var colTotal = function(col){
+			var total = 0;
+			var colElms = $('[row]').find('[col=' + col + ']');
+			colElms.each(function(index){
+				var result = parseInt($(colElms[index]).text());
+				if (Number.isInteger(result)){
+					total += result;					
+				}
+			})
+			return total;
+		}
+
+		var numberCols = $('.table-calc').find('.number-col')
+		numberCols.each(function(index){
+			col = $(numberCols[index]).attr('col');
+			$('.table-calc').find('[col=' + col + ']').text(colTotal(col));
+		})
+	})
+
+</script>
+
+<%= render 'daily_forms/table_fix_js' %>
+
+
+
