@@ -5,5 +5,5 @@ class DailyForm < ActiveRecord::Base
 	belongs_to :manufacturer
 	has_many :daily_form_update_users, :dependent => :destroy
 	has_many :users, :through=>:daily_form_update_users
-
+	
 end
