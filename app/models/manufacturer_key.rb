@@ -5,7 +5,9 @@ class ManufacturerKey < ActiveRecord::Base
 
 private
 	def check_key_mapping
-		
-
+		key = ManufacturerKey.find_by(:manufacturer=> self.manufacturer, :mapping_key=> self.mapping_key)
+		if key != nil && key != self
+			return false
+		end
 	end
 end
