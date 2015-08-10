@@ -18,7 +18,7 @@ class DeliveryPeopleController < ApplicationController
 			flash[:success] = "#{@delivery_person.name} 新增成功"
 			redirect_to delivery_person_path(@delivery_person)
 		else
-			flash[:fail] = "#{@delivery_person.name} 新增失敗"
+			flash[:fail] = "#{@delivery_person.name} 新增失敗, #{@delivery_person.errors.full_messages}"
 			render 'delivery_people/new'
 		end
 	end
