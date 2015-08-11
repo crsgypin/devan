@@ -16,11 +16,13 @@
 
 			<ul class="sub-nav">
 				<li> <%= link_to "回報表清單", daily_forms_path %> </li>
+				<li>  </li>
+
 			</ul>			
 		</div>
 
 		<div class="submit-box"> 
-			<%= link_to "移除這份表單",daily_form_path(@daily_form), :method=>:delete,:class=>"btn btn-danger", :data=>{:confirm=>"表單即將被移除"} %>
+			<%= link_to "列印表單", print_daily_form_path(@daily_form),:class=>"btn btn-warning" %>
 			<%= link_to "編輯這份表單",edit_daily_form_path(@daily_form),:class=>"btn btn-warning" %>
 		</div>
 	</div>
@@ -30,7 +32,6 @@
 	<div class="content-inner">
 
 		<div class="daily-form-single">
-
 			<div class="table-head">
 				<div class="table-calc">
 					<div class="cell index-col" col="1"></div>
@@ -71,6 +72,11 @@
 			<div class="table-body">
 				<%= render :partial => "daily_forms/single_row_show", :collection => @daily_form.form_values, :as => :form_value, :locals=>{:form_keys=> @manufacturer.manufacturer_keys} %>
 			</div> <%# table body %>
+
+
+			<div class="form-note">
+				<%= link_to "移除這份表單",daily_form_path(@daily_form), :method=>:delete,:class=>"form-delete", :data=>{:confirm=>"表單即將被移除"} %>
+			</div>
 
 		</div> <%# daily-form-single %>
 
