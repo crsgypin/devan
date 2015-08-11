@@ -2,7 +2,7 @@
 	<div class="heading-inner">
 		<div class="info-box">
 			<h2 class="title">
-			  客戶清單
+			  客戶清單(全部)
 			</h2>
 
 			<div class="message">
@@ -14,7 +14,8 @@
 			</div>
 
 			<ul class="sub-nav">
-				<li> <%= link_to "客戶清單", customers_path %> </li>
+				<li> <%= link_to "全部", customers_path, :class=>"selected" %> </li>
+				<li> <%= link_to "搜尋", search_customers_path %> </li>
 			</ul>			
 		</div>
 
@@ -26,10 +27,14 @@
 
 <div class="content-box">
 	<div class="content-inner">
-		
+		<div class="page-box">
+				<%= paginate @customers, :window=>2 %>				
+		</div>
+
 		<table class="table table-striped customer-index-table">
 			<thead>
 				<tr>
+					<th width="5%"></th>
 					<th width="10%"> 編號 </th>
 					<th width="15%"> 名字 </th>
 					<th width="10%"> 縣市 </th>
@@ -41,8 +46,9 @@
 			</thead>
 
 			<tbody>
-				<% @customers.each do |customer| %>
+				<% @customers.each_with_index do |customer,index| %>
 					<tr>
+						<td> <%= index+1 %> </td>
 						<td> <%= customer.code %> </td>
 						<td> <%= customer.name %> </td>
 						<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
@@ -53,7 +59,7 @@
 
 						<td> <%= customer.phones.map{|p| p.number}.join(',') %> </td>
 						<td> 
-							<%= link_to "基本資料",customer_path(customer), :class=>"btn btn-primary btn-xs" %>
+							<%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %>
 						</td>
 					</tr>
 				<% end %>

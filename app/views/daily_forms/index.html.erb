@@ -29,7 +29,9 @@
 	<div class="content-inner">
 
 		<div class="daily-form-index">
-			<%= paginate @daily_forms, :window=>2 %>
+			<div class="page-box">
+				<%= paginate @daily_forms %>				
+			</div>
 
 			<table class="table table-bordered content">
 				<thead>

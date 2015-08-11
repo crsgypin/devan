@@ -2,7 +2,24 @@ class CustomersController < ApplicationController
 	before_action :set_customer, :only=>[:show,:edit,:update,:destroy]
 
 	def index
-		@customers = Customer.includes(:phones,:addresses=>[:city])
+		@customers = Customer.includes(:phones,:addresses=>[:city]).page(params[:page]).per(15)
+
+	end
+
+	def search
+		update_session_search
+
+		states = []
+		states<< "customers.code LIKE '%#{@customer_search}%'" if @customer_code
+		states<< "customers.name LIKE '%#{@customer_search}%'" if @customer_name
+		states<< "address LIKE '%#{@customer_search}%'" if @customer_address
+		states<< "number LIKE '%#{@customer_search}%'" if @customer_phone
+		sql = "#{states.join(" OR ")}"
+		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones)
+		@customers = @customers.where(sql)
+		@customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
+		# @customers = @customers.where(["customers.name like ? OR address like ? OR number LIKE ?","%#{@customer_search}%","%#{key_address}%", "%#{key_number}%"])
+
 	end
 
 	def new
@@ -53,5 +70,28 @@ private
 															:faxes_attributes=>[:number],
 															:addresses_attributes=>[:address,:city_id,:district_id] )
 
+	end
+
+	def update_session_search
+		session[:customer_search] = params[:customer_search] if params[:customer_address]
+		session[:customer_city] = params[:customer_city].to_i if params[:customer_city]
+
+		list = %w(customer_code customer_name customer_address customer_phone)
+		list.each do |item|
+			if params[item]
+				if params[item].to_i == 1
+					session[item] = true
+				else
+					session[item] = false
+				end
+			end
+		end
+
+		@customer_search = session[:customer_search]
+		@customer_code = session[:customer_code]
+		@customer_phone = session[:customer_phone]
+		@customer_name = session[:customer_name]
+		@customer_address = session[:customer_address]
+		@customer_city = session[:customer_city]
 	end
 end
