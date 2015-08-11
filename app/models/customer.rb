@@ -11,4 +11,6 @@ class Customer < ActiveRecord::Base
 										 :dependent=>:destroy
 	accepts_nested_attributes_for :faxes, allow_destroy: true
 
+	has_many :form_values
+
 end

@@ -21,7 +21,7 @@ class DailyFormsController < ApplicationController
 										:date => params[:daily_form][:date] )
 			@daily_form.daily_form_update_users.find_or_create_by(:user => current_user)
 
-			35.times do |index|
+			20.times do |index|
 				@daily_form.form_values.find_or_create_by(:form_value_index => index + 1)
 			end
 			@manufacturer = @daily_form.manufacturer
