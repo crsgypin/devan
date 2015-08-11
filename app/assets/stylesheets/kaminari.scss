@@ -1,0 +1,16 @@
+
+nav.pagination>*{
+	font-size: 1em;
+	padding: 5px 10px;
+}
+
+nav.pagination{
+	padding: 5px 0;
+
+	.page.current{
+		background-color: rgba(245, 222, 179, 0.38);
+	}
+
+}
+
+

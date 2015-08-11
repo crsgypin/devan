@@ -3,12 +3,14 @@ class DailyFormsController < ApplicationController
 
 	def index
 		@daily_forms = DailyForm.order(:date=>:desc, :manufacturer_id=>:asc)
-		@daily_forms = @daily_forms.includes(:form_values,:manufacturer,:daily_form_update_users=>:user)
+		@daily_forms = @daily_forms.includes(:form_values,:manufacturer,:users,:daily_form_update_users=>:user)
+		@daily_forms = @daily_forms.page(params[:page]).per(15)
 
 	end
 
 	def show
-		@daily_form = DailyForm.includes(:manufacturer=>[:manufacturer_keys]).find(params[:id])
+		daily_forms = DailyForm.includes(:manufacturer=>[:manufacturer_keys], :form_values => [:delivery_person, :customer])
+		@daily_form = daily_forms.find(params[:id])
 		@manufacturer = @daily_form.manufacturer
 	end
 

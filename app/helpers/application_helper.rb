@@ -14,4 +14,5 @@ module ApplicationHelper
 		list.to_json
 	end
 
+
 end
