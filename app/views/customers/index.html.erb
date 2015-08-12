@@ -27,25 +27,28 @@
 
 <div class="content-box">
 	<div class="content-inner">
-		<div class="page-box">
-				<%= paginate @customers, :window=>2 %>				
-		</div>
 
-		<table class="table table-striped customer-index-table">
-			<thead>
-				<tr>
-					<th width="5%"></th>
-					<th width="10%"> 編號 </th>
-					<th width="15%"> 名字 </th>
-					<th width="10%"> 縣市 </th>
-					<th width="10%"> 地區 </th>
-					<th width="20%"> 地址 </th>
-					<th width="20%"> 電話 </th>
-					<th width="5%"></th>
-				</tr>
-			</thead>
+		<div class="customer-index-box">
+			<div class="page-box">
+					<%= paginate @customers, :window=>2 %>				
+			</div>
 
-			<tbody>
+			<table class="table table-striped index-header">	
+				<thead>
+					<tr>
+						<th width="5%"></th>
+						<th width="10%"> 編號 </th>
+						<th width="15%"> 名字 </th>
+						<th width="7%"> 縣市 </th>
+						<th width="7%"> 地區 </th>
+						<th width="20%"> 地址 </th>
+						<th width="20%"> 電話 </th>
+						<th width="9%"></th>
+					</tr>
+				</thead>
+			</table>
+
+			<table class="table table-striped index-content">
 				<% @customers.each_with_index do |customer,index| %>
 					<tr>
 						<td> <%= index+1 %> </td>
@@ -63,11 +66,21 @@
 						</td>
 					</tr>
 				<% end %>
-			</tbody>
-		</table>
-
+			</table>
+		</div> <%# /.customer-index-box %>
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
+
+<script>
+
+
+	$("page-box").css({position:'fixed',
+											width: $(".page-box").width()							})
+	$(".customer-index-header").css({position:'relative',
+																		})
+
+</script>
+
 
 
