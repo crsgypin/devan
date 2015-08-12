@@ -4,7 +4,7 @@ lock '3.4.0'
 set :application, 'devan'
 set :repo_url, 'git@github.com:crsgypin/devan.git'
 
-set :deploy_to, '/home/deploy/applyte/'
+set :deploy_to, '/home/deploy/devan/'
 
 set :keep_releases, 5
 
