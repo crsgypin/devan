@@ -87,11 +87,11 @@ private
 			end
 		end
 
-		@customer_search = session[:customer_search]
-		@customer_code = session[:customer_code]
-		@customer_phone = session[:customer_phone]
-		@customer_name = session[:customer_name]
-		@customer_address = session[:customer_address]
-		@customer_city = session[:customer_city]
+		@customer_search = session[:customer_search] ||= ""
+		@customer_code = session[:customer_code] ||= true
+		@customer_phone = session[:customer_phone] ||= true
+		@customer_name = session[:customer_name] ||= true
+		@customer_address = session[:customer_address] ||= true
+		@customer_city = session[:customer_city] ||= 0
 	end
 end
