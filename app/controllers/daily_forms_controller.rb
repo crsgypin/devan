@@ -1,5 +1,5 @@
 class DailyFormsController < ApplicationController
-	before_action :authenticate_user!
+	before_action :authenticate_user!, :except=>[:index,:show]
 
 	def index
 		@daily_forms = DailyForm.order(:date=>:desc, :manufacturer_id=>:asc)
