@@ -1,0 +1,34 @@
+<%# delivery_people, limit_days %>
+<table class="table table-striped">
+	<tr>
+		<td> 編號 </td>
+		<td> 名稱 </td>
+		<td> 送貨家數 </td>
+		<td></td>
+	</tr>
+	<% delivery_people.each do |delivery_person| %>
+		<tr>
+			<td> <%= delivery_person.code %> </td>
+			<td> <%= delivery_person.name %> </td>
+			<td> <%= delivery_person.recent_form_values(limit_days).count %> </td>
+			<td> <%= link_to "顯示清單",form_values_delivery_person_path(delivery_person), :class=>"btn btn-warning btn-xs show-list" %> </td>
+		</tr>
+	<% end %>
+</table>
+
+<script>
+	$('.t-list .show-list').click(function(e){
+		e.preventDefault();
+
+		$.ajax({
+			url: $(this).attr('href'),
+			dataType: "json",
+			method: 'get',
+			data: {limitDays:$('.day-input').val()},
+			success: function(data){
+				$('.delivery-form-value-list').html(data['template']);
+			}
+		})
+	})
+</script>
+

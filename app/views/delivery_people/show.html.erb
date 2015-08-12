@@ -19,8 +19,7 @@
 		</div>
 
 		<div class="submit-box">
-			<%= link_to "移除這送貨員資料",delivery_person_path(@delivery_person), :method=>:delete,:class=>"btn btn-danger", :data=>{:confirm=>"#{@delivery_person.name}即將被移除"} %>
-			<%= link_to "修改這送貨員資料", edit_delivery_person_path(@delivery_person), :class=>"btn btn-warning" %>
+			<%= link_to "修改這送貨員資料", edit_delivery_person_path(@delivery_person), :class=>"btn btn-warning btn-xs" %>
 		</div>
 	</div>
 </div>
@@ -49,7 +48,10 @@
 
 			</table>
 		</div>
-	
+		<% if @delivery_person.form_values ==0 %>
+			<%= link_to "移除這送貨員資料",delivery_person_path(@delivery_person), :method=>:delete,:class=>"link t-red", :data=>{:confirm=>"#{@delivery_person.name}即將被移除"} %>
+		<% end %>
+
 	</div> <%# content-inner %>
 </div> <%# content-box %>
 

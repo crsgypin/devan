@@ -18,7 +18,11 @@ Rails.application.routes.draw do
       get :search
     end
   end
-  resources :delivery_people
+  resources :delivery_people do 
+    member do
+      get :form_values
+    end
+  end
   resources :manufacturers
   resources :cities
   resources :districts

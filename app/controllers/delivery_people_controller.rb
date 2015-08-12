@@ -2,7 +2,26 @@ class DeliveryPeopleController < ApplicationController
 	before_action :set_delivery_person, :only=>[:show,:edit,:update,:destroy]
 
 	def index
-		@delivery_people = DeliveryPerson.all
+		@delivery_people = DeliveryPerson.where(:status=>"在職")
+		if params[:days]
+			@limit_days = params[:days].to_i
+		end
+
+		@delivery_people_all = DeliveryPerson.all
+
+		respond_to do |format|
+			format.html
+			format.json {render :json=>{:template=> render_to_string(:partial=>'delivery_people/index_list.html', :locals=>{:delivery_people=>@delivery_people, :limit_days=>@limit_days}) }}
+		end
+	end
+
+	def form_values
+		@delivery_person = DeliveryPerson.includes(:form_values=>:customer).find(params[:id])
+		@form_values = @delivery_person.recent_form_values(params[:limitDays].to_i)
+
+		respond_to do |format|
+			format.json {render :json=>{:template=> render_to_string(:partial=>'delivery_people/delivery_form_values.html' ,:locals=>{:delivery_person=>@delivery_person, :form_values=>@form_values})}}
+		end
 	end
 
 	def show
@@ -50,7 +69,7 @@ class DeliveryPeopleController < ApplicationController
 private
 		
 	def set_delivery_person
-		@delivery_person = DeliveryPerson.find(params[:id])
+		@delivery_person = DeliveryPerson.includes(:form_values).find(params[:id])
 	end
 
 	def delivery_person_params
