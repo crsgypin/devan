@@ -16,11 +16,11 @@ class CustomersController < ApplicationController
 		states<< "address LIKE '%#{@customer_search}%'" if @customer_address
 		states<< "number LIKE '%#{@customer_search}%'" if @customer_phone
 		sql = "#{states.join(" OR ")}"
-		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones)
+		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones,:addresses=>[:city])
 		@customers = @customers.where(sql)
 		@customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
+		@customers = @customers.page(params[:page]).per(10)
 		# @customers = @customers.where(["customers.name like ? OR address like ? OR number LIKE ?","%#{@customer_search}%","%#{key_address}%", "%#{key_number}%"])
-
 	end
 
 	def new
@@ -76,7 +76,6 @@ private
 	def update_session_search
 		session[:customer_search] = params[:customer_search] if params[:customer_address]
 		session[:customer_city] = params[:customer_city].to_i if params[:customer_city]
-
 		list = %w(customer_code customer_name customer_address customer_phone)
 		list.each do |item|
 			if params[item]
@@ -85,14 +84,16 @@ private
 				else
 					session[item] = false
 				end
+			else
+				session[item]= true if session[item] ==nil
 			end
 		end
 
-		@customer_search = session[:customer_search] ||= ""
-		@customer_code = session[:customer_code] ||= true
-		@customer_phone = session[:customer_phone] ||= true
-		@customer_name = session[:customer_name] ||= true
-		@customer_address = session[:customer_address] ||= true
-		@customer_city = session[:customer_city] ||= 0
+		@customer_search = session[:customer_search]
+		@customer_code = session[:customer_code]
+		@customer_phone = session[:customer_phone]
+		@customer_name = session[:customer_name]
+		@customer_address = session[:customer_address]
+		@customer_city = session[:customer_city] ||=0
 	end
 end

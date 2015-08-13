@@ -2,7 +2,8 @@
 	<div class="heading-inner">
 		<div class="info-box">
 			<h2 class="title">
-			  客戶清單(搜尋共 <%= @customers.count %> 筆)
+			  客戶清單
+			  <span style="font-size:16px;"><%= page_entries_info @customers, :entry_name=>"客戶"%></span>
 			</h2>
 
 			<div class="message">
@@ -16,7 +17,7 @@
 			<ul class="sub-nav">
 				<li> <%= link_to "全部", customers_path %> </li>
 				<li> <%= link_to "搜尋", search_customers_path, :class=>"selected" %> </li>
-			</ul>			
+			</ul>
 		</div>
 
 		<div class="submit-box"> 
@@ -36,22 +37,22 @@
 					</div>
 					<div class="box2">
 						<div class="field">
-							<%= hidden_field_tag "customer_code", 0 %>
+							<%= hidden_field_tag "customer_code", 0, :id=>"customer_code_hidden" %>
 							<%= check_box_tag "customer_code",1, @customer_code %>
 							<%= label_tag "customer_code", "編號" %>							
 						</div>
 						<div class="field">
-							<%= hidden_field_tag "customer_name", 0 %>
+							<%= hidden_field_tag "customer_name", 0, :id=>"customer_name_hidden" %>
 							<%= check_box_tag "customer_name",1, @customer_name %>
 							<%= label_tag "customer_name", "店名" %>							
 						</div>
 						<div class="field">
-							<%= hidden_field_tag "customer_address", 0 %>
+							<%= hidden_field_tag "customer_address", 0, :id=>"customer_address_hidden" %>
 							<%= check_box_tag "customer_address", 1, @customer_address %>
 							<%= label_tag "customer_address", "地址" %>							
 						</div>
 						<div class="field">
-							<%= hidden_field_tag "customer_phone", 0 %>
+							<%= hidden_field_tag "customer_phone", 0, :id=>"customer_phone_hidden" %>
 							<%= check_box_tag "customer_phone",1, @customer_phone %>
 							<%= label_tag "customer_phone", "電話" %>							
 						</div>
@@ -59,6 +60,7 @@
 					</div>
 				<% end %>
 		</div>
+		<%= paginate @customers %>				
 
 		<table class="table table-striped customer-index-table">
 			<thead>
@@ -90,7 +92,6 @@
 					<td> <%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %> </td>
 				</tr>
 				<% end %>
-				
 
 			</tbody>
 		</table>
