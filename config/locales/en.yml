@@ -33,7 +33,7 @@ en:
         display_entries:
           zero: "找不到 %{entry_name} 的結果"
           one: "顯示 <b>1</b> %{entry_name}"
-          other: "Displaying <b>all %{count}</b> %{entry_name}"
+          other: "全部共 <b> %{count}</b> 個%{entry_name}"
       more_pages:
         display_entries: "顯示%{entry_name}第<b>%{first}&nbsp;到&nbsp;%{last}</b>筆,共<b>%{total}</b>筆 "
   week_day:

@@ -16,8 +16,13 @@ Rails.application.routes.draw do
 
   resources :customers do 
     collection do 
+      get :profiles
       get :deliveried_days
       get :delivery_plan_days
+    end
+
+    member do
+      post :update_status
     end
   end
 

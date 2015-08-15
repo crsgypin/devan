@@ -1,0 +1,35 @@
+<%# selected, btn %>
+
+<% items = ["經營中","送貨紀錄","送貨規劃","基本資料"] %>
+
+<div class="heading-box">
+	<div class="heading-inner">
+		<div class="info-box">
+			<h2 class="title">
+			  <%= items[selected] %>
+			  <span style="font-size:16px;"><%= page_entries_info @customers, :entry_name=>"客戶"%></span>
+			</h2>
+
+			<div class="message">
+				<% if flash[:success].present? %>
+					<div class="success"> <%= flash[:success] %> </div>
+				<% elsif flash[:fail].present? %>
+					<div class="fail"> <%= flash[:fail] %> </div>
+				<% end %>
+			</div>
+
+			<ul class="sub-nav">
+				<li> <%= link_to items[0], customers_path, :class=>("selected" if selected == 0) %> </li>
+				<li> <%= link_to items[1], deliveried_days_customers_path, :class=>("selected" if selected ==1) %> </li>
+				<li> <%= link_to items[2], delivery_plan_days_customers_path, :class=>("selected" if selected ==2) %>  </li>
+				<li> <%= link_to items[3], profiles_customers_path, :class=>("selected" if selected ==3) %> </li>
+			</ul>
+		</div>
+
+		<div class="submit-box"> 
+			<%= btn %>
+		</div>
+	</div>
+</div>
+
+
