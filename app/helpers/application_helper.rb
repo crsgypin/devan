@@ -26,6 +26,10 @@ module ApplicationHelper
 						]
 	end
 
+	def weekday_list
+		return %w(Monday Tuesday Wednesday Thursday Friday Saturday Sunday)
+	end
+
 	def before_day(days)
 		 days.day.ago.strftime('%m/%d')
 	end

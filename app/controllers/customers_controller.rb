@@ -18,7 +18,12 @@ class CustomersController < ApplicationController
 		@customers = Customer.includes(:form_values=>:daily_form).joins(:form_values=>:daily_form)
 		@customers = @customers.where('daily_forms.date > ?', Time.now-7.days)
 		@customers = @customers.page(params[:page]).per(30)
-		console
+	end
+
+	def delivery_plan_days
+		@customers = Customer.includes(:customer_delivery_day).joins(:customer_delivery_day)
+		@customers = @customers.order("#{params[:sort]} desc") if params[:sort]
+		@customers = @customers.page(params[:page]).per(30)
 	end
 
 	def new

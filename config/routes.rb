@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   resources :customers do 
     collection do 
       get :deliveried_days
+      get :delivery_plan_days
     end
   end
 

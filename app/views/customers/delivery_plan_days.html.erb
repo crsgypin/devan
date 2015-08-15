@@ -16,8 +16,8 @@
 
 			<ul class="sub-nav">
 				<li> <%= link_to "基本資料", customers_path %> </li>
-				<li> <%= link_to "送貨紀錄", deliveried_days_customers_path, :class=>"selected" %> </li>
-				<li> <%= link_to "送貨規劃", delivery_plan_days_customers_path %> </li>
+				<li> <%= link_to "送貨紀錄", deliveried_days_customers_path %> </li>
+				<li> <%= link_to "送貨規劃", delivery_plan_days_customers_path, :class=>"selected" %> </li>
 
 			</ul>
 		</div>
@@ -31,41 +31,39 @@
 <div class="content-box">
 	<div class="content-inner">
 
-		<div class="customer-index">
+		<div class="customer-delivery-plan-days">
+
 			<div class="page-box">
 				<%= paginate @customers %>								
 			</div>
 
-			<table class="table table-bordered customer-index-table">
+			<table class="table table-bordered">
 				<thead>
 					<tr>
 						<th width="5%"></th>
 						<th width="10%"> 編號 </th>
 						<th width="15%"> 名字 </th>
 
-						<% 7.times do |d| %>
-							<th width="5%">  
-									<%= before_day(d)%> 
-									<span class="label label-default"><%= t "week_day.#{before_week_day(d)}" %> </span> 
-							</th>
+						<% weekday_list.each do |wday| %>
+							<th> <%= link_to t("week_day.#{wday}"),delivery_plan_days_customers_path(:sort=>wday.downcase), :class=>"btn btn-success btn-xs" %> </th>
 						<% end %>
-						<th width="5%"></th>
 					</tr>
 				</thead>
 
 				<tbody>
 					<% @customers.each_with_index do |customer,index| %>
+						<% setup_customer(customer) %>
 					<tr>
 						<td> <%= index+1 %> </td>
 						<td> <%= customer.code %> </td>
 						<td> <%= customer.name %> </td>
 
-						<% 7.times do |d| %>
+						<% weekday_list.each do |wday| %>
 							<td> 
-								<% customer.form_values.each do |form_value| %> 
-									<% if d.day.ago.strftime('%y-%m-%d') == form_value.daily_form.date.strftime('%y-%m-%d') %>
-										<%= form_value.delivery_person.name %>
-									<% end %>
+								<% if customer.customer_delivery_day[wday.downcase] %>
+									<div class="label label-primary label-xs"> √ </div>	
+								<% else %>
+
 								<% end %>
 							</td>
 						<% end %>
@@ -80,5 +78,6 @@
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
+
 
 
