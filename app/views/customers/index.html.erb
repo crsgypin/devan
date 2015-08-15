@@ -1,31 +1,5 @@
-<div class="heading-box">
-	<div class="heading-inner">
-		<div class="info-box">
-			<h2 class="title">
-			  客戶清單
-			  <span style="font-size:16px;"><%= page_entries_info @customers, :entry_name=>"客戶"%></span>
-			</h2>
 
-			<div class="message">
-				<% if flash[:success].present? %>
-					<div class="success"> <%= flash[:success] %> </div>
-				<% elsif flash[:fail].present? %>
-					<div class="fail"> <%= flash[:fail] %> </div>
-				<% end %>
-			</div>
-
-			<ul class="sub-nav">
-				<li> <%= link_to "基本資料", customers_path, :class=>"selected" %> </li>
-				<li> <%= link_to "送貨紀錄", deliveried_days_customers_path%> </li>
-				<li> <%= link_to "送貨規劃", delivery_plan_days_customers_path %>  </li>
-			</ul>
-		</div>
-
-		<div class="submit-box"> 
-			<%= link_to "新增客戶", new_customer_path ,:class=>"btn btn-primary add-new-daily-form" %>
-		</div>
-	</div>
-</div>
+<%= render :partial=>"customers/index_heading",:locals=>{:selected=>0, :btn=>link_to("新增客戶", new_customer_path ,:class=>"btn btn-primary add-new-daily-form") } %>
 
 <div class="content-box">
 	<div class="content-inner">
@@ -74,7 +48,7 @@
 						<th width="10%"> 編號 </th>
 						<th width="15%"> 名字 </th>
 						<th width="10%"> 縣市 </th>
-						<th width="10%"> 地區 </th>
+						<th width="10%"> 狀態 </th>
 						<th width="20%"> 地址 </th>
 						<th width="20%"> 電話 </th>
 						<th width="5%"></th>
@@ -88,7 +62,7 @@
 						<td> <%= customer.code %> </td>
 						<td> <%= customer.name %> </td>
 						<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
-						<td> <%= customer.addresses.first.district.try(:name) if customer.addresses.first %> </td>
+						<td> <%= customer.status %></td>
 						<td>
 							<%= customer.addresses.first.try(:address) %>
 						</td>
