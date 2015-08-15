@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150805162914) do
+ActiveRecord::Schema.define(version: 20150814025113) do
 
   create_table "addresses", force: :cascade do |t|
     t.text     "address"
@@ -33,6 +33,22 @@ ActiveRecord::Schema.define(version: 20150805162914) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "customer_delivery_days", force: :cascade do |t|
+    t.integer  "customer_id"
+    t.boolean  "monday"
+    t.boolean  "tuesday"
+    t.boolean  "wednesday"
+    t.boolean  "thursday"
+    t.boolean  "friday"
+    t.boolean  "saturday"
+    t.boolean  "sunday"
+    t.boolean  "unstable_day"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "customer_delivery_days", ["customer_id"], name: "index_customer_delivery_days_on_customer_id"
 
   create_table "customers", force: :cascade do |t|
     t.string   "code"
@@ -81,26 +97,6 @@ ActiveRecord::Schema.define(version: 20150805162914) do
   end
 
   add_index "districts", ["city_id"], name: "index_districts_on_city_id"
-
-  create_table "dozhuwei_form_values", force: :cascade do |t|
-    t.integer  "form_value_index"
-    t.integer  "daily_form_id"
-    t.integer  "customer_id"
-    t.integer  "delivery_person_id"
-    t.integer  "cash"
-    t.integer  "monthly"
-    t.integer  "special_monthly"
-    t.integer  "unreceivably"
-    t.integer  "delivery_fee"
-    t.integer  "receivable_cash"
-    t.string   "note"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-  end
-
-  add_index "dozhuwei_form_values", ["customer_id"], name: "index_dozhuwei_form_values_on_customer_id"
-  add_index "dozhuwei_form_values", ["daily_form_id"], name: "index_dozhuwei_form_values_on_daily_form_id"
-  add_index "dozhuwei_form_values", ["delivery_person_id"], name: "index_dozhuwei_form_values_on_delivery_person_id"
 
   create_table "form_values", force: :cascade do |t|
     t.integer  "form_value_index"

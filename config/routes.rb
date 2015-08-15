@@ -14,10 +14,11 @@ Rails.application.routes.draw do
   end
 
   resources :customers do 
-    collection do
-      get :search
+    collection do 
+      get :deliveried_days
     end
   end
+
   resources :delivery_people do 
     member do
       get :form_values

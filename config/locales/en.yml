@@ -36,4 +36,13 @@ en:
           other: "Displaying <b>all %{count}</b> %{entry_name}"
       more_pages:
         display_entries: "顯示%{entry_name}第<b>%{first}&nbsp;到&nbsp;%{last}</b>筆,共<b>%{total}</b>筆 "
+  week_day:
+    Monday: "星期一"
+    Tuesday: "星期二"
+    Wednesday: "星期三"
+    Thursday: "星期四"
+    Friday: "星期五"
+    Saturday: "星期六"
+    Sunday: "星期天"
+
 

@@ -47,6 +47,30 @@
 		<td> <%= form.select :status, [["經營中","經營中"],["結束","結束"]] %> </td>
 	</tr>
 	
+	<tr>
+		<td> 送貨日 </td>
+		<td> 
+			<% day_list.each_with_index do |day,index| %>
+				<div class="t-field">
+					<%= check_box "customer[customer_delivery_day_attributes]","#{day[:eng]}",{:checked=>@customer.customer_delivery_day[day[:eng]] },1, 0%>
+					<%= label_tag "customer[customer_delivery_day_attributes][#{day[:eng]}]", day[:ch] %>			
+				</div>
+			<% end %>
+			<%= hidden_field_tag "customer[customer_delivery_day_attributes][id]",@customer.customer_delivery_day.id %>
+		</td>
+	</tr>	
+
+	<% form.fields_for :customer_delivery_day do |ff| %>
+	<tr>
+		<td> test</td>
+		<td> 
+			<%= ff.check_box :monday %> 
+			<%= ff.check_box :tuesday %> 
+			<%= ff.check_box :wednesday %> 
+		</td>
+	</tr>
+	<% end %>
+
 </table>
 
 <div class="customer-store" style="display:none;"><%=city_district_list%></div>
