@@ -73,8 +73,17 @@
 				<td> <%= @customer.status %> </td>
 			</tr>
 			
+			<tr>
+				<td> 運送時間 </td>
+				<td> 
+						<% setup_customer(@customer) %>
+						<% day_list.each do |day| %> 
+							<% if @customer.customer_delivery_day[day[:eng]] %>
+								<span class="label label-warning"> <%= day[:ch]%></span>
+							<% end %>
+						<% end %>
+				</td>
 		</table>
-	
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
