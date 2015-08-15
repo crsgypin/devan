@@ -12,6 +12,15 @@ class CustomersController < ApplicationController
 		# @customers = @customers.where(["customers.name like ? OR address like ? OR number LIKE ?","%#{@customer_search}%","%#{key_address}%", "%#{key_number}%"])
 	end
 
+	def deliveried_days
+
+		# @customers = Customer.includes(:form_values=>:daily_form).joins(:form_values=>:daily_form)
+		@customers = Customer.includes(:form_values=>:daily_form).joins(:form_values=>:daily_form)
+		@customers = @customers.where('daily_forms.date > ?', Time.now-7.days)
+		@customers = @customers.page(params[:page]).per(30)
+		console
+	end
+
 	def new
 		@customer = Customer.new
 		@customer.phones.new
@@ -58,8 +67,8 @@ private
 		params.require(:customer).permit(:code, :name, :description, :status,
 															:phones_attributes=>[:number],
 															:faxes_attributes=>[:number],
-															:addresses_attributes=>[:address,:city_id,:district_id] )
-
+															:addresses_attributes=>[:address,:city_id,:district_id],
+															:customer_delivery_day_attributes=>[:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
 	end
 
 	def update_session_search

@@ -15,8 +15,9 @@
 			</div>
 
 			<ul class="sub-nav">
-				<li> <%= link_to "全部", customers_path %> </li>
-				<li> <%= link_to "搜尋", search_customers_path, :class=>"selected" %> </li>
+				<li> <%= link_to "基本資料", customers_path %> </li>
+				<li> <%= link_to "送貨紀錄", deliveried_days_customers_path, :class=>"selected" %> </li>
+
 			</ul>
 		</div>
 
@@ -29,8 +30,9 @@
 <div class="content-box">
 	<div class="content-inner">
 
-		<div class="customer-search">
-				<%= form_tag search_customers_path, :method=>:get do %>
+		<div class="customer-index">
+			<div class="search-box">
+				<%= form_tag customers_path, :method=>:get do %>
 					<div class="box1">
 						<%= text_field_tag "customer_search", {}, :value=> @customer_search %>
 						<%= submit_tag "搜尋", :class=>"btn btn-primary btn-xs" %>		
@@ -59,43 +61,53 @@
 						<%= select_tag "customer_city", options_for_select(City.all.map{|c| [c.name, c.id]}, @customer_city), :prompt=>"全部縣市" %>						
 					</div>
 				<% end %>
+			</div>
+
+			<div class="page-box">
+				<%= paginate @customers %>								
+			</div>
+
+			<table class="table table-bordered customer-index-table">
+				<thead>
+					<tr>
+						<th width="5%"></th>
+						<th width="10%"> 編號 </th>
+						<th width="15%"> 名字 </th>
+
+						<% 7.times do |d| %>
+							<th width="5%">  
+									<%= before_day(d)%> 
+									<span class="label label-default"><%= t "week_day.#{before_week_day(d)}" %> </span> 
+							</th>
+						<% end %>
+						<th width="5%"></th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<% @customers.each_with_index do |customer,index| %>
+					<tr>
+						<td> <%= index+1 %> </td>
+						<td> <%= customer.code %> </td>
+						<td> <%= customer.name %> </td>
+
+						<% 7.times do |d| %>
+							<td> 
+								<% customer.form_values.each do |form_value| %> 
+									<% if d.day.ago.strftime('%y-%m-%d') == form_value.daily_form.date.strftime('%y-%m-%d') %>
+										<%= form_value.delivery_person.name %>
+									<% end %>
+								<% end %>
+							</td>
+						<% end %>
+
+						<td> <%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %> </td>
+					</tr>
+					<% end %>
+
+				</tbody>
+			</table>
 		</div>
-		<%= paginate @customers %>				
-
-		<table class="table table-striped customer-index-table">
-			<thead>
-				<tr>
-					<th width="5%"></th>
-					<th width="10%"> 編號 </th>
-					<th width="15%"> 名字 </th>
-					<th width="10%"> 縣市 </th>
-					<th width="10%"> 地區 </th>
-					<th width="20%"> 地址 </th>
-					<th width="20%"> 電話 </th>
-					<th width="5%"></th>
-				</tr>
-			</thead>
-
-			<tbody>
-				<% @customers.each_with_index do |customer,index| %>
-				<tr>
-					<td> <%= index+1 %> </td>
-					<td> <%= customer.code %> </td>
-					<td> <%= customer.name %> </td>
-					<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
-					<td> <%= customer.addresses.first.district.try(:name) if customer.addresses.first %> </td>
-					<td>
-						<%= customer.addresses.first.try(:address) %>
-					</td>
-
-					<td> <%= customer.phones.map{|p| p.number}.join(',') %> </td>
-					<td> <%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %> </td>
-				</tr>
-				<% end %>
-
-			</tbody>
-		</table>
-		
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
