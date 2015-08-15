@@ -3,23 +3,12 @@ class CustomersController < ApplicationController
 	before_action :authenticate_user!, :except=>[:index,:show]
 
 	def index
-		@customers = Customer.includes(:phones,:addresses=>[:city]).page(params[:page]).per(15)
-
-	end
-
-	def search
 		update_session_search
 
-		states = []
-		states<< "customers.code LIKE '%#{@customer_search}%'" if @customer_code
-		states<< "customers.name LIKE '%#{@customer_search}%'" if @customer_name
-		states<< "address LIKE '%#{@customer_search}%'" if @customer_address
-		states<< "number LIKE '%#{@customer_search}%'" if @customer_phone
-		sql = "#{states.join(" OR ")}"
 		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones,:addresses=>[:city])
-		@customers = @customers.where(sql)
+		@customers = @customers.where(@seach_sql)
 		@customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
-		@customers = @customers.page(params[:page]).per(10)
+		@customers = @customers.page(params[:page]).per(30)
 		# @customers = @customers.where(["customers.name like ? OR address like ? OR number LIKE ?","%#{@customer_search}%","%#{key_address}%", "%#{key_number}%"])
 	end
 
@@ -95,5 +84,13 @@ private
 		@customer_name = session[:customer_name]
 		@customer_address = session[:customer_address]
 		@customer_city = session[:customer_city] ||=0
+
+		states = []
+		states<< "customers.code LIKE '%#{@customer_search}%'" if @customer_code
+		states<< "customers.name LIKE '%#{@customer_search}%'" if @customer_name
+		states<< "address LIKE '%#{@customer_search}%'" if @customer_address
+		states<< "number LIKE '%#{@customer_search}%'" if @customer_phone
+		@seach_sql = "#{states.join(" OR ")}"
+
 	end
 end
