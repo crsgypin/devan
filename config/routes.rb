@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   devise_for :users
 
+  root "homes#index"
+
   resources :daily_forms do
     collection do
       get :check_daily_form
@@ -35,7 +37,7 @@ Rails.application.routes.draw do
   resources :cities
   resources :districts
 
-  root "daily_forms#index"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
