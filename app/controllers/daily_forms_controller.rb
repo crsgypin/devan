@@ -1,5 +1,6 @@
 class DailyFormsController < ApplicationController
 	before_action :authenticate_user!, :except=>[:index,:show]
+	layout "form_print", only: [:print]
 
 	def index
 		@daily_forms = DailyForm.order(:date=>:desc, :manufacturer_id=>:asc)
@@ -12,6 +13,12 @@ class DailyFormsController < ApplicationController
 		daily_forms = DailyForm.includes(:manufacturer=>[:manufacturer_keys], :form_values => [:delivery_person, :customer])
 		@daily_form = daily_forms.find(params[:id])
 		@manufacturer = @daily_form.manufacturer
+	end
+
+	def print
+		daily_forms = DailyForm.includes(:manufacturer=>[:manufacturer_keys], :form_values => [:delivery_person, :customer])
+		@daily_form = daily_forms.find(params[:id])
+		@manufacturer = @daily_form.manufacturer				
 	end
 
 	def new
