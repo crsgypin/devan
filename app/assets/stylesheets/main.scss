@@ -3,7 +3,6 @@ $headerHeight: 60px;
 $contentTop: $navHeight + $headerHeight;
 
 .nav-box{
-	background-color: #9b3f9b;
 	height: $navHeight;
 	position:fixed;
 	top:0px;
@@ -12,15 +11,24 @@ $contentTop: $navHeight + $headerHeight;
 	z-index: 1;
 
 	.nav{
+		background-color: #9b3f9b;
 		padding: 0px;
 		margin:0 auto;
 		width:1000px;
 
 		.brand{
-			color:white;
-			width:40%;
-			float: left;
-			margin: 10px 0 0 0;
+
+			a{
+				color:white;
+				width:40%;
+				float: left;
+				margin: 10px 0 0 0;			
+			}
+
+			a:hover{
+				color: rgb(0, 255, 166);
+				text-decoration: none;
+			}
 		}
 
 		.function{
@@ -59,6 +67,47 @@ $contentTop: $navHeight + $headerHeight;
 			}
 		}
 	}
+}
+
+.menu-box{
+	position:fixed;
+	height: $headerHeight;
+	top: $navHeight;
+	left: 0px;
+	width: 100%;
+	z-index: 1;
+	
+	.menu-inner{
+		background-color: #DBD5F7;
+		margin:0px auto;
+		width:1000px;
+		display: table;
+		table-layout: fixed;
+		height: 100%;
+		
+		a{
+			display: table-cell;
+	    text-align: center;
+	    vertical-align: middle;
+	    color: blue;
+	    height: 100%;
+	    background-color: #DBD5F7;
+	    font-size: 2em;
+	    /* width decided by the number of elements*/
+		}
+
+		a:hover{
+			background-color: #0FB7CE;
+			text-decoration: none;
+		}
+		
+		a.selected{
+			background-color: #0FCE0F;
+			color: white;			
+		}
+		
+	}
+
 }
 
 .heading-box{

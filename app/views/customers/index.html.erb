@@ -1,82 +1,120 @@
 
-<%= render :partial=>"customers/index_heading",:locals=>{:selected=>0, :btn=>link_to("新增客戶", new_customer_path ,:class=>"btn btn-primary add-new-daily-form") } %>
+<div class="menu-box">
+	<div class="menu-inner">
+		<%= link_to "今日路線", "",:class=>"selected",:content=>".customer-route"%>
+		<%= link_to "查詢","", :content=>".customer-search"%>
+	</div>
+</div>
 
 <div class="content-box">
 	<div class="content-inner">
 
 		<div class="customer-index">
-			<div class="search-box">
-				<%= form_tag customers_path, :method=>:get do %>
-					<div class="box1">
-						<%= text_field_tag "customer_search", {}, :value=> @customer_search %>
-						<%= submit_tag "搜尋", :class=>"btn btn-primary btn-xs" %>		
-					</div>
-					<div class="box2">
-						<div class="field">
-							<%= hidden_field_tag "customer_code", 0, :id=>"customer_code_hidden" %>
-							<%= check_box_tag "customer_code",1, @customer_code %>
-							<%= label_tag "customer_code", "編號" %>							
-						</div>
-						<div class="field">
-							<%= hidden_field_tag "customer_name", 0, :id=>"customer_name_hidden" %>
-							<%= check_box_tag "customer_name",1, @customer_name %>
-							<%= label_tag "customer_name", "店名" %>							
-						</div>
-						<div class="field">
-							<%= hidden_field_tag "customer_address", 0, :id=>"customer_address_hidden" %>
-							<%= check_box_tag "customer_address", 1, @customer_address %>
-							<%= label_tag "customer_address", "地址" %>							
-						</div>
-						<div class="field">
-							<%= hidden_field_tag "customer_phone", 0, :id=>"customer_phone_hidden" %>
-							<%= check_box_tag "customer_phone",1, @customer_phone %>
-							<%= label_tag "customer_phone", "電話" %>							
-						</div>
-						<%= select_tag "customer_city", options_for_select(City.all.map{|c| [c.name, c.id]}, @customer_city), :prompt=>"全部縣市" %>						
-					</div>
-				<% end %>
+			
+			<div class="customer-route">
+				<h1>路線</h1>
 			</div>
 
-			<div class="page-box">
-				<%= paginate @customers %>								
-			</div>
-
-			<table class="table table-striped customer-index-table">
-				<thead>
-					<tr>
-						<th width="5%"></th>
-						<th width="10%"> 編號 </th>
-						<th width="15%"> 名字 </th>
-						<th width="10%"> 縣市 </th>
-						<th width="10%"> 狀態 </th>
-						<th width="20%"> 地址 </th>
-						<th width="20%"> 電話 </th>
-						<th width="5%"></th>
-					</tr>
-				</thead>
-
-				<tbody>
-					<% @customers.each_with_index do |customer,index| %>
-					<tr>
-						<td> <%= index+1 %> </td>
-						<td> <%= customer.code %> </td>
-						<td> <%= customer.name %> </td>
-						<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
-						<td> <%= customer.status %></td>
-						<td>
-							<%= customer.addresses.first.try(:address) %>
-						</td>
-
-						<td> <%= customer.phones.map{|p| p.number}.join(',') %> </td>
-						<td> <%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %> </td>
-					</tr>
+			<div class="customer-search">
+				<div class="search-box">
+					<%= form_tag customers_path, :method=>:get do %>
+						<div class="box1">
+							<%= text_field_tag "customer_search", {}, :value=> @customer_search %>
+							<%= submit_tag "搜尋", :class=>"btn btn-primary btn-xs" %>		
+						</div>
+						<div class="box2">
+							<div class="field">
+								<%= hidden_field_tag "customer_code", 0, :id=>"customer_code_hidden" %>
+								<%= check_box_tag "customer_code",1, @customer_code %>
+								<%= label_tag "customer_code", "編號" %>							
+							</div>
+							<div class="field">
+								<%= hidden_field_tag "customer_name", 0, :id=>"customer_name_hidden" %>
+								<%= check_box_tag "customer_name",1, @customer_name %>
+								<%= label_tag "customer_name", "店名" %>							
+							</div>
+							<div class="field">
+								<%= hidden_field_tag "customer_address", 0, :id=>"customer_address_hidden" %>
+								<%= check_box_tag "customer_address", 1, @customer_address %>
+								<%= label_tag "customer_address", "地址" %>							
+							</div>
+							<div class="field">
+								<%= hidden_field_tag "customer_phone", 0, :id=>"customer_phone_hidden" %>
+								<%= check_box_tag "customer_phone",1, @customer_phone %>
+								<%= label_tag "customer_phone", "電話" %>							
+							</div>
+							<%= select_tag "customer_city", options_for_select(City.all.map{|c| [c.name, c.id]}, @customer_city), :prompt=>"全部縣市" %>						
+						</div>
 					<% end %>
+				</div>
 
-				</tbody>
-			</table>
+				<div class="page-box">
+					<%= paginate @customers %>								
+				</div>
+
+				<table class="table table-striped customer-index-table">
+					<thead>
+						<tr>
+							<th width="5%"></th>
+							<th width="10%"> 編號 </th>
+							<th width="15%"> 名字 </th>
+							<th width="10%"> 縣市 </th>
+							<th width="10%"> 狀態 </th>
+							<th width="20%"> 地址 </th>
+							<th width="20%"> 電話 </th>
+							<th width="5%"></th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<% @customers.each_with_index do |customer,index| %>
+						<tr>
+							<td> <%= index+1 %> </td>
+							<td> <%= customer.code %> </td>
+							<td> <%= customer.name %> </td>
+							<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
+							<td> <%= customer.status %></td>
+							<td>
+								<%= customer.addresses.first.try(:address) %>
+							</td>
+
+							<td> <%= customer.phones.map{|p| p.number}.join(',') %> </td>
+							<td> <%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %> </td>
+						</tr>
+						<% end %>
+
+					</tbody>
+				</table>
+			</div>
+
 		</div>
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
+
+<script>
+
+	$('.menu-inner a').click(function(e){
+		e.preventDefault();
+
+		$('.menu-inner a').removeClass('selected');
+		$(this).addClass('selected');
+		updateStatus();
+	});	
+
+	var updateStatus = function(){
+		$('.menu-inner a').each(function(index,elm){
+			console.log($(elm).attr('class').indexOf('selected'));
+			if ($(elm).attr('class').indexOf('selected')> -1){
+				$($(elm).attr('content')).show();
+				console.log('show',$(elm).attr('content'));
+			}else{
+				$($(elm).attr('content')).hide();
+				console.log('hide',$(elm).attr('content'));
+			}
+		})
+	}
+
+</script>
 
 
