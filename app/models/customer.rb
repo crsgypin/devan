@@ -14,6 +14,8 @@ class Customer < ActiveRecord::Base
 	has_many :form_values
 	has_many :daily_forms, :through=>:form_values
 
+	has_many :customer_routes
+
 	has_one :customer_delivery_day
 	accepts_nested_attributes_for :customer_delivery_day, allow_destroy: true
 
