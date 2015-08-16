@@ -12,10 +12,27 @@
 		<div class="customer-index">
 			
 			<div class="customer-route">
-				<h1>路線</h1>
+				<h1>路線(20)</h1>
+				
+				<div class="list">
+					<table class="table">
+						<% Customer.first(20).each_with_index do |c,index| %>
+							<tr>
+								<td> <%= index+1 %> </td>
+								<td> <%= "#{c.code} -#{c.name}" %> </td>
+								<td> <%= c.addresses.first.try(:address) %> </td>
+							</tr>
+						<% end %>				
+					</table>					
+				</div>
+				
+				<div class="map">
+					
+				</div>
+
 			</div>
 
-			<div class="customer-search">
+			<div class="customer-search" style="display:none;">
 				<div class="search-box">
 					<%= form_tag customers_path, :method=>:get do %>
 						<div class="box1">
