@@ -16,5 +16,7 @@
 //= require select2
 //= require nested_form_fields
 //= require jquery_ujs
+//= require underscore
+//= require gmaps/google
 //= require turbolinks
 //= require_tree .
