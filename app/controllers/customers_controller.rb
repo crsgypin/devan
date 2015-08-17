@@ -9,6 +9,32 @@ class CustomersController < ApplicationController
 		@customers = @customers.where(:status=>"經營中")
 		@customers = @customers.page(params[:page]).per(30)
 
+		@map_customers = Customer.includes(:addresses=>[:city]).joins(:addresses=>[:city])
+		@map_customers = @map_customers.where("address <> ''").first(10)
+		set_markers(@map_customers)
+
+		@date_list = []
+		5.times do |index|
+			@date_list << [index.day.ago.strftime('%m/%d %A'), index]
+		end
+
+	end
+
+	def update_date
+		before_day = params[:day].to_i.day
+		wday = before_day.ago.strftime('%A').downcase
+
+		delivery_person = DeliveryPerson.first
+		@map_customers = Customer.joins(:customer_routes).where("customer_routes.wday = ?", wday).where("customer_routes.delivery_person_id = ?", delivery_person.id)
+		@map_customers = @map_customers.includes(:addresses=>[:city])
+		set_markers(@map_customers)
+
+		respond_to do |format|
+			format.json {render :json=> {
+												:markers=> @markers,
+												:template=> render_to_string(:partial=>"customers/customer_route_list.html", :locals=>{:map_customers=>@map_customers})}}
+		end
+
 	end
 
 	def profiles
@@ -37,5 +63,21 @@ class CustomersController < ApplicationController
 
 	end
 
+private 
+	def set_markers(customers)
+		hash = Gmaps4rails.build_markers(customers) do |customer, marker|
+			if customer.addresses[0].try(:lat)
+			  marker.lat customer.addresses[0].try(:lat)
+			  marker.lng customer.addresses[0].try(:lng)
+ 		  else
+ 		  	marker.lat 25
+ 		  	marker.lng 121.5
+ 		  end
+		  # marker.infowindow "#{customer.code} <br> #{customer.name} <br> #{customer.addresses[0].try(:address)}"
+		  marker.infowindow "#{customer.code} <br> #{customer.name}"
+		end
+
+		@markers = hash.to_json.html_safe
+	end
 
 end

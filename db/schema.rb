@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150814025113) do
+ActiveRecord::Schema.define(version: 20150817005459) do
 
   create_table "addresses", force: :cascade do |t|
     t.text     "address"
@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(version: 20150814025113) do
     t.string   "address_link_type"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.float    "lat"
+    t.float    "lng"
   end
 
   add_index "addresses", ["city_id"], name: "index_addresses_on_city_id"
@@ -49,6 +51,17 @@ ActiveRecord::Schema.define(version: 20150814025113) do
   end
 
   add_index "customer_delivery_days", ["customer_id"], name: "index_customer_delivery_days_on_customer_id"
+
+  create_table "customer_routes", force: :cascade do |t|
+    t.integer  "delivery_person_id"
+    t.string   "wday"
+    t.integer  "customer_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "customer_routes", ["customer_id"], name: "index_customer_routes_on_customer_id"
+  add_index "customer_routes", ["delivery_person_id"], name: "index_customer_routes_on_delivery_person_id"
 
   create_table "customers", force: :cascade do |t|
     t.string   "code"
