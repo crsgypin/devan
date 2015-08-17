@@ -14,6 +14,16 @@ class Plan::CustomerRoutesController < ApplicationController
 		
 	end
 
+	def move
+		@customer_route = CustomerRoute.find(params[:customer_route_id])
+
+		@customer_route.row_order_position = params[:position]
+		@customer_route.save!
+
+		respond_to do |format|
+			format.json {render :json=>{:result=>true}}
+		end
+	end
 
 
 end

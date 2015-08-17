@@ -17,7 +17,10 @@ Rails.application.routes.draw do
   end
 
   namespace :plan do 
-    resources :customer_routes
+    resources :customer_routes do
+      post :move
+    end
+
   end
 
   resources :customers do 

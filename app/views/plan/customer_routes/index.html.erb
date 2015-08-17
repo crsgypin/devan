@@ -3,7 +3,6 @@
 	<div class="content-inner">
 
 		<div class="plan-customer-routes">
-
 			<%= form_tag plan_customer_routes_path, :method=>:get do |form| %>
 				<%= select_tag "wday", options_for_select(weekday_list.map{|w| [t("week_day.#{w}"),w]} ,@wday), :class=>"date-selector" %>
 			<% end %>
@@ -19,9 +18,10 @@
 					<% @delivery_people.each do |delivery_person| %>
 						<td>
 							<table class="table table-bordered delivery-person-col">
-								<% delivery_person.customer_routes.each do |customer_route| %>
-									<tr>
-										<td> <%= "#{customer_route.customer.code}-#{customer_route.customer.name}" %> </td>
+								<% customer_routes = delivery_person.customer_routes.where('wday = ?',@wday.downcase).order(:row_order) %>
+								<% customer_routes.each do |customer_route| %>
+									<tr url=<%=plan_customer_route_move_path(customer_route) %>>
+										<td> <%= "#{customer_route.delivery_person.name}-#{customer_route.customer.name}-#{customer_route.wday} (#{customer_route.row_order})" %> </td>
 									</tr>
 								<% end %>
 							</table>
@@ -50,15 +50,19 @@ $(".delivery-person-col").sortable({
 
         console.log( "Move to " + ui.item.index() );
 
-        url = ui.item.data("reorder-url")
-
+        url = ui.item.attr('url');
+        console.log(url);
         $.ajax({
             type: "POST",
             url: url,
             dataType: "json",
             data: {
                 position: ui.item.index()
+            },
+            success: function(data){
+            	console.log(data);
             }
+
         })
     }
 });
