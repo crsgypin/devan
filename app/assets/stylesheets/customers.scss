@@ -12,9 +12,20 @@
 		.map{
 			float: left;
 			padding: 20px 0;
-			background-color: green;
 			width:calc(60% - 20px);
 			margin: 0 0 0 20px;
+		}
+
+		tr.selected{
+			background-color: rgba(0, 255, 32, 0.6);
+		}
+
+		tr.subselected{
+			background-color: rgba(0, 255, 32, 0.2);
+		}
+
+		tr:hover{
+			background-color: rgba(0, 255, 229, 0.6);
 		}
 	}
 

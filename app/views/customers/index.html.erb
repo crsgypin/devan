@@ -17,7 +17,7 @@
 				<div class="list">
 					<table class="table">
 						<% @map_customers.each_with_index do |c,index| %>
-							<tr>
+							<tr index=<%=index%> >
 								<td> <%= index+1 %> </td>
 								<td> <%= "#{c.code} -#{c.name}" %> </td>
 								<td class="address"> <%= c.addresses.first.try(:address) %> </td>
@@ -27,8 +27,8 @@
 				</div>
 				
 				<div class="map">
-					<div style='width: 400px;'>
-					  <div id="map" style='width: 400px; height: 400px;'></div>
+					<div style='width: 550px;'>
+					  <div id="map" style='width: 550px; height: 450px;'></div>
 					</div>
 				</div>
 
@@ -87,19 +87,19 @@
 
 					<tbody>
 						<% @customers.each_with_index do |customer,index| %>
-						<tr>
-							<td> <%= index+1 %> </td>
-							<td> <%= customer.code %> </td>
-							<td> <%= customer.name %> </td>
-							<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
-							<td> <%= customer.status %></td>
-							<td>
-								<%= customer.addresses.first.try(:address) %>
-							</td>
+							<tr>
+								<td> <%= index+1 %> </td>
+								<td> <%= customer.code %> </td>
+								<td> <%= customer.name %> </td>
+								<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
+								<td> <%= customer.status %></td>
+								<td>
+									<%= customer.addresses.first.try(:address) %>
+								</td>
 
-							<td> <%= customer.phones.map{|p| p.number}.join(',') %> </td>
-							<td> <%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %> </td>
-						</tr>
+								<td> <%= customer.phones.map{|p| p.number}.join(',') %> </td>
+								<td> <%= link_to "基本資料",customer_path(customer), :class=>"btn btn-warning btn-xs" %> </td>
+							</tr>
 						<% end %>
 
 					</tbody>
@@ -116,20 +116,19 @@
 
 <script>
 
+
+$(document).ready(function(){
+
+//switch
 	$('.menu-inner a').click(function(e){
 		e.preventDefault();
 
 		$('.menu-inner a').removeClass('selected');
 		$(this).addClass('selected');
-		updateStatus();
+		updateViews();
 	});	
 
-	$('.customer-route').on('click','tr',function(e){
-		console.log($(this).find('.address').text());
-		buildMap();
-	})
-
-	var updateStatus = function(){
+	var updateViews = function(){
 		$('.menu-inner a').each(function(index,elm){
 			if ($(elm).attr('class').indexOf('selected')> -1){
 				$($(elm).attr('content')).show();
@@ -139,17 +138,53 @@
 		})
 	}
 
-	var buildMap = function(){
+//route page
+	var customer_markers = <%= raw @hash.to_json %>;
+
+	$('.customer-route').on('click','tr',function(e){
+		var index = parseInt($(this).attr('index'));
+		updateMap(index);
+	})
+
+	var updateMap = function(index){
+		$('.customer-index').find('[index]').removeClass('selected');
+		$('.customer-index').find('[index]').removeClass('subselected');
+		$($('.customer-index').find('[index=' + index + ']')).addClass('selected');
+
+		var subindex = (index < customer_markers.length-1)? index+1 : index-1
+		$($('.customer-index').find('[index=' + (subindex) + ']')).addClass('subselected');			
+		buildMap( [customer_markers[index], customer_markers[subindex]] );			
+
+
+
+	}
+
+	var buildMap = function(selected_markers){
 		handler = Gmaps.build('Google');
 		handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
-		  markers = handler.addMarkers(<%= raw @hash.to_json %>);
+		  markers = handler.addMarkers(selected_markers);
 
 		  handler.bounds.extendWith(markers);
 		  handler.map.centerOn(markers[0]);
 		  handler.fitMapToBounds();
+
+		  marker = markers[0].getServiceObject();
+		  google.maps.event.addListener(marker, 'mouseover', function() {
+		  	console.log('mouseover');
+
+		  	// var infowindow = new google.maps.InfoWindow({content: 'content' });
+		  	// console.log(infowindow);
+     //    infowindow.open( handler.getMap());
+        // infowindow.serviceObject.open(Gmaps.map.map, marker.serviceObject);
+      });
+
 		});		
 	}
 
+	updateMap(0);
+
+
+});
 
 </script>
 
