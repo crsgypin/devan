@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :plan do 
+    resources :customer_routes
+  end
+
   resources :customers do 
     collection do
       get :update_date
