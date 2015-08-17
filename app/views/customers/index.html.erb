@@ -13,17 +13,10 @@
 			
 			<div class="customer-route">
 				<h1>路線(20)</h1>
-				
+				<%= select_tag "date_select", options_for_select(@date_list), :class=>"date-select", :url=> update_date_customers_path %>
+
 				<div class="list">
-					<table class="table">
-						<% @map_customers.each_with_index do |c,index| %>
-							<tr index=<%=index%> >
-								<td> <%= index+1 %> </td>
-								<td> <%= "#{c.code} -#{c.name}" %> </td>
-								<td class="address"> <%= c.addresses.first.try(:address) %> </td>
-							</tr>
-						<% end %>				
-					</table>					
+					<%= render :partial=>'customers/customer_route_list', :locals=>{:map_customers=>@map_customers} %>
 				</div>
 				
 				<div class="map">
@@ -139,7 +132,7 @@ $(document).ready(function(){
 	}
 
 //route page
-	var customer_markers = <%= raw @hash.to_json %>;
+	var customer_markers = <%= @markers %>;
 
 	$('.customer-route').on('click','tr',function(e){
 		var index = parseInt($(this).attr('index'));
@@ -182,6 +175,23 @@ $(document).ready(function(){
 	}
 
 	updateMap(0);
+
+//date select
+	$('.customer-route .date-select').change(function(e){
+		e.preventDefault();
+
+		$.ajax({
+			url: $(this).attr('url'),
+			data: {day:$(this).val()},
+			dataType: "json",
+			success: function(data){
+
+				customer_markers = JSON.parse(data['markers']);
+				$('.customer-route .list').html(data['template'])
+				updateMap(0);
+			}
+		})
+	})
 
 
 });
