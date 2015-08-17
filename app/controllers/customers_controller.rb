@@ -9,6 +9,16 @@ class CustomersController < ApplicationController
 		@customers = @customers.where(:status=>"經營中")
 		@customers = @customers.page(params[:page]).per(30)
 
+		@map_customers = Customer.includes(:addresses=>[:city]).joins(:addresses=>[:city])
+		@map_customers = @map_customers.where("address <> ''").first(10)
+
+
+		@hash = Gmaps4rails.build_markers(@map_customers) do |customer, marker|
+		  marker.lat customer.addresses[0].lat
+		  marker.lng customer.addresses[0].lng
+		  marker.infowindow "#{customer.code} <br> #{customer.name} <br> #{customer.addresses[0].address}"
+		end
+
 	end
 
 	def profiles
