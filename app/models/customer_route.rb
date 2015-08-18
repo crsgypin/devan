@@ -1,5 +1,5 @@
 class CustomerRoute < ActiveRecord::Base
-
+	validates_inclusion_of :wday, :in=> %w(monday tuesday wednesday thursday friday saturday sunday)
 	belongs_to :customer
 	belongs_to :delivery_person
 
