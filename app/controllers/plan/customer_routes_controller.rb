@@ -15,15 +15,20 @@ class Plan::CustomerRoutesController < ApplicationController
 	end
 
 	def move
-		@customer_route = CustomerRoute.find(params[:customer_route_id])
-
-		@customer_route.row_order_position = params[:position]
-		@customer_route.save!
+		@move_customer_route = CustomerRoute.find(params[:customer_route_id])
+		@delivery_person = DeliveryPerson.find(params[:delivery_person_id])
+		@wday = params[:wday].downcase
+		@to_index = params[:to_index].to_i
+		
+		CustomerRoute.reorder(@delivery_person, @wday, @move_customer_route, @to_index)
 
 		respond_to do |format|
 			format.json {render :json=>{:result=>true}}
 		end
 	end
 
+	def destroy
+		
+	end
 
 end

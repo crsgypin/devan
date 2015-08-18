@@ -10,18 +10,35 @@
 			<table class="table content">
 				<tr>
 					<% @delivery_people.each do |delivery_person| %>					
-						<td> <%= delivery_person.name %> </td>
+						<td delivery-person = <%=delivery_person.id%>> 
+							<div>
+								<%= delivery_person.name %>								
+							</div>
+							<div>
+								<%= link_to "+",new_plan_customer_route_path, :class=>"btn btn-success btn-xs add-new"%>
+								<%= text_field_tag "customer_route", "",:class=>"customer-select" %>
+							</div>
+						</td>
 					<% end %>
 				</tr>
 				<tr>
 
 					<% @delivery_people.each do |delivery_person| %>
 						<td>
-							<table class="table table-bordered delivery-person-col">
+							<table class="table table-bordered delivery-person-col"
+			 							 delivery-person = <%=delivery_person.id%> >
 								<% customer_routes = delivery_person.customer_routes.where('wday = ?',@wday.downcase).order(:row_order) %>
+
 								<% customer_routes.each do |customer_route| %>
-									<tr url=<%=plan_customer_route_move_path(customer_route) %>>
-										<td> <%= "#{customer_route.delivery_person.name}-#{customer_route.customer.name}-#{customer_route.wday} (#{customer_route.row_order})" %> </td>
+									<tr url=<%= plan_customer_route_move_path(customer_route) %> >
+										<td> 
+											<div class="name">
+												<%= "#{customer_route.customer.code}-#{customer_route.customer.name}" %>
+											</div>  
+											<div class="action">
+												<%= link_to "X", plan_customer_route_path(customer_route), :class=>"btn btn-danger btn-xs remove" %>
+											</div>
+										</td>
 									</tr>
 								<% end %>
 							</table>
@@ -42,6 +59,24 @@ $(document).ready(function(){
 		console.log('change');
 		$('.plan-customer-routes form').submit();		
 	})
+
+	$('.plan-customer-routes').on('click','.remove',function(e){
+		e.preventDefault();
+
+	})
+
+	$('.plan-customer-routes').on('click','.add-new',function(e){
+		e.preventDefault();
+
+
+	})
+
+	$('.plan-customer-routes .customer-select').select2({
+		width: '180px',
+		height: '16px',
+		data: <%= raw Customer.active.to_json %>
+	})
+
 })
 
 $(".delivery-person-col").sortable({
@@ -49,15 +84,18 @@ $(".delivery-person-col").sortable({
     update: function(event, ui) {
 
         console.log( "Move to " + ui.item.index() );
+        var url = ui.item.attr('url');
+        var delivery_person_id = $(ui.item.closest('table')).attr('delivery-person')
+        var wday = $('.date-selector').val()
 
-        url = ui.item.attr('url');
-        console.log(url);
         $.ajax({
             type: "POST",
             url: url,
             dataType: "json",
             data: {
-                position: ui.item.index()
+                to_index: ui.item.index(),
+                delivery_person_id: delivery_person_id,
+                wday: wday
             },
             success: function(data){
             	console.log(data);

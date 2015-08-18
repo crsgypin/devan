@@ -4,8 +4,20 @@
 	
 	.content{
 
-		
+		.name{
+			float: left;
+			width:80%;
+		}		
 
+		.action{
+			float: right;
+			width:20%;
+
+			a{
+				display: block;
+				float: right;
+			}
+		}
 	}
 
 
