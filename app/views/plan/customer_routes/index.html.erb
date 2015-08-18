@@ -29,7 +29,7 @@
 
 					<% @delivery_people.each do |delivery_person| %>
 						<td class="delivery-person-<%= delivery_person.id %>" >
-							<%= render :partial=>"plan/customer_routes/route_list", :locals=>{:delivery_person=>delivery_person} %>
+							<%= render :partial=>"plan/customer_routes/route_list", :locals=>{:delivery_person=>delivery_person, :wday=>@wday} %>
 
 						</td>	
 					<% end %>
@@ -49,14 +49,24 @@ $(document).ready(function(){
 
 	$('.plan-customer-routes').on('click','.remove',function(e){
 		e.preventDefault();
+		var target = $(this).attr('target')
 
+		$.ajax({
+			url:$(this).attr('href'),
+			dataType: 'json',
+			method: 'delete',
+			success: function(data){
+				$(target).html(data['template'])
+				tableSortable();
+			}
+		})	
 	})
 
 	$('.plan-customer-routes .new-form').submit(function(e){
 		e.preventDefault();
 
 		var item = $(this).serialize();
-		var newForm = $(this)
+		var target = $(this).attr('target')
 
 		$.ajax({
 			url:$(this).attr('action'),
@@ -64,7 +74,7 @@ $(document).ready(function(){
 			method: 'post',
 			dataType: 'json',
 			success: function(data){
-				$(newForm.attr('target')).html(data['template'])
+				$(target).html(data['template'])
 				tableSortable();
 			}
 		})
