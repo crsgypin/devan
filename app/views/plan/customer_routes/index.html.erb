@@ -3,45 +3,33 @@
 	<div class="content-inner">
 
 		<div class="plan-customer-routes">
-			<%= form_tag plan_customer_routes_path, :method=>:get do |form| %>
+			<%= form_tag plan_customer_routes_path, :class=>"day-form", :method=>:get do %>
 				<%= select_tag "wday", options_for_select(weekday_list.map{|w| [t("week_day.#{w}"),w]} ,@wday), :class=>"date-selector" %>
 			<% end %>
 
 			<table class="table content">
 				<tr>
 					<% @delivery_people.each do |delivery_person| %>					
-						<td delivery-person = <%=delivery_person.id%>> 
+						<td> 
 							<div>
 								<%= delivery_person.name %>								
 							</div>
-							<div>
-								<%= link_to "+",new_plan_customer_route_path, :class=>"btn btn-success btn-xs add-new"%>
-								<%= text_field_tag "customer_route", "",:class=>"customer-select" %>
-							</div>
+							<%= form_tag plan_customer_routes_path, 
+										:target=>".delivery-person-#{delivery_person.id}",
+										:class=>"new-form" do %>
+								<%= text_field_tag :customer_id, "",:class=>"customer-select" %>
+								<%= hidden_field_tag :delivery_person_id, delivery_person.id %>
+								<%= hidden_field_tag :wday, @wday %>
+								<%= submit_tag "+", :class=>"btn btn-success btn-sm add-new" %>
+							<% end %>
 						</td>
 					<% end %>
 				</tr>
 				<tr>
 
 					<% @delivery_people.each do |delivery_person| %>
-						<td>
-							<table class="table table-bordered delivery-person-col"
-			 							 delivery-person = <%=delivery_person.id%> >
-								<% customer_routes = delivery_person.customer_routes.where('wday = ?',@wday.downcase).order(:row_order) %>
-
-								<% customer_routes.each do |customer_route| %>
-									<tr url=<%= plan_customer_route_move_path(customer_route) %> >
-										<td> 
-											<div class="name">
-												<%= "#{customer_route.customer.code}-#{customer_route.customer.name}" %>
-											</div>  
-											<div class="action">
-												<%= link_to "X", plan_customer_route_path(customer_route), :class=>"btn btn-danger btn-xs remove" %>
-											</div>
-										</td>
-									</tr>
-								<% end %>
-							</table>
+						<td class="delivery-person-<%= delivery_person.id %>" >
+							<%= render :partial=>"plan/customer_routes/route_list", :locals=>{:delivery_person=>delivery_person} %>
 
 						</td>	
 					<% end %>
@@ -56,8 +44,7 @@
 <script>
 $(document).ready(function(){
 	$('.plan-customer-routes').on('change','.date-selector',function(){
-		console.log('change');
-		$('.plan-customer-routes form').submit();		
+		$('.plan-customer-routes .day-form').submit();		
 	})
 
 	$('.plan-customer-routes').on('click','.remove',function(e){
@@ -65,45 +52,60 @@ $(document).ready(function(){
 
 	})
 
-	$('.plan-customer-routes').on('click','.add-new',function(e){
+	$('.plan-customer-routes .new-form').submit(function(e){
 		e.preventDefault();
 
+		var item = $(this).serialize();
+		var newForm = $(this)
+
+		$.ajax({
+			url:$(this).attr('action'),
+			data: item,
+			method: 'post',
+			dataType: 'json',
+			success: function(data){
+				$(newForm.attr('target')).html(data['template'])
+				tableSortable();
+			}
+		})
 
 	})
+
+	<% customerList = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}} %>
 
 	$('.plan-customer-routes .customer-select').select2({
 		width: '180px',
 		height: '16px',
-		data: <%= raw Customer.active.to_json %>
+		data: <%= raw customerList.to_json %>
 	})
 
+	tableSortable();
 })
 
-$(".delivery-person-col").sortable({
-    items: "tr",
-    update: function(event, ui) {
+	var tableSortable = function(){
+		$(".delivery-person-col").sortable({
+	    items: "tr",
+	    update: function(event, ui) {
 
-        console.log( "Move to " + ui.item.index() );
-        var url = ui.item.attr('url');
-        var delivery_person_id = $(ui.item.closest('table')).attr('delivery-person')
-        var wday = $('.date-selector').val()
+	        console.log( "Move to " + ui.item.index() );
+	        var url = ui.item.attr('url');
 
-        $.ajax({
-            type: "POST",
-            url: url,
-            dataType: "json",
-            data: {
-                to_index: ui.item.index(),
-                delivery_person_id: delivery_person_id,
-                wday: wday
-            },
-            success: function(data){
-            	console.log(data);
-            }
+	        $.ajax({
+	            type: "POST",
+	            url: url,
+	            dataType: "json",
+	            data: {
+	                to_index: ui.item.index(),
+	            },
+	            success: function(data){
+	            	console.log(data)
+	            }
 
-        })
-    }
-});
+	        })
+	    }
+		});
+	}
+
 
 </script>
 

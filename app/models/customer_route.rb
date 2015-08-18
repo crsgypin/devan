@@ -3,9 +3,10 @@ class CustomerRoute < ActiveRecord::Base
 	belongs_to :customer
 	belongs_to :delivery_person
 
-	def self.reorder(delivery_person, wday, move_customer_route, to_index)
+	def self.reorder(move_customer_route, to_index)
+		customer_routes = CustomerRoute.where(:delivery_person_id => move_customer_route.delivery_person_id, 
+																					:wday=>move_customer_route.wday).order(:row_order)
 
-		customer_routes = delivery_person.customer_routes.where(:wday=>wday).order(:row_order)
 		move_customer_route.row_order = to_index
 		move_customer_route.save!
 

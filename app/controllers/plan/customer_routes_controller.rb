@@ -14,13 +14,23 @@ class Plan::CustomerRoutesController < ApplicationController
 		
 	end
 
+	def create
+		@delivery_person = DeliveryPerson.find(params[:delivery_person_id])
+		@customer = Customer.find(params[:customer_id])
+		@wday = params[:wday].downcase
+		@customer_route = CustomerRoute.create(:customer=>@customer, :delivery_person=>@delivery_person, :wday=>@wday)
+
+		CustomerRoute.reorder(@customer_route, 0)
+		respond_to do |format|
+			format.json {render :json=>{:template=> render_to_string(:partial=>"plan/customer_routes/route_list", :locals=>{:delivery_person=>@delivery_person})}}
+		end
+	end
+
 	def move
 		@move_customer_route = CustomerRoute.find(params[:customer_route_id])
-		@delivery_person = DeliveryPerson.find(params[:delivery_person_id])
-		@wday = params[:wday].downcase
 		@to_index = params[:to_index].to_i
 		
-		CustomerRoute.reorder(@delivery_person, @wday, @move_customer_route, @to_index)
+		CustomerRoute.reorder(@move_customer_route, @to_index)
 
 		respond_to do |format|
 			format.json {render :json=>{:result=>true}}
@@ -28,7 +38,7 @@ class Plan::CustomerRoutesController < ApplicationController
 	end
 
 	def destroy
-		
+
 	end
 
 end
