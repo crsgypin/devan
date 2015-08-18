@@ -16,10 +16,8 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :plan do 
-    resources :customer_routes do
-      post :move
-    end
+  resources :customer_routes do
+    post :move
 
   end
 

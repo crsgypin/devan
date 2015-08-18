@@ -2,8 +2,8 @@
 <div class="content-box">
 	<div class="content-inner">
 
-		<div class="plan-customer-routes">
-			<%= form_tag plan_customer_routes_path, :class=>"day-form", :method=>:get do %>
+		<div class="customer-routes">
+			<%= form_tag customer_routes_path, :class=>"day-form", :method=>:get do %>
 				<%= select_tag "wday", options_for_select(weekday_list.map{|w| [t("week_day.#{w}"),w]} ,@wday), :class=>"date-selector" %>
 			<% end %>
 
@@ -14,7 +14,7 @@
 							<div>
 								<%= delivery_person.name %>								
 							</div>
-							<%= form_tag plan_customer_routes_path, 
+							<%= form_tag customer_routes_path, 
 										:target=>".delivery-person-#{delivery_person.id}",
 										:class=>"new-form" do %>
 								<%= text_field_tag :customer_id, "",:class=>"customer-select" %>
@@ -29,7 +29,7 @@
 
 					<% @delivery_people.each do |delivery_person| %>
 						<td class="delivery-person-<%= delivery_person.id %>" >
-							<%= render :partial=>"plan/customer_routes/route_list", :locals=>{:delivery_person=>delivery_person, :wday=>@wday} %>
+							<%= render :partial=>"customer_routes/route_list", :locals=>{:delivery_person=>delivery_person, :wday=>@wday} %>
 
 						</td>	
 					<% end %>
@@ -43,11 +43,11 @@
 
 <script>
 $(document).ready(function(){
-	$('.plan-customer-routes').on('change','.date-selector',function(){
-		$('.plan-customer-routes .day-form').submit();		
+	$('.customer-routes').on('change','.date-selector',function(){
+		$('.customer-routes .day-form').submit();		
 	})
 
-	$('.plan-customer-routes').on('click','.remove',function(e){
+	$('.customer-routes').on('click','.remove',function(e){
 		e.preventDefault();
 		var target = $(this).attr('target')
 
@@ -62,7 +62,7 @@ $(document).ready(function(){
 		})	
 	})
 
-	$('.plan-customer-routes .new-form').submit(function(e){
+	$('.customer-routes .new-form').submit(function(e){
 		e.preventDefault();
 
 		var item = $(this).serialize();
@@ -83,7 +83,7 @@ $(document).ready(function(){
 
 	<% customerList = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}} %>
 
-	$('.plan-customer-routes .customer-select').select2({
+	$('.customer-routes .customer-select').select2({
 		width: '180px',
 		height: '16px',
 		data: <%= raw customerList.to_json %>
