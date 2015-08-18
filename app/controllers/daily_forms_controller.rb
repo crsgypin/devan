@@ -4,7 +4,7 @@ class DailyFormsController < ApplicationController
 
 	def index
 		@daily_forms = DailyForm.order(:date=>:desc, :manufacturer_id=>:asc)
-		@daily_forms = @daily_forms.includes(:form_values,:manufacturer,:users,:daily_form_update_users=>:user)
+		@daily_forms = @daily_forms.includes(:form_values,:manufacturer,:users)
 		@daily_forms = @daily_forms.page(params[:page]).per(15)
 
 	end
@@ -26,7 +26,6 @@ class DailyFormsController < ApplicationController
 			@daily_form = DailyForm.find_or_create_by(
 										:manufacturer_id => params[:daily_form][:manufacturer_id],
 										:date => params[:daily_form][:date] )
-			@daily_form.daily_form_update_users.find_or_create_by(:user => current_user)
 
 			20.times do |index|
 				@daily_form.form_values.find_or_create_by(:form_value_index => index + 1)
