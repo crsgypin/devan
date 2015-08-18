@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150817005459) do
+ActiveRecord::Schema.define(version: 20150817124257) do
 
   create_table "addresses", force: :cascade do |t|
     t.text     "address"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 20150817005459) do
     t.integer  "customer_id"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.integer  "row_order"
   end
 
   add_index "customer_routes", ["customer_id"], name: "index_customer_routes_on_customer_id"

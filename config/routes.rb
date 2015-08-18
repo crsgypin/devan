@@ -16,6 +16,11 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :customer_routes do
+    post :move
+
+  end
+
   resources :customers do 
     collection do
       get :update_date

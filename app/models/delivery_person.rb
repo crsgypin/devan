@@ -11,4 +11,8 @@ class DeliveryPerson < ActiveRecord::Base
 		self.form_values.includes(:daily_form,:customer).joins(:daily_form).where("date >= ?",Date.today - day_count.days).order('daily_forms.date desc')
 	end
 
+	def self.on_job
+		self.where(:status=>"在職")
+	end
+
 end

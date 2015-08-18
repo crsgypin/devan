@@ -25,6 +25,11 @@ class Customer < ActiveRecord::Base
 		self.form_values.includes(:daily_form,:customer).joins(:daily_form).where("date >= ?",Date.today - day_count.days).order('daily_forms.date desc')
 	end
 
+	def self.active
+		self.where(:status=>"經營中")
+		#to-do merge all about customer atatus
+	end
+
 private
 
 	def check_form_values
