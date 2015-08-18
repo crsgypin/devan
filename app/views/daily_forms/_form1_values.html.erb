@@ -1,0 +1,94 @@
+<%# daily_form, form1_values %>
+
+<% pre_text = "daily_form[form1_values_attributes]" %>
+
+<%= form_tag daily_form_path(daily_form), :class=>"form1-value-form" do %>
+	<%= submit_tag "繳交" %>
+	<table class="table form1-value-form-table">
+		<thead>		
+			<tr>
+				<td></td>
+				<td> 廠商 </td>
+				<td> 送貨員 </td>
+				<td> 客戶 </td>
+				<td> 欄數 </td>
+			</tr>
+		</thead>
+		<tbody>		
+		<% form1_values.each_with_index do |form1_value, index| %>
+			<tr class="form1-value-<%=index%>" update="0">
+				<td> <%= index +1 %>
+					<%= hidden_field_tag "#{pre_text}[#{index}][id]", form1_value.id %>
+					<%= hidden_field_tag "#{pre_text}[#{index}][form_value_index]", form1_value.form_value_index %>
+				</td>
+				<td> <%= form1_value.manufacturer.try(:name) %>
+						<%= select "#{pre_text}[#{index}]", :manufacturer_id, @manufacturer_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-manufacturer" %>
+				</td>
+				<td>
+						<%= select "#{pre_text}[#{index}]", :delivery_person_id, @delivery_people_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-delivery" %>
+				</td>
+
+				<td> 
+						<%= text_field_tag "#{pre_text}[#{index}][customer_id]", form1_value.customer_id, :class=>"t-field form1-value-customer" %>
+				</td>
+				<td> <%= number_field_tag "#{pre_text}[#{index}][basket]", form1_value.basket %> </td>
+			</tr>
+		<% end %>
+		</tbody>
+	</table>
+
+<% end %>
+
+<script>
+
+$(document).ready(function(){
+	$('.form1-value-form').submit(function(e){
+		e.preventDefault();
+
+		var submitData = {}
+		$('.form1-value-form-table tr').each(function(index,element){
+			if ($(element).attr('update') === "1"){
+				console.log($(element).attr('class'));
+
+				$(element).find('input,select').each(function(i,input){
+					console.log($(input).attr('name'),$(input).val());
+					submitData[$(input).attr('name')] = $(input).val();
+				})
+			}
+		})
+		console.log(submitData);
+
+		$.ajax({
+			url:$(this).attr('action'),
+			data: {},
+			method: 'patch',
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+			}
+		})
+	})
+
+
+	$('.form1-value-form-table').on('change','.form1-value-manufacturer',function(){
+		$($(this).closest('tr')).attr('update',1)
+	})
+
+	var addCustomerSelect2 = function(object){
+		object.select2({
+			width: '180px',
+			height: '16px',
+			data: <%= raw @customer_list.to_json %>
+		})
+	}	
+
+
+	addCustomerSelect2($('.form1-value-customer'))
+
+})
+
+
+
+</script>
+
+

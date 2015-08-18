@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818094338) do
+ActiveRecord::Schema.define(version: 20150818125448) do
 
   create_table "addresses", force: :cascade do |t|
     t.text     "address"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 20150818094338) do
     t.string   "note"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.integer  "form_value_index"
   end
 
   add_index "form1_values", ["customer_id"], name: "index_form1_values_on_customer_id"
