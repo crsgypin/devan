@@ -1,8 +1,8 @@
 <div class="menu-box">
 	<div class="menu-inner">
-		<%= link_to "農場表單", "",:class=>"selected",:content=>".customer-route"%>
-		<%= link_to "豆之味表單","", :content=>".customer-search"%>
-		<%= link_to "表單紀錄","", :content=>".customer-search"%>
+		<%= link_to "農場表單", "",:class=>"selected",:content=>".form1"%>
+		<%= link_to "豆之味表單","", :content=>".form2"%>
+		<%= link_to "表單紀錄","", :content=>".daily-form-log"%>
 	</div>
 </div>
 
@@ -11,15 +11,14 @@
 
 		<div class="daily-form-index">			
 			<div class="form1">	
-				<%= render :partial=>"daily_forms/form1_values", :locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values} %>
+				<%= render :partial=>"daily_forms/form1_values_show", :locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values} %>
 			</div>		
 
-			<div class="form2">
+			<div class="form2" style="display:none;">
 				
 			</div>
 
-
-			<div class="daily-form-histroy">
+			<div class="daily-form-log" style="display:none;">
 				<div class="page-box">
 					<%= paginate @daily_forms %>				
 				</div>
@@ -55,5 +54,10 @@
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
+
+<script>
+
+
+</script>
 
 

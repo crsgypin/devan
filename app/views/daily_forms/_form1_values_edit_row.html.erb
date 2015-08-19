@@ -1,0 +1,23 @@
+<%# daily_form, form1_value, index %>
+<% index ||= form1_value_counter %>
+<% pre_text = "daily_form[form1_values_attributes]" %>
+<tr class="form1-value-<%=index%>" row=<%=index%> update="0">
+	<td> <%= index +1 %>
+		<%= hidden_field_tag "#{pre_text}[#{index}][id]", form1_value.id, :class=>"form1-value-index-#{index}" %>
+	</td>
+
+	<td> 
+			<%= text_field_tag "#{pre_text}[#{index}][customer_id]", form1_value.customer_id, :class=>"t-field form1-value-customer" %>
+	</td>
+
+	<td>
+			<%= select "#{pre_text}[#{index}]", :manufacturer_id, @manufacturer_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-manufacturer" %>
+	</td>
+	<td>
+			<%= select "#{pre_text}[#{index}]", :delivery_person_id, @delivery_people_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-delivery" %>
+	</td>
+
+	<td> <%= number_field_tag "#{pre_text}[#{index}][basket]", form1_value.basket %> </td>
+	<td> <%= text_field_tag "#{pre_text}[#{index}][note]", form1_value.note %></td>
+	<td> <%= link_to "X", form1_value_daily_form_path(daily_form, form1_value), :class=>"form1-value-delete btn btn-danger btn-xs" if form1_value.id != nil %> </td>
+</tr>

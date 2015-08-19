@@ -1,0 +1,112 @@
+<%# daily_form, form1_values %>
+
+<%= form_tag update_form1_daily_form_path(daily_form), :class=>"form1-value-form" do %>
+	<%= submit_tag "繳交", :class=>'submit' %>
+	<table class="table form1-value-form-table">
+		<thead>		
+			<tr>
+				<td></td>
+				<td> 客戶 </td>
+				<td> 廠商 </td>
+				<td> 送貨員 </td>
+				<td> 欄數 </td>
+				<td> 備註 </td>
+				<td></td>
+			</tr>
+		</thead>
+		<tbody>		
+		
+		<%= render :partial=>"daily_forms/form1_values_edit_row.html", 
+							 :collection=> form1_values, 
+							 :as=> :form1_value, 
+							 :locals=>{ :daily_form=> daily_form} %>
+		<%# form1_values.each_with_index do |form1_value,index| %>
+			<%# render :partial=>"daily_forms/form1_values_edit_row.html", 
+								 :locals=>{:daily_form=>daily_form, 
+								 					 :form1_value=>form1_value, 
+								 					 :index=>index} %>
+			<%# render :partial=>"daily_forms/form1_values_show", :locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values} %>
+
+
+		<%# end %>
+
+		</tbody>
+	</table>
+
+	<%= link_to "新增行數", new_form1_value_daily_form_path(daily_form), :class=>"form1-value-new btn btn-success" %>
+
+<% end %>
+
+<script>
+
+$(document).ready(function(){
+	$('.form1-value-form').submit(function(e){
+		e.preventDefault();
+
+		var submitData = {}
+		$('.form1-value-form-table tr').each(function(index,element){
+			if ($(element).attr('update') === "1"){
+				$(element).find('input,select').each(function(i,input){
+					submitData[$(input).attr('name')] = $(input).val();
+				})
+			}
+		})
+
+		$.ajax({
+			url:$(this).attr('action'),
+			data: submitData,
+			method: 'patch',
+			dataType: 'json',
+			success: function(data){
+				var map_keys = $.parseJSON(data['result']);
+				for(index in map_keys){
+					$('.form1-value-index-'+index).attr('value',map_keys[index])
+				}
+			}
+		})
+	})
+
+	$('.form1').on('click','.form1-value-delete',function(e){
+			e.preventDefault();
+
+	})
+
+	$('.form1').on('click','.form1-value-new',function(e){
+			e.preventDefault();
+			var index = parseInt($('.form1-value-form-table tr').last().attr('row')) +1;
+
+			$.ajax({
+				url:$(this).attr('href'),
+				data:{index: index},
+				method:'get',
+				dataType: 'json',
+				success: function(data){
+					$('.form1 tbody').append(data['template']);
+					addCustomerSelect2($('.form1-value-' + index + ' .form1-value-customer'));
+				}
+			})
+	})
+
+	$('.form1').on('change','input,select',function(){
+		$($(this).closest('tr')).attr('update',1)
+	})
+
+
+
+	var addCustomerSelect2 = function(object){
+		object.select2({
+			width: '180px',
+			height: '16px',
+			data: <%= raw @customer_list.to_json %>
+		})
+	}	
+
+	addCustomerSelect2($('.form1-value-customer'));
+
+})
+
+
+
+</script>
+
+

@@ -11,7 +11,6 @@ class DailyFormsController < ApplicationController
 		@form1_values = @daily_form.form1_values
 		@form2_values = @daily_form.form2_values
 
-
 		20.times do |index|
 			if @daily_form.form1_values.length <= index
 				@daily_form.form1_values.new				
@@ -20,32 +19,27 @@ class DailyFormsController < ApplicationController
 			if @daily_form.form2_values.length <= index
 				@daily_form.form2_values.new				
 			end
-
 		end
 
-		set_delivery_people_list
-		set_manufacturer_list
-		set_customer_list
 	end
 
-	def update
+	def update_form1
 		@daily_form = DailyForm.find(params[:id])
 
 		id_mapping = {}
 		if params[:daily_form]
 			params[:daily_form][:form1_values_attributes].each do |key,value|
 				if value[:id] == "" || value[:id] == nil
-					Rails.logger.debug('new')
 					form1_value = @daily_form.form1_values.create
-					id_mapping[key] = form1_value.id
+					id_mapping[key] = form1_value.id #feedback id_mapping for browser to registor id into new row
 				else
-					Rails.logger.debug('update')
 					form1_value = @daily_form.form1_values.find(value[:id].to_i)
 				end	
 				Form1Value.attribute_names.each do |a|
 					form1_value[a] = value[a] if value[a] && a!= "id"
 				end
 				form1_value.save!
+				form1_value.form_value_users.find_or_create_by(:user=>current_user)
 			end
 		end
 
@@ -54,17 +48,53 @@ class DailyFormsController < ApplicationController
 		end
 	end
 
-	def show
-		daily_forms = DailyForm.includes(:manufacturer=>[:manufacturer_keys], :form_values => [:delivery_person, :customer])
-		@daily_form = daily_forms.find(params[:id])
-		@manufacturer = @daily_form.manufacturer
+	def edit_form1
+
+		@daily_form = DailyForm.find(params[:id])
+		@form1_values = @daily_form.form1_values					
+
+		20.times do |index|
+			if @daily_form.form1_values.length <= index
+				@daily_form.form1_values.new				
+			end
+		end
+
+		set_selection_list
+
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_edit.html",:locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values})}}
+		end
+
 	end
 
-	def print
-		daily_forms = DailyForm.includes(:manufacturer=>[:manufacturer_keys], :form_values => [:delivery_person, :customer])
-		@daily_form = daily_forms.find(params[:id])
-		@manufacturer = @daily_form.manufacturer				
+	def show_form1
+		@daily_form = DailyForm.find(params[:id])
+		@form1_values = @daily_form.form1_values					
+
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_show.html",:locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values})}}
+		end
+
 	end
+
+	def delete_form1_value
+		@daily_form = DailyForm.find(params[:id])
+	end
+
+	def new_form1_value
+		@daily_form = DailyForm.find(params[:id])
+		@form1_value = @daily_form.form1_values.new
+		@index = params[:index].to_i
+
+		set_selection_list
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_edit_row.html",:locals=>{:daily_form=>@daily_form, :form1_value=>@form1_value, :index=>@index})}}
+		end
+	end
+
+
+
+
 
 	def new
 		if params[:daily_form] && params[:daily_form][:manufacturer_id] && params[:daily_form][:date]
@@ -146,15 +176,9 @@ private
 		@date = params[:date]
 	end
 
-	def set_customer_list
+	def set_selection_list
 		@customer_list = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}}
-	end
-
-	def set_delivery_people_list
 		@delivery_people_list = DeliveryPerson.on_job.map{|d| ["#{d.code}-#{d.name}", d.id]}
-	end
-
-	def set_manufacturer_list
 		@manufacturer_list = Manufacturer.all.map{|m| [m.name, m.id]}
 	end
 
