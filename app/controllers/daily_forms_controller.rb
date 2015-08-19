@@ -11,15 +11,16 @@ class DailyFormsController < ApplicationController
 		@form1_values = @daily_form.form1_values
 		@form2_values = @daily_form.form2_values
 
+
 		20.times do |index|
-			Rails.logger.debug(index)
-			if @daily_form.form1_values.find_by_form_value_index(index) == nil
-				@daily_form.form1_values.new(:form_value_index=>index)
+			if @daily_form.form1_values.length <= index
+				@daily_form.form1_values.new				
 			end
 
-			if @daily_form.form2_values.find_by_form_value_index(index) == nil
-				@daily_form.form2_values.new(:form_value_index=>index)
+			if @daily_form.form2_values.length <= index
+				@daily_form.form2_values.new				
 			end
+
 		end
 
 		set_delivery_people_list
@@ -29,12 +30,28 @@ class DailyFormsController < ApplicationController
 
 	def update
 		@daily_form = DailyForm.find(params[:id])
-		# @daily_form.update(daily_form_params)
 
-		respond_to do |format|
-			format.json { render :json=>{:template=>'aa'}}
+		id_mapping = {}
+		if params[:daily_form]
+			params[:daily_form][:form1_values_attributes].each do |key,value|
+				if value[:id] == "" || value[:id] == nil
+					Rails.logger.debug('new')
+					form1_value = @daily_form.form1_values.create
+					id_mapping[key] = form1_value.id
+				else
+					Rails.logger.debug('update')
+					form1_value = @daily_form.form1_values.find(value[:id].to_i)
+				end	
+				Form1Value.attribute_names.each do |a|
+					form1_value[a] = value[a] if value[a] && a!= "id"
+				end
+				form1_value.save!
+			end
 		end
 
+		respond_to do |format|
+			format.json {render :json=>{:result=>id_mapping.to_json}}
+		end
 	end
 
 	def show

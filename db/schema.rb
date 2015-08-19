@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818125448) do
+ActiveRecord::Schema.define(version: 20150818220755) do
 
   create_table "addresses", force: :cascade do |t|
     t.text     "address"
@@ -137,6 +137,17 @@ ActiveRecord::Schema.define(version: 20150818125448) do
   add_index "form2_values", ["daily_form_id"], name: "index_form2_values_on_daily_form_id"
   add_index "form2_values", ["delivery_person_id"], name: "index_form2_values_on_delivery_person_id"
   add_index "form2_values", ["manufacturer_id"], name: "index_form2_values_on_manufacturer_id"
+
+  create_table "form_value_users", force: :cascade do |t|
+    t.integer  "form_value_user_link_id"
+    t.string   "form_value_user_link_type"
+    t.integer  "user_id"
+    t.integer  "form_value_index"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "form_value_users", ["user_id"], name: "index_form_value_users_on_user_id"
 
   create_table "manufacturer_keys", force: :cascade do |t|
     t.integer  "manufacturer_id"
