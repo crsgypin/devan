@@ -14,7 +14,7 @@
 			<%= select "#{pre_text}[#{index}]", :manufacturer_id, @manufacturer_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-manufacturer" %>
 	</td>
 	<td>
-			<%= select "#{pre_text}[#{index}]", :delivery_person_id, @delivery_people_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-delivery" %>
+			<%= select "#{pre_text}[#{index}]", :delivery_person_id, @delivery_people_list, {:selected=>form1_value.delivery_person_id,:include_blank => ''},:class=>"t-field form1-value-delivery" %>
 	</td>
 
 	<td> <%= number_field_tag "#{pre_text}[#{index}][basket]", form1_value.basket %> </td>

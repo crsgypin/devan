@@ -20,15 +20,6 @@
 							 :collection=> form1_values, 
 							 :as=> :form1_value, 
 							 :locals=>{ :daily_form=> daily_form} %>
-		<%# form1_values.each_with_index do |form1_value,index| %>
-			<%# render :partial=>"daily_forms/form1_values_edit_row.html", 
-								 :locals=>{:daily_form=>daily_form, 
-								 					 :form1_value=>form1_value, 
-								 					 :index=>index} %>
-			<%# render :partial=>"daily_forms/form1_values_show", :locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values} %>
-
-
-		<%# end %>
 
 		</tbody>
 	</table>
@@ -43,18 +34,9 @@ $(document).ready(function(){
 	$('.form1-value-form').submit(function(e){
 		e.preventDefault();
 
-		var submitData = {}
-		$('.form1-value-form-table tr').each(function(index,element){
-			if ($(element).attr('update') === "1"){
-				$(element).find('input,select').each(function(i,input){
-					submitData[$(input).attr('name')] = $(input).val();
-				})
-			}
-		})
-
 		$.ajax({
 			url:$(this).attr('action'),
-			data: submitData,
+			data: submitData(),
 			method: 'patch',
 			dataType: 'json',
 			success: function(data){
@@ -66,9 +48,35 @@ $(document).ready(function(){
 		})
 	})
 
+	var submitData = function(){
+		var data = {}
+		$('.form1-value-form-table tr').each(function(index,element){
+			if ($(element).attr('update') === "1"){
+				$(element).find('input,select').each(function(i,input){
+					data[$(input).attr('name')] = $(input).val();
+				})
+			}
+		})
+		return data;
+	}
+
+
 	$('.form1').on('click','.form1-value-delete',function(e){
 			e.preventDefault();
+			var index = $(this).closest('tr').attr('row');
+			var id = $('.form1 .form1-value-index-' + index).attr('value')
+			$(this).closest('tr').remove();
 
+			if (id){
+				$.ajax({
+					url:$(this).attr('href'),
+					method: 'delete',
+					dataType: 'json',
+					success: function(data){
+						console.log(data);
+					}
+				})
+			}
 	})
 
 	$('.form1').on('click','.form1-value-new',function(e){

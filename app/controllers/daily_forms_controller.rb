@@ -79,6 +79,11 @@ class DailyFormsController < ApplicationController
 
 	def delete_form1_value
 		@daily_form = DailyForm.find(params[:id])
+		@form1_value = @daily_form.form1_values.find(params[:form_value_id])
+		@form1_value.destroy
+		respond_to do |format|
+			format.json {render :json=>{:result=>"OK"}}
+		end
 	end
 
 	def new_form1_value
