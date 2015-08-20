@@ -20,24 +20,25 @@ class DailyFormsController < ApplicationController
 				@daily_form.form2_values.new				
 			end
 		end
-
+		set_selection_list
 	end
 
 	def update_form1
 		@daily_form = DailyForm.find(params[:id])
 
-		id_mapping = {}
-		if params[:data] && params[:data][:daily_form]
-			params[:data][:daily_form][:form1_values_attributes].each do |key,value|
+		index_id = {}
+		if params[:data]
+			params[:data][:form1_values].each do |index,value|
 				if value[:id] == "" || value[:id] == nil
 					form1_value = @daily_form.form1_values.create
-					id_mapping[key] = form1_value.id #feedback id_mapping for browser to registor id into new row
 				else
 					form1_value = @daily_form.form1_values.find(value[:id].to_i)
 				end	
+
 				Form1Value.attribute_names.each do |a|
 					form1_value[a] = value[a] if value[a] && a!= "id"
 				end
+				index_id[index] = form1_value.id #feedback index_id for browser to registor id into new row
 				form1_value.save!
 				form1_value.form_value_users.find_or_create_by(:user=>current_user)
 			end
@@ -55,7 +56,7 @@ class DailyFormsController < ApplicationController
 			end
 		else
 			respond_to do |format|
-				format.json {render :json=>{:result=>id_mapping.to_json}}
+				format.json {render :json=>{:result=>index_id.to_json}}
 			end
 		end
 	end

@@ -1,29 +1,40 @@
 <%# form1_value, index %>
 <% index ||= form1_value_counter %>
-<% pre_text = "daily_form[form1_values_attributes]" %>
-<tr class="form1-value-<%=index%>" row=<%=index%> update="0">
-	<td col="0"><span class="order"></span>
-		<%= hidden_field_tag "#{pre_text}[#{index}][id]", form1_value.id, :class=>"form1-value-id" %>
+<tr class="form1-value-<%=index%>" row="" index=<%=index%> update="0">
+	<td col="0"><span class="row-number"></span>
+		<%= hidden_field_tag "form1_values[#{index}][id]", form1_value.id, :class=>"form1-value-id" %>
 	</td>
 
 	<td col="1"> 
-			<%= text_field_tag "#{pre_text}[#{index}][customer_id]", form1_value.customer_id, :class=>"t-field form1-value-customer" %>
-	</td col="2">
-
-	<td col="3">
-			<%= select "#{pre_text}[#{index}]", :manufacturer_id, @manufacturer_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-manufacturer" %>
-	</td col="4">
-	<td>
-			<%= select "#{pre_text}[#{index}]", :delivery_person_id, @delivery_people_list, {:selected=>form1_value.delivery_person_id,:include_blank => ''},:class=>"t-field form1-value-delivery" %>
+			<%= text_field_tag "form1_values[#{index}][customer_id]", form1_value.customer_id, :class=>"t-field form1-value-customer" %>
 	</td>
 
-	<td col="5"> <%= number_field_tag "#{pre_text}[#{index}][basket]", form1_value.basket %> </td>
+	<td col="2">
+		<%= select "form1_values[#{index}]", 
+				:manufacturer_id, @manufacturer_list, 
+				{:selected=>form1_value.manufacturer_id,:include_blank => ''},
+				:class=>"t-field form1-value-manufacturer" %>
+	</td col="3">
+	<td>
+		<%= select "form1_values[#{index}]", 
+				:delivery_person_id, @delivery_people_list, 
+				{:selected=>form1_value.delivery_person_id,:include_blank => ''},
+				:class=>"t-field form1-value-delivery" %>
+	</td>
 
-	<td col="6"> <%= text_field_tag "#{pre_text}[#{index}][note]", form1_value.note %></td>
+	<td col="4"> 
+		<%= number_field_tag "form1_values[#{index}][basket]", 
+												 form1_value.basket %> 
+	</td>
 
-	<td col="7"> 
-		<span class="updated label label-success label-xs"></span>
-		<span class="delete"></span>
+	<td col="5"> <%= text_field_tag "form1_values[#{index}][note]", 
+																	form1_value.note %></td>
+
+	<td col="6"> 
+		<span class="updating label label-success label-xs" style="opacity:0">∆</span>
+		<span class="delete">
+			<%= link_to 'x', '',:class=>"form1-value-delete btn btn-danger btn-xs" %>
+		</span>
 	</td>
 </tr>
 

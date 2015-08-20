@@ -1,6 +1,5 @@
 <%# daily_form, form1_values %>
 
-
 <div class="title">
 	<h1> 今日表單 </h1>
 	<div class="edit"> 
@@ -33,21 +32,6 @@
 	</tbody>
 </table>
 
-<script>
-
-$('.form1').on('click','.edit-button',function(e){
-	e.preventDefault();
-	$.ajax({
-		url:$(this).attr('href'),
-		dataType:'json',
-		success:function(data){
-			$('.form1').html(data['template'])
-		}
-	})
-})
-
-
-</script>
 
 
 
