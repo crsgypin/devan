@@ -183,28 +183,10 @@ class DailyFormsController < ApplicationController
 	end
 
 private
-	def set_manufacturer
-		@manufacturer = params[:manufacturer_id]
-	end
-
-	def set_date
-		@date = params[:date]
-	end
-
 	def set_selection_list
 		@customer_list = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}}
 		@delivery_people_list = DeliveryPerson.on_job.map{|d| ["#{d.code}-#{d.name}", d.id]}
 		@manufacturer_list = Manufacturer.all.map{|m| [m.name, m.id]}
 	end
-
-
-	def daily_form_params
-		params.require(:daily_form).permit(:form2_values_attributes=>[:id,:form_value_index,:daily_form_id,:customer_id,
-																								:delivery_person_id, :key1, :key2, :key3, :key4, :key5, :key6, :note],
-																			 :form1_values_attributes=>[:id,:form_value_index,:daily_form_id,:customer_id,
-																								:delivery_person_id, :basket, :note, :manufacturer_id])
-
-	end
-
 
 end

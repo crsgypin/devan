@@ -26,34 +26,7 @@
 			</div>
 
 			<div class="daily-form-log" style="display:none;">
-				<div class="page-box">
-					<%= paginate @daily_forms %>				
-				</div>
-
-				<table class="table table-bordered content">
-					<thead>
-						<tr>
-							<th>日期</th>
-							<th>編寫者</th>
-							<th></th>	
-						</tr>
-					</thead>
-					<tbody>
-						<% @daily_forms.each do |daily_form| %>
-							<tr>
-								<td>
-									<%= daily_form.date %>
-								</td>
-								<td>
-
-								</td>
-								<td>
-									<%= link_to "查看", daily_form_path(daily_form),:class=>"btn btn-primary btn-xs" %>
-								</td>
-							</tr>
-						<% end %>
-					</tbody>
-				</table>
+				<%= render :partial=>"daily_forms/daily_form_log", :locals=>{:daily_forms=>@daily_forms} %>
 			</div>
 
 		</div> <%# daily-form-index %>
