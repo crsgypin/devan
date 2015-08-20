@@ -1,1 +1,32 @@
-_form2_values.html.erb
+<%# daily_form, form2_values %>
+<%= form_tag '#', :class=>"form2-value-form" do %>
+	<%= submit_tag "繳交", :class=>'submit' %>
+	<table class="table form2-value-form-table">
+		<thead>		
+			<tr>
+			<td>			 </td>
+			<td> 客戶   </td>
+			<td> 廠商   </td>
+			<td> 送貨員 </td>
+			<td> 現金   </td>
+			<td> 月收   </td>
+			<td> 未收   </td>
+			<td> 特別月收   </td>
+			<td>	</td>
+			<td> 備註   </td>
+			</tr>
+		</thead>
+		<tbody>		
+		
+		<%= render :partial=>"daily_forms/form2_values_edit_row.html", 
+							 :collection=> form2_values, 
+							 :as=> :form2_value %>
+
+		</tbody>
+	</table>
+
+	<%= link_to "新增行數", "", :class=>"form2-value-new btn btn-success" %>
+
+<% end %>
+
+
