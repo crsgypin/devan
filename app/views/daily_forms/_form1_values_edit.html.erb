@@ -27,6 +27,64 @@
 
 <% end %>
 
+<div class="template" style="display:none;">
+	<tr class="form1-value-0" row="0" update="0">
+	<td col="0"><span class="order">1</span>
+		<input type="hidden" 
+					 name="daily_form[form1_values_attributes][value-index][id]" 
+					 class="form1-value-id"
+					 value="value-id" >
+	</td>
+
+	<td col="1"> 	
+		<input type="text" 
+					 name="daily_form[form1_values_attributes][value-index][customer_id]" 
+					 class="t-field form1-value-customer"
+					 value="value-customer" >
+	</td>
+
+	<td col="2">
+		<select class="t-field form1-value-manufacturer" 
+						name="daily_form[form1_values_attributes][value-index][manufacturer_id]">
+			<option value=""></option>
+			<option value="1">豆之味</option>
+			<option selected="selected" value="2">大蕓</option>
+		</select>
+	</td>
+
+	<td col="3">
+		<select class="t-field form1-value-delivery" name="daily_form[form1_values_attributes][value-index][delivery_person_id]">
+			<option value=""></option>
+			<option value="1">AA-邱益同</option>
+			<option value="2">BB-邱繼正</option>
+			<option selected="selected" value="3">CC-周美雲</option>
+			<option value="7">GG-張博軒</option>
+			<option value="8">HH-吳東洲</option>
+		</select>
+	</td>
+
+	<td col="4"> 
+		<input type="number" 
+					 name="daily_form[form1_values_attributes][value-index][basket]" 
+					 value="value-basket"> 
+	</td>
+
+	<td col="5"> 
+		<input type="text" 
+					 name="daily_form[form1_values_attributes][value-index][note]" 
+					 id="daily_form_form1_values_attributes_0_note" 
+					 value="value-note">
+	</td>
+
+	<td col="6"> 
+		<span class="updated label label-success label-xs"></span>
+		<span class="delete"><a href="" class="form1-value-delete btn btn-danger btn-xs">X</a></span>
+	</td>
+</tr>
+
+</div>
+
+
 <script>
 
 $(document).ready(function(){
@@ -36,6 +94,23 @@ $(document).ready(function(){
 		remove:"/daily_forms/delete_form1_value/",
 		add:"<%= new_form1_value_daily_forms_path %>"
 	}
+
+	var dataManager = {
+		replaceWord: function(template,attr,keyWord,newValue){
+			template.find('[name]').each(function(index,element){
+				$(element).attr('name', $(element).attr('name').replace('value-index',3))
+			})			
+		},
+		addNewRow: function(index){
+			var template = $('.form1 .template').clone();
+			this.replaceWord(template, name, )
+
+			console.log(template.html());
+		}
+	}
+
+	dataManager.addNewRow(2);
+
 
 	var submitData = function(){
 		var data = {}
