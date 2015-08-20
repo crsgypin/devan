@@ -11,17 +11,14 @@ Rails.application.routes.draw do
       get :edit_form1
       get :show_form1
       patch :update_form1
-      get :new_form1_value
-      delete 'delete_form1_value/:form_value_id', :to=>'daily_forms#delete_form1_value', 
-                                                  :as=>'form1_value'
-      
       get :edit_form2
       get :show_form2
     end
 
-    member do
-      get :add_row
-      get :print
+    collection do
+      delete 'delete_form1_value/:id', :to=>'daily_forms#delete_form1_value', 
+                                                  :as=>'form1_value'
+      get :new_form1_value
     end
   end
 

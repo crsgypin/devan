@@ -18,35 +18,18 @@
 		
 		<%= render :partial=>"daily_forms/form1_values_edit_row.html", 
 							 :collection=> form1_values, 
-							 :as=> :form1_value, 
-							 :locals=>{ :daily_form=> daily_form} %>
+							 :as=> :form1_value %>
 
 		</tbody>
 	</table>
 
-	<%= link_to "新增行數", new_form1_value_daily_form_path(daily_form), :class=>"form1-value-new btn btn-success" %>
+	<%= link_to "新增行數", "", :class=>"form1-value-new btn btn-success" %>
 
 <% end %>
 
 <script>
 
 $(document).ready(function(){
-	$('.form1-value-form').submit(function(e){
-		e.preventDefault();
-
-		$.ajax({
-			url:$(this).attr('action'),
-			data: submitData(),
-			method: 'patch',
-			dataType: 'json',
-			success: function(data){
-				var map_keys = $.parseJSON(data['result']);
-				for(index in map_keys){
-					$('.form1-value-index-'+index).attr('value',map_keys[index])
-				}
-			}
-		})
-	})
 
 	var submitData = function(){
 		var data = {}
@@ -60,22 +43,56 @@ $(document).ready(function(){
 		return data;
 	}
 
+	var refreshRow = function(){
+		var del = "<a href='' class='form1-value-delete btn btn-danger btn-xs'>X</a>"
+		$('.form1 tr').each(function(index,element){
+			$(element).find('.order').text(index);
+			var id = $(element).find('.form1-value-id').attr('value');
+			var update = $(element).attr('update');
+			if (id || update==="1"){
+				$(element).find('.delete').html(del);
+			}
+		})
+	}
+
+	$('.form1-value-form').submit(function(e){
+		e.preventDefault();
+
+		$.ajax({
+			url:$(this).attr('action'),
+			data: submitData(),
+			method: 'patch',
+			dataType: 'json',
+			success: function(data){
+				var map_keys = $.parseJSON(data['result']);
+				for(index in map_keys){
+					$('.form1 [row=' + index + '] .form1-value-id').attr('value',map_keys[index])
+				}
+			}
+		})
+	})
 
 	$('.form1').on('click','.form1-value-delete',function(e){
 			e.preventDefault();
-			var index = $(this).closest('tr').attr('row');
-			var id = $('.form1 .form1-value-index-' + index).attr('value')
-			$(this).closest('tr').remove();
+			var target = $(this).closest('tr')
+			var index = target.attr('row');
+			var id = $('.form1 [row=' + index + '] .form1-value-id').attr('value')
 
 			if (id){
 				$.ajax({
-					url:$(this).attr('href'),
+					url:"/daily_forms/delete_form1_value/" + id,
 					method: 'delete',
 					dataType: 'json',
 					success: function(data){
-						console.log(data);
+						if (data['result'].toLowerCase()==="ok"){
+							target.remove();
+							refreshRow();
+						}
 					}
 				})
+			}else{
+				$(this).closest('tr').remove();
+				refreshRow();
 			}
 	})
 
@@ -84,7 +101,7 @@ $(document).ready(function(){
 			var index = parseInt($('.form1-value-form-table tr').last().attr('row')) +1;
 
 			$.ajax({
-				url:$(this).attr('href'),
+				url: "<%= new_form1_value_daily_forms_path %>",
 				data:{index: index},
 				method:'get',
 				dataType: 'json',
@@ -97,8 +114,8 @@ $(document).ready(function(){
 
 	$('.form1').on('change','input,select',function(){
 		$($(this).closest('tr')).attr('update',1)
+		refreshRow();
 	})
-
 
 
 	var addCustomerSelect2 = function(object){
@@ -110,6 +127,8 @@ $(document).ready(function(){
 	}	
 
 	addCustomerSelect2($('.form1-value-customer'));
+	refreshRow();
+
 
 })
 

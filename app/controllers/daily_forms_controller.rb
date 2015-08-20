@@ -78,8 +78,7 @@ class DailyFormsController < ApplicationController
 	end
 
 	def delete_form1_value
-		@daily_form = DailyForm.find(params[:id])
-		@form1_value = @daily_form.form1_values.find(params[:form_value_id])
+		@form1_value = Form1Value.find(params[:id])
 		@form1_value.destroy
 		respond_to do |format|
 			format.json {render :json=>{:result=>"OK"}}
@@ -87,16 +86,14 @@ class DailyFormsController < ApplicationController
 	end
 
 	def new_form1_value
-		@daily_form = DailyForm.find(params[:id])
-		@form1_value = @daily_form.form1_values.new
+		@form1_value = Form1Value.new
 		@index = params[:index].to_i
 
 		set_selection_list
 		respond_to do |format|
-			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_edit_row.html",:locals=>{:daily_form=>@daily_form, :form1_value=>@form1_value, :index=>@index})}}
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_edit_row.html",:locals=>{:form1_value=>@form1_value, :index=>@index})}}
 		end
 	end
-
 
 
 
