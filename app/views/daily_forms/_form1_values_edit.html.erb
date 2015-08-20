@@ -31,6 +31,12 @@
 
 $(document).ready(function(){
 
+	var urls={
+		submit:"<%= update_form1_daily_form_path(daily_form) %>",
+		remove:"/daily_forms/delete_form1_value/",
+		add:"<%= new_form1_value_daily_forms_path %>"
+	}
+
 	var submitData = function(){
 		var data = {}
 		$('.form1-value-form-table tr').each(function(index,element){
@@ -65,7 +71,7 @@ $(document).ready(function(){
 		e.preventDefault();
 
 		$.ajax({
-			url: "<%= update_form1_daily_form_path(daily_form) %>",
+			url: urls['submit'],
 			data: {data:submitData(),submit:1},
 			method: 'patch',
 			dataType: 'json',
@@ -82,7 +88,7 @@ $(document).ready(function(){
 		if (currentRow != row){
 			currentRow = row;
 			$.ajax({
-				url: "<%= update_form1_daily_form_path(daily_form) %>",
+				url: urls['submit'],
 				data: {data:submitData(),submit:2},
 				method: 'patch',
 				dataType: 'json',
@@ -106,7 +112,7 @@ $(document).ready(function(){
 
 			if (id){
 				$.ajax({
-					url:"/daily_forms/delete_form1_value/" + id,
+					url:urls['remove'] + id,
 					method: 'delete',
 					dataType: 'json',
 					success: function(data){
@@ -127,13 +133,14 @@ $(document).ready(function(){
 			var index = parseInt($('.form1-value-form-table tr').last().attr('row')) +1;
 
 			$.ajax({
-				url: "<%= new_form1_value_daily_forms_path %>",
+				url: urls['add'],
 				data:{index: index},
 				method:'get',
 				dataType: 'json',
 				success: function(data){
 					$('.form1 tbody').append(data['template']);
 					addCustomerSelect2($('.form1-value-' + index + ' .form1-value-customer'));
+					refreshRows();
 				}
 			})
 	})
