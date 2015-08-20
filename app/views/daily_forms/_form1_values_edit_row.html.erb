@@ -2,24 +2,29 @@
 <% index ||= form1_value_counter %>
 <% pre_text = "daily_form[form1_values_attributes]" %>
 <tr class="form1-value-<%=index%>" row=<%=index%> update="0">
-	<td><span class="order"></span>
+	<td col="0"><span class="order"></span>
 		<%= hidden_field_tag "#{pre_text}[#{index}][id]", form1_value.id, :class=>"form1-value-id" %>
 	</td>
 
-	<td> 
+	<td col="1"> 
 			<%= text_field_tag "#{pre_text}[#{index}][customer_id]", form1_value.customer_id, :class=>"t-field form1-value-customer" %>
-	</td>
+	</td col="2">
 
-	<td>
+	<td col="3">
 			<%= select "#{pre_text}[#{index}]", :manufacturer_id, @manufacturer_list, {:selected=>form1_value.manufacturer_id,:include_blank => ''},:class=>"t-field form1-value-manufacturer" %>
-	</td>
+	</td col="4">
 	<td>
 			<%= select "#{pre_text}[#{index}]", :delivery_person_id, @delivery_people_list, {:selected=>form1_value.delivery_person_id,:include_blank => ''},:class=>"t-field form1-value-delivery" %>
 	</td>
 
-	<td> <%= number_field_tag "#{pre_text}[#{index}][basket]", form1_value.basket %> </td>
-	<td> <%= text_field_tag "#{pre_text}[#{index}][note]", form1_value.note %></td>
-	<td class="delete"> </td>
+	<td col="5"> <%= number_field_tag "#{pre_text}[#{index}][basket]", form1_value.basket %> </td>
+
+	<td col="6"> <%= text_field_tag "#{pre_text}[#{index}][note]", form1_value.note %></td>
+
+	<td col="7"> 
+		<span class="updated label label-success label-xs"></span>
+		<span class="delete"></span>
+	</td>
 </tr>
 
 

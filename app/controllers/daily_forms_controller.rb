@@ -27,8 +27,8 @@ class DailyFormsController < ApplicationController
 		@daily_form = DailyForm.find(params[:id])
 
 		id_mapping = {}
-		if params[:daily_form]
-			params[:daily_form][:form1_values_attributes].each do |key,value|
+		if params[:data] && params[:data][:daily_form]
+			params[:data][:daily_form][:form1_values_attributes].each do |key,value|
 				if value[:id] == "" || value[:id] == nil
 					form1_value = @daily_form.form1_values.create
 					id_mapping[key] = form1_value.id #feedback id_mapping for browser to registor id into new row
@@ -43,8 +43,20 @@ class DailyFormsController < ApplicationController
 			end
 		end
 
-		respond_to do |format|
-			format.json {render :json=>{:result=>id_mapping.to_json}}
+		if params[:submit].to_i == 1
+			@form1_values = @daily_form.form1_values		
+			20.times do |index|
+				if @daily_form.form1_values.length <= index
+					@daily_form.form1_values.new				
+				end
+			end
+			respond_to do |format|
+				format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_show.html",:locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values})}}
+			end
+		else
+			respond_to do |format|
+				format.json {render :json=>{:result=>id_mapping.to_json}}
+			end
 		end
 	end
 
