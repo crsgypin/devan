@@ -102,6 +102,33 @@
 
 // $('.daily-form-dialogue').hide();
 
+//arrow up down left and right
+	$('.t-field').keydown(function(e){
+		var col = parseInt($($(this).parent()).attr('col'));
+		var row = parseInt($($(this).parent().parent()).attr('row'));
+
+		if (e.keyCode===37) {
+			goToDOM(row,col-1)
+		}else if(e.keyCode===38) {
+			goToDOM(row-1,col)
+		}else if(e.keyCode===39) {
+			goToDOM(row,col+1)
+		}else if (e.keyCode===40 || e.keyCode===13) {
+			goToDOM(row+1,col)
+		}
+		if (e.keyCode===13) {
+			e.preventDefault();
+		}
+	})
+
+	var goToDOM = function(row,col){
+		var rowAttr = '[row=' + row + ']'
+		var colAttr = '[col=' + col + ']'
+		var target = $($(rowAttr).find(colAttr));
+		target.find('.t-field').focus();
+
+	}
 
 </script>
+
 
