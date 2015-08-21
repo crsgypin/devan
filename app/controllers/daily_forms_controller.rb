@@ -1,34 +1,19 @@
 class DailyFormsController < ApplicationController
-	before_action :authenticate_user!, :except=>[:index,:show]
-	layout "form_print", only: [:print]
+	before_action :authenticate_user!
 
 	def index
 		@daily_forms = DailyForm.includes(:form_values=>[:manufacturer,:delivery_person,:customer])
 		@daily_forms = @daily_forms.page(params[:page]).per(15)
 
 		@daily_form = @daily_forms.find_or_create_by(:date=> Date.today)
-		@form_values = @daily_form.form_values
-
-		20.times do |index|
-			if @daily_form.form_values.length <= index
-				@daily_form.form_values.new				
-			end
-
-		end
+		set_form_values
 		set_selection_list
 		set_form_selection_list
 	end
 
 	def edit
 		@daily_form = DailyForm.find(params[:id])
-		@form_values = @daily_form.form_values					
-
-		20.times do |index|
-			if @daily_form.form_values.length <= index
-				@daily_form.form_values.new				
-			end
-		end
-
+		set_form_values
 		set_selection_list
 
 		respond_to do |format|
@@ -38,13 +23,7 @@ class DailyFormsController < ApplicationController
 
 	def show
 		@daily_form = DailyForm.find(params[:id])
-		@form_values = @daily_form.form_values
-		20.times do |index|
-			if @daily_form.form_values.length <= index
-				@daily_form.form_values.new				
-			end
-		end
-
+		set_form_values
 		set_form_selection_list
 
 		respond_to do |format|
@@ -74,13 +53,8 @@ class DailyFormsController < ApplicationController
 		end
 
 		if params[:submit].to_i == 1
-			@form_values = @daily_form.form_values
+			set_form_values
 			set_form_selection_list
-			20.times do |index|
-				if @daily_form.form_values.length <= index
-					@daily_form.form_values.new				
-				end
-			end
 			respond_to do |format|
 				format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form_values_show.html",:locals=>{:daily_form=>@daily_form, :form_values=>@form_values})}}
 			end
@@ -111,6 +85,18 @@ class DailyFormsController < ApplicationController
 
 
 private
+	def set_form_values
+		@form_values = @daily_form.form_values.joins(:form_value_users)
+		@form_values = @form_values.where('form_value_users.user_id = ?', current_user.id)
+		20.times do |index|
+			if @form_values.length <= index
+				@form_values << FormValue.new				
+			end
+		end
+
+		@form_values
+	end
+
 	def set_form_selection_list
 		@form_list = DailyForm.first(10).map do |daily_form|
 			if daily_form.date == Date.today
