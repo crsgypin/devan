@@ -44,6 +44,21 @@ $(document).ready(function(){
 				}else{
 					$(tr).find('.updating').css({opacity:0});
 				}
+
+				var manufacturer = $(tr).find('.form-value-manufacturer :selected').text();
+				if (manufacturer == ""){
+					$(tr).find('[col] input').hide();
+				}else if (manufacturer == "豆之味"){
+					$(tr).find('[col=4] input').hide();
+					for (i=5;i<=10;i++){
+						$(tr).find('[col='+i+'] input').show();
+					}
+				}else{
+					$(tr).find('[col=4] input').show();
+					for (i=5;i<=10;i++){
+						$(tr).find('[col='+i+'] input').hide();
+					}
+				}
 			})
 		},
 		addCustomerSelect2: function(object){
@@ -170,5 +185,6 @@ $(document).ready(function(){
 		$($(this).closest('tr')).attr('update',1)
 		form.refreshRows();
 	})
+
 })
 </script>

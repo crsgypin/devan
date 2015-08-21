@@ -53,12 +53,12 @@
 	</td>
 
 	<td col="10"> 
-		<%= number_field_tag "form_values[#{index}][key5]", 
-												 form_value.key5 %> 
+		<%= number_field_tag "form_values[#{index}][key6]", 
+												 form_value.key6 %> 
 	</td>
 
 	<td col="11"> <%= text_field_tag "form_values[#{index}][note]", 
-																	form_value.note %></td>
+																	form_value.note, :class=>"note" %></td>
 
 	<td col="12"> 
 		<span class="updating label label-success label-xs" style="opacity:0"></span>

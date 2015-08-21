@@ -56,22 +56,48 @@
 			text-align: center;
 			margin-top: 20px;
 
-			thead{
-				background-color: #dff;
+			.form-value-form-table{
+				table-layout: fixed;
+
+				thead{
+					background-color: #dff;
+				}
+
+				td{
+					padding-left: 1px;
+					padding-right: 1px;
+				}
+
+				select{
+					border-radius: 0px;
+					width: 80px;
+					height: 30px;
+					background-color: white;
+				}			
+
+				input{
+					width: 100%;
+					height: 30px;
+					text-align: inherit;
+				}
+
+				td[col="0"]{width:2%;}
+				td[col="1"]{width:16%;}
+				td[col="2"]{width:8%;}
+				td[col="3"]{width:8%;}
+				td[col="4"]{width:5%;}
+				td[col="5"]{width:5%;}
+				td[col="6"]{width:5%;}
+				td[col="7"]{width:5%;}
+				td[col="8"]{width:5%;}
+				td[col="9"]{width:5%;}
+				td[col="10"]{width:5%;}
+				td[col="11"]{width:10%;}
+				td[col="12"]{width:5%;}
+
 			}
 
-			select{
-				border-radius: 0px;
-				width: 80px;
-				height: 30px;
-				background-color: white;
-			}			
 
-			input{
-				width: 50px;
-				height: 30px;
-				text-align: inherit;
-			}
 
 			.updating{
 		    width: 15px;
