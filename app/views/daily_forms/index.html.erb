@@ -1,7 +1,6 @@
 <div class="menu-box">
 	<div class="menu-inner">
-		<%= link_to "農場表單", "",:class=>"selected",:content=>".form1"%>
-		<%= link_to "豆之味表單","",:class=>"", :content=>".form2"%>
+		<%= link_to "農場表單", "",:class=>"selected",:content=>".daily-form"%>
 		<%= link_to "表單紀錄","",:class=>"", :content=>".daily-form-log"%>
 	</div>
 </div>
@@ -11,21 +10,12 @@
 
 		<div class="daily-form-index">			
 
-			<div class="form1">
-				<div class="form1-show">
-					<%= render :partial=>"daily_forms/form1_values_show", :locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values} %>			
+			<div class="daily-form">
+				<div class="form-show">
+					<%= render :partial=>"daily_forms/form_values_show", :locals=>{:daily_form=>@daily_form, :form_values=>@form_values} %>			
 				</div>
-				<div class="form1-edit" style="display:none;">
+				<div class="form-edit" style="display:none;">
 				</div>
-			</div>
-
-			<div class="form2" style="display:none;">
-				<div class="form2-show">
-					<%= render :partial=>"daily_forms/form2_values_show", :locals=>{:daily_form=>@daily_form, :form2_values=>@form2_values} %>			
-				</div>
-				<div class="form2-edit" style="display:none;">
-					<%= render :partial=>"daily_forms/form2_values_edit", :locals=>{:daily_form=>@daily_form, :form2_values=>@form2_values} %>
-				</div>				
 			</div>
 
 			<div class="daily-form-log" style="display:none;">
@@ -38,8 +28,7 @@
 	</div> <%# content-inner %>
 </div> <%# content-box %>
 
-<%= render :partial=>"daily_forms/form1_values_js",:locals=>{:daily_form=>@daily_form, :customer_list=>@customer_list} %>
-<%= render :partial=>"daily_forms/form2_values_js",:locals=>{:daily_form=>@daily_form} %>
+<%= render :partial=>"daily_forms/form_values_js",:locals=>{:daily_form=>@daily_form, :customer_list=>@customer_list} %>
 
 
 

@@ -1,7 +1,7 @@
 .daily-form-index{
 	padding: 0px 0px;
 	
-	.form1 .form1-show, .form2 .form2-show{
+	.daily-form .form-show{
 		.title{
 			padding: 10px 0 20px 0;
 
@@ -10,7 +10,7 @@
 				width: 400px;
 			}
 
-			.form1-date{
+			.form-date{
 		    border-radius: 0;
 		    width: 200px;
 		    height: 40px;
@@ -30,7 +30,7 @@
 		}
 	}
 
-	.form1 .form1-edit{
+	.daily-form .form-edit{
 		.title{
 			h1{
 				float: left;
@@ -46,7 +46,7 @@
 			}
 		}
 
-		.form1-value-form{
+		.form-value-form{
 			select{
 				border-radius: 0px;
 				width: 100px;
@@ -54,26 +54,5 @@
 			}			
 		}
 	}
-
-	.form2 .form2-edit{
-		.form2-value-form{
-			text-align: center;
-
-			input[type=number]{
-				width:50px;
-				height: 30px;
-				text-align: inherit;
-			}
-
-			.submit{
-		    width: 90%;
-		    height: 60px;
-		    background-color: rgba(85, 243, 50, 0.84);
-				margin: 10px auto;
-				display: block;
-			}				
-		}
-	}
-
 }
 

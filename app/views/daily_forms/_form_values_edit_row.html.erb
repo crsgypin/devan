@@ -1,0 +1,41 @@
+<%# form_value, index %>
+<% index ||= form_value_counter %>
+<tr class="form-value-<%=index%>" row="" index=<%=index%> update="0">
+	<td col="0"><span class="row-number"></span>
+		<%= hidden_field_tag "form_values[#{index}][id]", form_value.id, :class=>"form-value-id" %>
+	</td>
+
+	<td col="1"> 
+			<%= text_field_tag "form_values[#{index}][customer_id]", form_value.customer_id, :class=>"t-field form-value-customer" %>
+	</td>
+
+	<td col="2">
+		<%= select "form_values[#{index}]", 
+				:manufacturer_id, @manufacturer_list, 
+				{:selected=>form_value.manufacturer_id,:include_blank => ''},
+				:class=>"t-field form-value-manufacturer" %>
+	</td col="3">
+	<td>
+		<%= select "form_values[#{index}]", 
+				:delivery_person_id, @delivery_people_list, 
+				{:selected=>form_value.delivery_person_id,:include_blank => ''},
+				:class=>"t-field form-value-delivery" %>
+	</td>
+
+	<td col="4"> 
+		<%= number_field_tag "form_values[#{index}][basket]", 
+												 form_value.basket %> 
+	</td>
+
+	<td col="5"> <%= text_field_tag "form_values[#{index}][note]", 
+																	form_value.note %></td>
+
+	<td col="6"> 
+		<span class="updating label label-success label-xs" style="opacity:0">∆</span>
+		<span class="delete">
+			<%= link_to 'x', '',:class=>"form-value-delete btn btn-danger btn-xs" %>
+		</span>
+	</td>
+</tr>
+
+
