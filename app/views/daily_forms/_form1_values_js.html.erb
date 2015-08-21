@@ -1,0 +1,169 @@
+<%# daily_form, customer_list%>
+
+<script>
+$(document).ready(function(){
+
+//form1
+	var form1 = {
+		currentRow: 0,
+		urls: {
+						show: function(daily_form_id){ 
+							return("/daily_forms/" + daily_form_id + "/show_form1")
+					  },
+						edit: function(daily_form_id){
+							return("/daily_forms/" + daily_form_id + "/edit_form1")
+						},
+						submit: function(daily_form_id){
+							return("/daily_forms/" + daily_form_id + "/update_form1")
+						},
+						remove:"/daily_forms/delete_form1_value/",
+						add:"<%= new_form1_value_daily_forms_path %>"
+		},
+		submitData: function(){
+			var data = {};
+			$('.form1-edit tr').each(function(index,tr){
+				if ($(tr).attr('update') === "1"){
+					$(tr).find('input,select').each(function(i,input){
+						data[$(input).attr('name')] = $(input).val();
+					})
+				}
+			})
+			return data;
+		},
+		refreshRows: function(){
+			$('.form1-edit tr').each(function(row,tr){
+				$(tr).find('.row-number').text(row);
+				$(tr).attr('row',row);
+				var update = $(tr).attr('update');
+				if (update==="1"){
+					$(tr).find('.updating').css({opacity:1});
+				}else{
+					$(tr).find('.updating').css({opacity:0});
+				}
+			})
+		},
+		addCustomerSelect2: function(object){
+			object.select2({
+				width: '180px',
+				height: '16px',
+				data: <%= raw customer_list.to_json %>
+			})
+		}	
+
+	}
+
+	$('.form1-show').on('click','.edit-button',function(e){
+		e.preventDefault();
+		var dailyFormId = $('.form1-date').val();
+		$.ajax({
+			url: form1.urls.edit(dailyFormId),
+			dataType:'json',
+			success:function(data){
+				$('.form1-edit').html(data['template']);
+				$('.form1-edit').show();
+				$('.form1-show').hide();
+				form1.addCustomerSelect2($('.form1-value-customer'));
+				form1.refreshRows();
+			}
+		})
+	})
+
+	$('.form1-show').on('change','.form1-date',function(e){
+		e.preventDefault();
+		var dailyFormId = $(this).val();
+		$.ajax({
+			url: form1.urls.show(dailyFormId),
+			dataType: 'json',
+			success: function(data){
+				$('.form1-show').html(data['template']);
+			}
+		})
+	})
+
+	$('.form1-edit').on('click','.submit-button',function(e){
+		e.preventDefault();
+		var dailyFormId = $('.form1-edit .daily-form-id').attr('value');
+		$.ajax({
+			url: form1.urls.submit(dailyFormId),
+			data: {data: form1.submitData(), submit:1},
+			method: 'patch',
+			dataType: 'json',
+			success: function(data){
+				$('.form1-show').html(data['template'])
+				$('.form1-edit').hide();
+				$('.form1-show').show();
+			}
+		})
+	})
+
+	$('.form1-edit').on('focus','input,select',function(e){
+		e.preventDefault();
+		var row = parseInt($(this).closest('tr').attr('row'));
+		if (form1.currentRow != row){
+			form1.currentRow = row;
+			var dailyFormId = $('.form1-edit .daily-form-id').attr('value');
+			$.ajax({
+				url: form1.urls.submit(dailyFormId),
+				data: {data: form1.submitData(),submit:2},
+				method: 'patch',
+				dataType: 'json',
+				success: function(data){
+					var index_ids = $.parseJSON(data['result']);
+					for(index in index_ids){
+						var tr =$('.form1 [index=' + index + ']')
+						tr.find('.form1-value-id').attr('value',index_ids[index]);
+						tr.attr('update',0);
+					}	
+					form1.refreshRows();
+				}
+			})
+		}
+	})
+
+	$('.form1-edit').on('click','.form1-value-delete',function(e){
+			e.preventDefault();
+			var tr = $(this).closest('tr')
+			var index = tr.attr('index');
+			var id = tr.find('.form1-value-id').attr('value')
+
+			if (id){
+				$.ajax({
+					url: form1.urls['remove'] + id,
+					method: 'delete',
+					dataType: 'json',
+					success: function(data){
+						if (data['result'].toLowerCase()==="ok"){
+							tr.remove();
+							form1.refreshRows();
+						}
+					}
+				})
+			}else{
+				$(this).closest('tr').remove();
+				form1.refreshRows();
+			}
+	})
+
+	$('.form1-edit').on('click','.form1-value-new',function(e){
+			e.preventDefault();
+			var index = parseInt($('.form1-edit tr').last().attr('index')) +1;
+
+			$.ajax({
+				url: form1.urls['add'],
+				data:{index: index},
+				method:'get',
+				dataType: 'json',
+				success: function(data){
+					$('.form1 tbody').append(data['template']);
+					form1.addCustomerSelect2($('.form1-value-' + index + ' .form1-value-customer'));
+					form1.refreshRows();
+				}
+			})
+	})
+
+	$('.form1-edit').on('change','input,select',function(){
+		$($(this).closest('tr')).attr('update',1)
+		form1.refreshRows();
+	})
+})
+</script>

@@ -1,0 +1,38 @@
+<%# daily_form, form1_values %>
+<div class="title">
+	<h1> <%=daily_form1_title(daily_form)%> 
+		<span class="label label-warning editing">編輯中 </span>
+	</h1>
+	<div class="submit"> 
+		<%= link_to "儲存並繳交","", :class=>'submit-button btn btn-primary' %>
+	</div>		
+</div>
+
+<%= form_tag '#', :class=>"form1-value-form" do %>
+	<%= hidden_field_tag :daily_form_id, daily_form.id, :class=>"daily-form-id" %>
+	<table class="table form1-value-form-table">
+		<thead>		
+			<tr>
+				<td></td>
+				<td> 客戶 </td>
+				<td> 廠商 </td>
+				<td> 送貨員 </td>
+				<td> 欄數 </td>
+				<td> 備註 </td>
+				<td></td>
+			</tr>
+		</thead>
+		<tbody>		
+		
+		<%= render :partial=>"daily_forms/form1_values_edit_row.html", 
+							 :collection=> form1_values, 
+							 :as=> :form1_value %>
+
+		</tbody>
+	</table>
+
+	<%= link_to "新增行數", "", :class=>"form1-value-new btn btn-success" %>
+
+<% end %>
+
+

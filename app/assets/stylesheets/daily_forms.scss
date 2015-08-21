@@ -1,152 +1,79 @@
 .daily-form-index{
 	padding: 0px 0px;
 	
-	.page-box{
-		padding:0 0 20px 0;
-	}
+	.form1 .form1-show, .form2 .form2-show{
+		.title{
+			padding: 10px 0 20px 0;
 
-}
+			h1{
+				float: left;
+				width: 400px;
+			}
 
-.overlay{
-    position:fixed;
-    top:0px;
-    left:0px;
-    bottom:0px;
-    right:0px;
-		background-color: rgba(14, 14, 14, 0.5);
-		z-index: 1;
-		display: none;
-}
+			.form1-date{
+		    border-radius: 0;
+		    width: 200px;
+		    height: 40px;
+		    font-size: 1.4em;
+		    float:left;
+			}
 
-.daily-form-dialogue{
-	position: fixed;
-	top:90px;
-	display: none;
-	width:400px;
-	left: calc(50% - 200px);
-	margin:0 auto;
-	text-align: center;
-	border-radius: 10px;
-	background-color: #fff;
-	z-index: 100;
-	border: 3px solid #333;
+			.edit{
+				float: right;
+			}
+		}
 
-	.title{
-		padding: 0px 0px 10px;
-    margin: 20px 60px;
-    border-bottom: 1px solid #aaa;
-  }
-
-	.manufacturer-select{
-		padding: 10px;
-
-	 	select {
-	   width: 150px;
-	   padding: 5px;
-	   font-size: 16px;
-	   border-radius: 0;
-	   height: 34px;
-	  }
- 	}
-
-	.date-select{
-		padding: 20px;
-	}	
-
-	.form-submit{
-		padding: 20px;		
-	}
-
-}
-
-.daily-form-fail-dialogue{
-	position: fixed;
-	top:90px;
-	display: none;
-	width:400px;
-	left: calc(50% - 200px);
-	margin:0 auto;
-	text-align: center;
-	border-radius: 10px;
-	background-color: #fcc;
-	z-index: 100;
-	border: 3px solid #333;
-
-	h3{
-		padding:20px;
-	}	
-}
-
-
-.daily-form-single{
-
-	.table-head{
-
-		.table-calc::after{
-			display:block;
+		.title::after{
+			display: block;
 			content: "";
 			clear: both;
 		}
+	}
 
-		.table-calc>*{
-			float: left;
+	.form1 .form1-edit{
+		.title{
+			h1{
+				float: left;
+				width: 400px;
+
+				.editing{
+					font-size:0.4em;
+				}					
+			}
+
+			.submit{
+				float: right;
+			}
 		}
 
-		.table-title::after{
-			display:block;
-			content:"";
-			clear:both;
-		}
-
-		.table-title>*{
-			float: left;
-		}
-
-		.cell{
-			background-color: #F5DEB3;
+		.form1-value-form{
+			select{
+				border-radius: 0px;
+				width: 100px;
+				height: 30px;
+			}			
 		}
 	}
 
-	.table-head.fixed{
-		position: fixed;
-	}
+	.form2 .form2-edit{
+		.form2-value-form{
+			text-align: center;
 
-	.table-body{
-		.single-content::after{
-			display:block;
-			content:"";
-			clear:both;
-		}
+			input[type=number]{
+				width:50px;
+				height: 30px;
+				text-align: inherit;
+			}
 
-		.single-content>*{
-			float: left;
-			border:1px solid #eee;
-		}
-	}
-
-	.cell>*{
-		width:100%;
-		text-align: center;
-		height: 100%;
-	}
-	
-	.cell{
-		height: 30px;
-		border: 1px solid #eee;
-		text-align: center;
-	}
-
-	.cell.index-col{ width:3%; }
-	.cell.customer-col{width:18%;}
-	.cell.delivery-person-col{width:18%;}
-	.cell.number-col{width:6%;}
-	.cell.note-col{width:16%;}
-
-	.form-note{
-
-		.form-delete{
-			color:red;
+			.submit{
+		    width: 90%;
+		    height: 60px;
+		    background-color: rgba(85, 243, 50, 0.84);
+				margin: 10px auto;
+				display: block;
+			}				
 		}
 	}
 
 }
+

@@ -3,119 +3,222 @@ class DailyFormsController < ApplicationController
 	layout "form_print", only: [:print]
 
 	def index
-		@daily_forms = DailyForm.order(:date=>:desc, :manufacturer_id=>:asc)
-		@daily_forms = @daily_forms.includes(:form_values,:manufacturer,:users,:daily_form_update_users=>:user)
+		@daily_forms = DailyForm.includes(:form1_values=>[:manufacturer,:delivery_person,:customer])
+		@daily_forms = @daily_forms.includes(:form2_values=>[:manufacturer,:delivery_person,:customer])
 		@daily_forms = @daily_forms.page(params[:page]).per(15)
 
-	end
+		@daily_form = @daily_forms.find_or_create_by(:date=> Date.today)
+		@form1_values = @daily_form.form1_values
+		@form2_values = @daily_form.form2_values
 
-	def show
-		daily_forms = DailyForm.includes(:manufacturer=>[:manufacturer_keys], :form_values => [:delivery_person, :customer])
-		@daily_form = daily_forms.find(params[:id])
-		@manufacturer = @daily_form.manufacturer
-	end
-
-	def print
-		daily_forms = DailyForm.includes(:manufacturer=>[:manufacturer_keys], :form_values => [:delivery_person, :customer])
-		@daily_form = daily_forms.find(params[:id])
-		@manufacturer = @daily_form.manufacturer				
-	end
-
-	def new
-		if params[:daily_form] && params[:daily_form][:manufacturer_id] && params[:daily_form][:date]
-			@daily_form = DailyForm.find_or_create_by(
-										:manufacturer_id => params[:daily_form][:manufacturer_id],
-										:date => params[:daily_form][:date] )
-			@daily_form.daily_form_update_users.find_or_create_by(:user => current_user)
-
-			20.times do |index|
-				@daily_form.form_values.find_or_create_by(:form_value_index => index + 1)
+		20.times do |index|
+			if @daily_form.form1_values.length <= index
+				@daily_form.form1_values.new				
 			end
-			@manufacturer = @daily_form.manufacturer
-			set_customer_list
-			set_delivery_people_list
 
-			render 'daily_forms/edit'
+			if @daily_form.form2_values.length <= index
+				@daily_form.form2_values.new				
+			end
+		end
+		set_selection_list
+		set_form1_selection_list
+	end
+
+	def update_form1
+		@daily_form = DailyForm.find(params[:id])
+
+		index_id = {}
+		if params[:data]
+			params[:data][:form1_values].each do |index,value|
+				if value[:id] == "" || value[:id] == nil
+					form1_value = @daily_form.form1_values.create
+				else
+					form1_value = @daily_form.form1_values.find(value[:id].to_i)
+				end	
+
+				Form1Value.attribute_names.each do |a|
+					form1_value[a] = value[a] if value[a] && a!= "id"
+				end
+				index_id[index] = form1_value.id #feedback index_id for browser to registor id into new row
+				form1_value.save!
+				form1_value.form_value_users.find_or_create_by(:user=>current_user)
+			end
+		end
+
+		if params[:submit].to_i == 1
+			@form1_values = @daily_form.form1_values
+			set_form1_selection_list
+			20.times do |index|
+				if @daily_form.form1_values.length <= index
+					@daily_form.form1_values.new				
+				end
+			end
+			respond_to do |format|
+				format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_show.html",:locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values})}}
+			end
 		else
-			render :text => "no result"
+			respond_to do |format|
+				format.json {render :json=>{:result=>index_id.to_json}}
+			end
 		end
 	end
 
-	def edit
-		@daily_form = DailyForm.includes(:manufacturer=>[:manufacturer_keys]).find(params[:id])
-		@manufacturer = @daily_form.manufacturer
+	def edit_form1
 
-		set_customer_list
-		set_delivery_people_list
-
-		render 'daily_forms/edit'
-	end
-
-	def update
 		@daily_form = DailyForm.find(params[:id])
-		@daily_form.update(daily_form_params)
+		@form1_values = @daily_form.form1_values					
+
+		20.times do |index|
+			if @daily_form.form1_values.length <= index
+				@daily_form.form1_values.new				
+			end
+		end
+
+		set_selection_list
 
 		respond_to do |format|
-			format.html {redirect_to daily_form_path(@daily_form)}
-			format.json {render :json=> {:errors=>"ok"}}
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_edit.html",:locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values})}}
 		end
+
 	end
 
-	def destroy
+	def show_form1
 		@daily_form = DailyForm.find(params[:id])
-		@daily_form.destroy
+		@form1_values = @daily_form.form1_values
+		20.times do |index|
+			if @daily_form.form1_values.length <= index
+				@daily_form.form1_values.new				
+			end
+		end
 
-		redirect_to daily_forms_path
-	end
-
-	def check_daily_form
-		@daily_form = DailyForm.find_by(
-									:manufacturer_id => params[:daily_form][:manufacturer_id],
-									:date => params[:daily_form][:date] )
-
-		result = @daily_form.present?
+		set_form1_selection_list
 
 		respond_to do |format|
-			format.json {render :json=>{:result=>result}}
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_show.html",:locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values})}}
 		end
 	end
 
-	def add_row
+	def delete_form1_value
+		@form1_value = Form1Value.find(params[:id])
+		@form1_value.destroy
+		respond_to do |format|
+			format.json {render :json=>{:result=>"OK"}}
+		end
+	end
+
+	def new_form1_value
+		@form1_value = Form1Value.new
+		@index = params[:index].to_i
+
+		set_selection_list
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_edit_row.html",:locals=>{:form1_value=>@form1_value, :index=>@index})}}
+		end
+	end
+
+	def update_form2
 		@daily_form = DailyForm.find(params[:id])
-		last_form_value_index = @daily_form.form_values.last.form_value_index
-		@form_value = @daily_form.form_values.create(:form_value_index=>last_form_value_index+1)
-		@form_keys = @daily_form.manufacturer.manufacturer_keys
-		set_customer_list
-		set_delivery_people_list
+
+		index_id = {}
+		if params[:data]
+			params[:data][:form2_values].each do |index,value|
+				if value[:id] == "" || value[:id] == nil
+					form2_value = @daily_form.form2_values.create
+				else
+					form2_value = @daily_form.form2_values.find(value[:id].to_i)
+				end	
+
+				Form2Value.attribute_names.each do |a|
+					form2_value[a] = value[a] if value[a] && a!= "id"
+				end
+				index_id[index] = form2_value.id #feedback index_id for browser to registor id into new row
+				form2_value.save!
+				form2_value.form_value_users.find_or_create_by(:user=>current_user)
+			end
+		end
+
+		if params[:submit].to_i == 1
+			@form2_values = @daily_form.form2_values		
+			20.times do |index|
+				if @daily_form.form2_values.length <= index
+					@daily_form.form2_values.new				
+				end
+			end
+			respond_to do |format|
+				format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form2_values_show.html",:locals=>{:daily_form=>@daily_form, :form2_values=>@form2_values})}}
+			end
+		else
+			respond_to do |format|
+				format.json {render :json=>{:result=>index_id.to_json}}
+			end
+		end
+	end
+
+
+
+	def edit_form2
+
+		@daily_form = DailyForm.find(params[:id])
+		@form2_values = @daily_form.form2_values					
+
+		20.times do |index|
+			if @daily_form.form2_values.length <= index
+				@daily_form.form2_values.new				
+			end
+		end
+
+		set_selection_list
 
 		respond_to do |format|
-			format.json { render :json => {:data=>@form_value.to_json, :template=> (render_to_string :partial=>'daily_forms/single_row_edit.html', :locals=>{:form_value=>@form_value,:form_keys=>@form_keys}) }}
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form2_values_edit.html",:locals=>{:daily_form=>@daily_form, :form2_values=>@form2_values})}}
+		end
+
+	end
+
+	def show_form2
+		@daily_form = DailyForm.find(params[:id])
+		@form2_values = @daily_form.form2_values					
+
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form2_values_show.html",:locals=>{:daily_form=>@daily_form, :form2_values=>@form2_values})}}
+		end
+
+	end
+
+	def delete_form2_value
+		@form2_value = Form2Value.find(params[:id])
+		@form2_value.destroy
+		respond_to do |format|
+			format.json {render :json=>{:result=>"OK"}}
 		end
 	end
+
+	def new_form2_value
+		@form2_value = Form2Value.new
+		@index = params[:index].to_i
+
+		set_selection_list
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form2_values_edit_row.html",:locals=>{:form2_value=>@form2_value, :index=>@index})}}
+		end
+	end
+
 
 private
-	def set_manufacturer
-		@manufacturer = params[:manufacturer_id]
+	def set_form1_selection_list
+		@form1_list = DailyForm.first(10).map do |daily_form|
+			if daily_form.date == Date.today
+			  ["今天(#{daily_form.date.strftime('%m月%d日')})",daily_form.id]
+			else
+			  [daily_form.date.strftime('%m月%d日'), daily_form.id]	
+			end
+		end
 	end
 
-	def set_date
-		@date = params[:date]
+	def set_selection_list
+		@customer_list = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}}
+		@delivery_people_list = DeliveryPerson.on_job.map{|d| ["#{d.code}-#{d.name}", d.id]}
+		@manufacturer_list = Manufacturer.all.map{|m| [m.name, m.id]}
 	end
-
-	def set_customer_list
-		@customer_list= Customer.all.map{|c| ["#{c.code}-#{c.name}",c.id]}.unshift(["",nil])
-	end
-
-	def set_delivery_people_list
-		@delivery_people_list = DeliveryPerson.all.map{ |p| ["#{p.code}-#{p.name}",p.id]}.unshift("",nil)		
-	end
-
-	def daily_form_params
-		params.require(:daily_form).permit(:form_values_attributes=>[:id,:form_value_index,:daily_form_id,:customer_id,
-																								:delivery_person_id, :key1, :key2, :key3, :key4, :key5,
-																								:key6, :key7, :key8, :note])
-
-	end
-
 
 end
