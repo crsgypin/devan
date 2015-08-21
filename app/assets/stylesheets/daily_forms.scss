@@ -1,17 +1,21 @@
 .daily-form-index{
 	padding: 0px 0px;
 	
-	.page-box{
-		padding:0 0 20px 0;
-	}
-
-
 	.form1 .form1-show, .form2 .form2-show{
 		.title{
 			padding: 10px 0 20px 0;
 
 			h1{
 				float: left;
+				width: 400px;
+			}
+
+			.form1-date{
+		    border-radius: 0;
+		    width: 200px;
+		    height: 40px;
+		    font-size: 1.4em;
+		    float:left;
 			}
 
 			.edit{
@@ -27,21 +31,27 @@
 	}
 
 	.form1 .form1-edit{
+		.title{
+			h1{
+				float: left;
+				width: 400px;
+
+				.editing{
+					font-size:0.4em;
+				}					
+			}
+
+			.submit{
+				float: right;
+			}
+		}
+
 		.form1-value-form{
-			
 			select{
 				border-radius: 0px;
 				width: 100px;
 				height: 30px;
-			}
-			
-			.submit{
-		    width: 90%;
-		    height: 60px;
-		    background-color: rgba(85, 243, 50, 0.84);
-				margin: 10px auto;
-				display: block;
-			}
+			}			
 		}
 	}
 

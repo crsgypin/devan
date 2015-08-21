@@ -1,9 +1,12 @@
 <%# daily_form, form1_values %>
 
 <div class="title">
-	<h1> 今日表單 </h1>
+	<h1> <%= daily_form1_title(daily_form) %> </h1>
+	<div class="date">
+		<%= select_tag "form1_date", options_for_select(@form1_list,daily_form.id),:class=>"form1-date" %>
+	</div>
 	<div class="edit"> 
-		<%= link_to "編寫表單",edit_form1_daily_form_path(daily_form), :class=>"btn btn-warning edit-button" %> 
+		<%= link_to "編寫表單","", :class=>"btn btn-warning edit-button" %> 
 	</div>		
 </div>
 

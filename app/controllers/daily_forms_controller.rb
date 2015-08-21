@@ -21,6 +21,7 @@ class DailyFormsController < ApplicationController
 			end
 		end
 		set_selection_list
+		set_form1_selection_list
 	end
 
 	def update_form1
@@ -45,7 +46,8 @@ class DailyFormsController < ApplicationController
 		end
 
 		if params[:submit].to_i == 1
-			@form1_values = @daily_form.form1_values		
+			@form1_values = @daily_form.form1_values
+			set_form1_selection_list
 			20.times do |index|
 				if @daily_form.form1_values.length <= index
 					@daily_form.form1_values.new				
@@ -82,12 +84,18 @@ class DailyFormsController < ApplicationController
 
 	def show_form1
 		@daily_form = DailyForm.find(params[:id])
-		@form1_values = @daily_form.form1_values					
+		@form1_values = @daily_form.form1_values
+		20.times do |index|
+			if @daily_form.form1_values.length <= index
+				@daily_form.form1_values.new				
+			end
+		end
+
+		set_form1_selection_list
 
 		respond_to do |format|
 			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form1_values_show.html",:locals=>{:daily_form=>@daily_form, :form1_values=>@form1_values})}}
 		end
-
 	end
 
 	def delete_form1_value
@@ -197,6 +205,16 @@ class DailyFormsController < ApplicationController
 
 
 private
+	def set_form1_selection_list
+		@form1_list = DailyForm.first(10).map do |daily_form|
+			if daily_form.date == Date.today
+			  ["今天(#{daily_form.date.strftime('%m月%d日')})",daily_form.id]
+			else
+			  [daily_form.date.strftime('%m月%d日'), daily_form.id]	
+			end
+		end
+	end
+
 	def set_selection_list
 		@customer_list = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}}
 		@delivery_people_list = DeliveryPerson.on_job.map{|d| ["#{d.code}-#{d.name}", d.id]}
