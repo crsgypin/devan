@@ -27,11 +27,41 @@
 												 form_value.basket %> 
 	</td>
 
-	<td col="5"> <%= text_field_tag "form_values[#{index}][note]", 
-																	form_value.note %></td>
+	<td col="5"> 
+		<%= number_field_tag "form_values[#{index}][key1]", 
+												 form_value.key1 %> 
+	</td>
 
 	<td col="6"> 
-		<span class="updating label label-success label-xs" style="opacity:0">∆</span>
+		<%= number_field_tag "form_values[#{index}][key2]", 
+												 form_value.key2 %> 
+	</td>
+
+	<td col="7"> 
+		<%= number_field_tag "form_values[#{index}][key3]", 
+												 form_value.key3 %> 
+	</td>
+
+	<td col="8"> 
+		<%= number_field_tag "form_values[#{index}][key4]", 
+												 form_value.key4 %> 
+	</td>
+
+	<td col="9"> 
+		<%= number_field_tag "form_values[#{index}][key5]", 
+												 form_value.key5 %> 
+	</td>
+
+	<td col="10"> 
+		<%= number_field_tag "form_values[#{index}][key5]", 
+												 form_value.key5 %> 
+	</td>
+
+	<td col="11"> <%= text_field_tag "form_values[#{index}][note]", 
+																	form_value.note %></td>
+
+	<td col="12"> 
+		<span class="updating label label-success label-xs" style="opacity:0"></span>
 		<span class="delete">
 			<%= link_to 'x', '',:class=>"form-value-delete btn btn-danger btn-xs" %>
 		</span>

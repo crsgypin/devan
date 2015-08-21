@@ -19,7 +19,40 @@ class DailyFormsController < ApplicationController
 		set_form_selection_list
 	end
 
-	def update_form
+	def edit
+		@daily_form = DailyForm.find(params[:id])
+		@form_values = @daily_form.form_values					
+
+		20.times do |index|
+			if @daily_form.form_values.length <= index
+				@daily_form.form_values.new				
+			end
+		end
+
+		set_selection_list
+
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form_values_edit.html",:locals=>{:daily_form=>@daily_form, :form_values=>@form_values})}}
+		end
+	end
+
+	def show
+		@daily_form = DailyForm.find(params[:id])
+		@form_values = @daily_form.form_values
+		20.times do |index|
+			if @daily_form.form_values.length <= index
+				@daily_form.form_values.new				
+			end
+		end
+
+		set_form_selection_list
+
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form_values_show.html",:locals=>{:daily_form=>@daily_form, :form_values=>@form_values})}}
+		end
+	end
+
+	def update
 		@daily_form = DailyForm.find(params[:id])
 
 		index_id = {}
@@ -31,7 +64,7 @@ class DailyFormsController < ApplicationController
 					form_value = @daily_form.form_values.find(value[:id].to_i)
 				end	
 
-				formValue.attribute_names.each do |a|
+				FormValue.attribute_names.each do |a|
 					form_value[a] = value[a] if value[a] && a!= "id"
 				end
 				index_id[index] = form_value.id #feedback index_id for browser to registor id into new row
@@ -58,43 +91,8 @@ class DailyFormsController < ApplicationController
 		end
 	end
 
-	def edit_form
-
-		@daily_form = DailyForm.find(params[:id])
-		@form_values = @daily_form.form_values					
-
-		20.times do |index|
-			if @daily_form.form_values.length <= index
-				@daily_form.form_values.new				
-			end
-		end
-
-		set_selection_list
-
-		respond_to do |format|
-			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form_values_edit.html",:locals=>{:daily_form=>@daily_form, :form_values=>@form_values})}}
-		end
-
-	end
-
-	def show_form
-		@daily_form = DailyForm.find(params[:id])
-		@form_values = @daily_form.form_values
-		20.times do |index|
-			if @daily_form.form_values.length <= index
-				@daily_form.form_values.new				
-			end
-		end
-
-		set_form_selection_list
-
-		respond_to do |format|
-			format.json {render :json=>{:template=>render_to_string(:partial=>"daily_forms/form_values_show.html",:locals=>{:daily_form=>@daily_form, :form_values=>@form_values})}}
-		end
-	end
-
 	def delete_form_value
-		@form_value = formValue.find(params[:id])
+		@form_value = FormValue.find(params[:id])
 		@form_value.destroy
 		respond_to do |format|
 			format.json {render :json=>{:result=>"OK"}}
@@ -102,7 +100,7 @@ class DailyFormsController < ApplicationController
 	end
 
 	def new_form_value
-		@form_value = formValue.new
+		@form_value = FormValue.new
 		@index = params[:index].to_i
 
 		set_selection_list
@@ -124,8 +122,8 @@ private
 	end
 
 	def set_selection_list
-		@customer_list = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}}
-		@delivery_people_list = DeliveryPerson.on_job.map{|d| ["#{d.code}-#{d.name}", d.id]}
+		@customer_list = Customer.active.map{|c| {:id=>c.id, :text=> c.name}}
+		@delivery_people_list = DeliveryPerson.on_job.map{|d| [d.name, d.id]}
 		@manufacturer_list = Manufacturer.all.map{|m| [m.name, m.id]}
 	end
 

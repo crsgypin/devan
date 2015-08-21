@@ -18,7 +18,14 @@
 			<td> 廠商   </td>
 			<td> 送貨員 </td>
 			<td> 欄數   </td>
+			<td> 現金 	  </td>
+			<td> 月結   </td>
+			<td> 特結   </td>
+			<td> 未收   </td>
+			<td> 運費   </td>
+			<td> 應收現  </td>	
 			<td> 備註   </td>
+			<td> </td>
 		</tr>
 	</thead>
 	<tbody>		
@@ -29,6 +36,12 @@
 			<td> <%= form_value.manufacturer.try(:name) %> </td>
 			<td> <%= form_value.delivery_person.try(:name) %> </td>	
 			<td> <%= form_value.basket %> </td>
+			<td> <%= form_value.key1 %> </td>
+			<td> <%= form_value.key2 %> </td>
+			<td> <%= form_value.key3 %> </td>
+			<td> <%= form_value.key4 %> </td>
+			<td> <%= form_value.key5 %> </td>
+			<td> <%= form_value.key6 %> </td>
 			<td> <%= form_value.note %> </td>
 		</tr>
 	<% end %>

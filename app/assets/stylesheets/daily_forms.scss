@@ -45,13 +45,44 @@
 				float: right;
 			}
 		}
-
+	
+		.title::after{
+			display: block;
+			content: "";
+			clear: both;
+		}
+		
 		.form-value-form{
+			text-align: center;
+			margin-top: 20px;
+
+			thead{
+				background-color: #dff;
+			}
+
 			select{
 				border-radius: 0px;
-				width: 100px;
+				width: 80px;
 				height: 30px;
+				background-color: white;
 			}			
+
+			input{
+				width: 50px;
+				height: 30px;
+				text-align: inherit;
+			}
+
+			.updating{
+		    width: 15px;
+		    height: 15px;
+		    content: "a";
+		    display: block;
+		    float: left;
+		    margin-top: 5px;
+		    border-radius: 10px;
+		    background-color: #f0ad4e;		    
+			}
 		}
 	}
 }

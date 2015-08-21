@@ -7,17 +7,21 @@ $(document).ready(function(){
 	var form = {
 		currentRow: 0,
 		urls: {
-						show: function(daily_form_id){ 
-							return("/daily_forms/" + daily_form_id + "/show_form")
+						show: function(dailyFormId){ 
+							return("/daily_forms/" + dailyFormId)
 					  },
-						edit: function(daily_form_id){
-							return("/daily_forms/" + daily_form_id + "/edit_form")
+						edit: function(dailyFormId){
+							return("/daily_forms/" + dailyFormId + "/edit")
 						},
-						submit: function(daily_form_id){
-							return("/daily_forms/" + daily_form_id + "/update_form")
+						submit: function(dailyFormId){
+							return("/daily_forms/" + dailyFormId)
 						},
-						remove:"/daily_forms/delete_form_value/",
-						add:"<%= new_form_value_daily_forms_path %>"
+						removeRow: function(formValueId){
+							return("/daily_forms/delete_form_value/" + formValueId)
+						},
+						addRow: function(){
+							return("<%= new_form_value_daily_forms_path %>")
+						}
 		},
 		submitData: function(){
 			var data = {};
@@ -110,7 +114,7 @@ $(document).ready(function(){
 				success: function(data){
 					var index_ids = $.parseJSON(data['result']);
 					for(index in index_ids){
-						var tr =$('.form [index=' + index + ']')
+						var tr =$('.daily-form [index=' + index + ']')
 						tr.find('.form-value-id').attr('value',index_ids[index]);
 						tr.attr('update',0);
 					}	
@@ -124,11 +128,11 @@ $(document).ready(function(){
 			e.preventDefault();
 			var tr = $(this).closest('tr')
 			var index = tr.attr('index');
-			var id = tr.find('.form-value-id').attr('value')
+			var form_value_id = tr.find('.form-value-id').attr('value')
 
-			if (id){
+			if (form_value_id){
 				$.ajax({
-					url: form.urls['remove'] + id,
+					url: form.urls.removeRow(form_value_id),
 					method: 'delete',
 					dataType: 'json',
 					success: function(data){
@@ -149,12 +153,13 @@ $(document).ready(function(){
 			var index = parseInt($('.form-edit tr').last().attr('index')) +1;
 
 			$.ajax({
-				url: form.urls['add'],
+				url: form.urls.addRow(),
 				data:{index: index},
 				method:'get',
 				dataType: 'json',
 				success: function(data){
-					$('.form tbody').append(data['template']);
+					console.log(data['template']);
+					$('.daily-form tbody').append(data['template']);
 					form.addCustomerSelect2($('.form-value-' + index + ' .form-value-customer'));
 					form.refreshRows();
 				}
