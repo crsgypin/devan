@@ -1,6 +1,6 @@
 //switch
 $(document).ready(function(){
-	$('.menu-inner a').click(function(e){
+	$('.menu-inner').on('click','a',function(e){
 		e.preventDefault();
 
 		$('.menu-inner a').removeClass('selected');

@@ -1,0 +1,190 @@
+<%# daily_form, customer_list%>
+
+<script>
+$(document).ready(function(){
+
+//form
+	var form = {
+		currentRow: 0,
+		urls: {
+						show: function(dailyFormId){ 
+							return("/daily_forms/" + dailyFormId)
+					  },
+						edit: function(dailyFormId){
+							return("/daily_forms/" + dailyFormId + "/edit")
+						},
+						submit: function(dailyFormId){
+							return("/daily_forms/" + dailyFormId)
+						},
+						removeRow: function(formValueId){
+							return("/daily_forms/delete_form_value/" + formValueId)
+						},
+						addRow: function(){
+							return("<%= new_form_value_daily_forms_path %>")
+						}
+		},
+		submitData: function(){
+			var data = {};
+			$('.form-edit tr').each(function(index,tr){
+				if ($(tr).attr('update') === "1"){
+					$(tr).find('input,select').each(function(i,input){
+						data[$(input).attr('name')] = $(input).val();
+					})
+				}
+			})
+			return data;
+		},
+		refreshRows: function(){
+			$('.form-edit tr').each(function(row,tr){
+				$(tr).find('.row-number').text(row);
+				$(tr).attr('row',row);
+				var update = $(tr).attr('update');
+				if (update==="1"){
+					$(tr).find('.updating').css({opacity:1});
+				}else{
+					$(tr).find('.updating').css({opacity:0});
+				}
+
+				var manufacturer = $(tr).find('.form-value-manufacturer :selected').text();
+				if (manufacturer == ""){
+					$(tr).find('[col] input').hide();
+				}else if (manufacturer == "豆之味"){
+					$(tr).find('[col=4] input').hide();
+					for (i=5;i<=10;i++){
+						$(tr).find('[col='+i+'] input').show();
+					}
+				}else{
+					$(tr).find('[col=4] input').show();
+					for (i=5;i<=10;i++){
+						$(tr).find('[col='+i+'] input').hide();
+					}
+				}
+			})
+		},
+		addCustomerSelect2: function(object){
+			object.select2({
+				width: '180px',
+				height: '16px',
+				data: <%= raw customer_list.to_json %>
+			})
+		}	
+
+	}
+
+	$('.form-show').on('click','.edit-button',function(e){
+		e.preventDefault();
+		var dailyFormId = $('.form-date').val();
+		$.ajax({
+			url: form.urls.edit(dailyFormId),
+			dataType:'json',
+			success:function(data){
+				$('.form-edit').html(data['template']);
+				$('.form-edit').show();
+				$('.form-show').hide();
+				form.addCustomerSelect2($('.form-value-customer'));
+				form.refreshRows();
+			}
+		})
+	})
+
+	$('.form-show').on('change','.form-date',function(e){
+		e.preventDefault();
+		var dailyFormId = $(this).val();
+		$.ajax({
+			url: form.urls.show(dailyFormId),
+			dataType: 'json',
+			success: function(data){
+				$('.form-show').html(data['template']);
+			}
+		})
+	})
+
+	$('.form-edit').on('click','.submit-button',function(e){
+		e.preventDefault();
+		var dailyFormId = $('.form-edit .daily-form-id').attr('value');
+		$.ajax({
+			url: form.urls.submit(dailyFormId),
+			data: {data: form.submitData(), submit:1},
+			method: 'patch',
+			dataType: 'json',
+			success: function(data){
+				$('.form-show').html(data['template'])
+				$('.form-edit').hide();
+				$('.form-show').show();
+			}
+		})
+	})
+
+	$('.form-edit').on('focus','input,select',function(e){
+		e.preventDefault();
+		var row = parseInt($(this).closest('tr').attr('row'));
+		if (form.currentRow != row){
+			form.currentRow = row;
+			var dailyFormId = $('.form-edit .daily-form-id').attr('value');
+			$.ajax({
+				url: form.urls.submit(dailyFormId),
+				data: {data: form.submitData(),submit:2},
+				method: 'patch',
+				dataType: 'json',
+				success: function(data){
+					var index_ids = $.parseJSON(data['result']);
+					for(index in index_ids){
+						var tr =$('.daily-form [index=' + index + ']')
+						tr.find('.form-value-id').attr('value',index_ids[index]);
+						tr.attr('update',0);
+					}	
+					form.refreshRows();
+				}
+			})
+		}
+	})
+
+	$('.form-edit').on('click','.form-value-delete',function(e){
+			e.preventDefault();
+			var tr = $(this).closest('tr')
+			var index = tr.attr('index');
+			var form_value_id = tr.find('.form-value-id').attr('value')
+
+			if (form_value_id){
+				$.ajax({
+					url: form.urls.removeRow(form_value_id),
+					method: 'delete',
+					dataType: 'json',
+					success: function(data){
+						if (data['result'].toLowerCase()==="ok"){
+							tr.remove();
+							form.refreshRows();
+						}
+					}
+				})
+			}else{
+				$(this).closest('tr').remove();
+				form.refreshRows();
+			}
+	})
+
+	$('.form-edit').on('click','.form-value-new',function(e){
+			e.preventDefault();
+			var index = parseInt($('.form-edit tr').last().attr('index')) +1;
+
+			$.ajax({
+				url: form.urls.addRow(),
+				data:{index: index},
+				method:'get',
+				dataType: 'json',
+				success: function(data){
+					console.log(data['template']);
+					$('.daily-form tbody').append(data['template']);
+					form.addCustomerSelect2($('.form-value-' + index + ' .form-value-customer'));
+					form.refreshRows();
+				}
+			})
+	})
+
+	$('.form-edit').on('change','input,select',function(){
+		$($(this).closest('tr')).attr('update',1)
+		form.refreshRows();
+	})
+
+})
+</script>

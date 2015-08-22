@@ -11,8 +11,7 @@ class Customer < ActiveRecord::Base
 										 :dependent=>:destroy
 	accepts_nested_attributes_for :faxes, allow_destroy: true
 
-	has_many :form1_values
-	has_many :form2_values
+	has_many :form_values
 	has_many :daily_forms, :through=>:form_values
 
 	has_many :customer_routes
@@ -34,7 +33,7 @@ class Customer < ActiveRecord::Base
 private
 
 	def check_form_values
-		if self.form2_values.count >0
+		if self.form_values.count >0
 			return false
 		end
 	end

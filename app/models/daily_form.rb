@@ -1,10 +1,7 @@
 class DailyForm < ActiveRecord::Base
 	default_scope {order(:date=>:desc)}
-	has_many :form1_values
-	has_many :form2_values
-	accepts_nested_attributes_for :form1_values, allow_destroy: true
-	accepts_nested_attributes_for :form2_values, allow_destroy: true
-
+	has_many :form_values
+	accepts_nested_attributes_for :form_values, allow_destroy: true
 
 	belongs_to :manufacturer
 

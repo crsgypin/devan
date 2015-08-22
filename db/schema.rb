@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818220755) do
+ActiveRecord::Schema.define(version: 20150821065641) do
 
   create_table "addresses", force: :cascade do |t|
     t.text     "address"
@@ -99,24 +99,17 @@ ActiveRecord::Schema.define(version: 20150818220755) do
 
   add_index "districts", ["city_id"], name: "index_districts_on_city_id"
 
-  create_table "form1_values", force: :cascade do |t|
-    t.integer  "daily_form_id"
-    t.integer  "customer_id"
-    t.integer  "delivery_person_id"
-    t.integer  "manufacturer_id"
-    t.integer  "basket"
-    t.string   "note"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.integer  "form_value_index"
+  create_table "form_value_users", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "form_value_id"
   end
 
-  add_index "form1_values", ["customer_id"], name: "index_form1_values_on_customer_id"
-  add_index "form1_values", ["daily_form_id"], name: "index_form1_values_on_daily_form_id"
-  add_index "form1_values", ["delivery_person_id"], name: "index_form1_values_on_delivery_person_id"
-  add_index "form1_values", ["manufacturer_id"], name: "index_form1_values_on_manufacturer_id"
+  add_index "form_value_users", ["form_value_id"], name: "index_form_value_users_on_form_value_id"
+  add_index "form_value_users", ["user_id"], name: "index_form_value_users_on_user_id"
 
-  create_table "form2_values", force: :cascade do |t|
+  create_table "form_values", force: :cascade do |t|
     t.integer  "form_value_index"
     t.integer  "daily_form_id"
     t.integer  "customer_id"
@@ -131,23 +124,13 @@ ActiveRecord::Schema.define(version: 20150818220755) do
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.integer  "manufacturer_id"
+    t.integer  "basket"
   end
 
-  add_index "form2_values", ["customer_id"], name: "index_form2_values_on_customer_id"
-  add_index "form2_values", ["daily_form_id"], name: "index_form2_values_on_daily_form_id"
-  add_index "form2_values", ["delivery_person_id"], name: "index_form2_values_on_delivery_person_id"
-  add_index "form2_values", ["manufacturer_id"], name: "index_form2_values_on_manufacturer_id"
-
-  create_table "form_value_users", force: :cascade do |t|
-    t.integer  "form_value_user_link_id"
-    t.string   "form_value_user_link_type"
-    t.integer  "user_id"
-    t.integer  "form_value_index"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-  end
-
-  add_index "form_value_users", ["user_id"], name: "index_form_value_users_on_user_id"
+  add_index "form_values", ["customer_id"], name: "index_form_values_on_customer_id"
+  add_index "form_values", ["daily_form_id"], name: "index_form_values_on_daily_form_id"
+  add_index "form_values", ["delivery_person_id"], name: "index_form_values_on_delivery_person_id"
+  add_index "form_values", ["manufacturer_id"], name: "index_form_values_on_manufacturer_id"
 
   create_table "manufacturer_keys", force: :cascade do |t|
     t.integer  "manufacturer_id"

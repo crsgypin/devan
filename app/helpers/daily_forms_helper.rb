@@ -1,6 +1,6 @@
 module DailyFormsHelper
 
-	def daily_form1_title(daily_form)
+	def daily_form_title(daily_form)
 		if daily_form.date == Date.today
 			return "今日表單"
 		else
