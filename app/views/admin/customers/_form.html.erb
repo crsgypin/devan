@@ -35,26 +35,56 @@
 		</tr>
 
 		<% customer.addresses.each_with_index do |address,index| %>
-			<% pre_text = "customer[addresses_attributes][#{index}]" %>
-			<tr>
-				<td> <%= label_tag "#{pre_text}[address]","地址#{index+1}" %> </td> 
-				<td> <%= text_field_tag "#{pre_text}[address]",address.address %> </td>
+			<% pre_text = "customer[addresses_attributes]" %>
+			<tr index="<%=index%>">
+				<td> 
+					<%= hidden_field_tag "#{pre_text}[#{index}][id]", address.id %>
+					<%= label_tag "#{pre_text}[#{index}][address]","地址#{index+1}" %> 
+				</td> 
+				<td> <%= text_field_tag "#{pre_text}[#{index}][address]",address.address %> </td>
+				<td>
+					<% if index== customer.addresses.length-1 %>
+						<%= link_to "新增欄位","", :onClick=>"adminCustomer.addCustomerRow(event,this)", :class=>"btn btn-primary btn-xs" %> 					
+						<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeCustomerRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+					<% end %>
+				</td>
 			</tr>
 		<% end %>
 		
 		<% customer.phones.each_with_index do |phone,index| %>		
-			<% pre_text = "customer[phones_attributes][#{index}]" %>
-			<tr>
-				<td> <%= label_tag "#{pre_text}[number]","電話#{index+1}" %> </td> 
-				<td> <%= text_field_tag "#{pre_text}[number]",phone.number %> </td>
+			<% pre_text = "customer[phones_attributes]" %>
+			<tr index="<%=index%>" class="admin-form-customer-rows">
+				<td> 
+					<%= hidden_field_tag "#{pre_text}[#{index}][id]", phone.id %>
+					<%= label_tag "#{pre_text}[#{index}][number]","電話#{index+1}" %> 
+				</td> 
+				<td>
+					<%= text_field_tag "#{pre_text}[#{index}][number]",phone.number %> 
+				</td>
+				<td> 
+					<% if index== customer.addresses.length-1 %>
+						<%= link_to "新增欄位","", :onClick=>"adminCustomer.addCustomerRow(event,this)", :class=>"btn btn-primary btn-xs" %>
+						<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeCustomerRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+					<% end %>
+				</td>
 			</tr>
 		<% end %>
 
 		<% customer.faxes.each_with_index do |fax,index| %>		
-			<% pre_text = "customer[faxes_attributes][#{index}]" %>
-			<tr>
-				<td> <%= label_tag "#{pre_text}[number]","傳真#{index+1}" %> </td> 
-				<td> <%= text_field_tag "#{pre_text}[number]",fax.number %> </td>
+			<% pre_text = "customer[faxes_attributes]" %>
+			<tr index="<%=index%>">
+				<td> 
+					<%= hidden_field_tag "#{pre_text}[#{index}][id]", fax.id %>
+					<%= label_tag "#{pre_text}[#{index}][number]","傳真#{index+1}" %> 
+				</td> 
+				<td> <%= text_field_tag "#{pre_text}[#{index}][number]",fax.number %> </td>
+				<td>
+					<% if index== customer.addresses.length-1 %>
+						<%= link_to "新增欄位","", :onClick=>"adminCustomer.addCustomerRow(event,this)", :class=>"btn btn-primary btn-xs" %> 		
+						<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeCustomerRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+
+					<% end %>
+				</td>
 			</tr>
 		<% end %>
 	</table>
