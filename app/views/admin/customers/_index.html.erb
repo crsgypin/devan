@@ -15,7 +15,7 @@
 </div>
 
 <div class="new-button">
-	<%= link_to "新增客戶資料","",:class=>"btn btn-primary admin-customer-new-button" %>
+	<%= link_to "新增客戶資料","",:class=>"btn btn-primary", :onClick=>"adminCustomer.newPage(event)" %>
 </div>
 
 <table class="admin-customer-content table table-bordered">
@@ -38,7 +38,9 @@
 			<td> <%= index+1 %> </td>
 			<td> <%= customer.code %> </td>
 			<td> <%= customer.name %> </td>
-			<td> <%= link_to customer.status, "", :class=>"customer-status active", :customer_id=>customer.id %> </td>
+			<td> 
+				<%= link_to setup_customer_status(customer).status, "", :onClick=>"adminCustomer.setStatus(event,#{customer.id},this)", :class=>"customer-status" %> 
+			</td>
 			<td>
 					<ul>
 						<% customer.addresses.each do |address| %>
@@ -62,7 +64,7 @@
 			</td>
 			<td> <%= customer.description %> </td>
 			<td> 
-				<%= link_to "詳細資料","#",:class=>"btn btn-warning btn-xs admin-customer-show-button", :customer_id=>customer.id %> 
+				<%= link_to "詳細資料","#",:class=>"btn btn-warning btn-xs", :onClick=>"adminCustomer.showPage(event,#{customer.id})"  %> 
 			</td>
 		</tr>
 		<% end %>

@@ -44,11 +44,14 @@
 				return ("/admin/customers/" + customerId);				
 			},
 			setStatus:function(customerId){
-				return ("/admin/customer/" + customerId + "/setStatus");
+				return ("/admin/customers/" + customerId + "/set_status");
 			}
 		},
 		showViews: function(view){
-			this.hideViews();
+			$('.admin-customers').hide();
+			$('.admin-customer-show').hide();
+			$('.admin-customer-form').hide();
+
 			if (view=="index"){
 				$('.admin-customers').show();				
 			}else if(view=="show"){
@@ -57,110 +60,144 @@
 				$('.admin-customer-form').show();				
 			}
 		},
-		hideViews: function(){
-			$('.admin-customers').hide();
-			$('.admin-customer-show').hide();
-			$('.admin-customer-form').hide();
+		newPage: function(e){
+			e.preventDefault();
+			$.ajax({
+				url: this.urls.newPath(),
+				dataType: 'json',
+				success:function(data){
+					$('.admin-customer-form').html(data['template'])
+					adminCustomer.showViews('form')
+				}
+			})
+		},
+		showPage: function(e,customerId){
+			e.preventDefault();
+			$.ajax({
+				url: adminCustomer.urls.showPath(customerId),
+				dataType: 'json',
+				success:function(data){
+					$('.admin-customer-show').html(data['template']);
+					adminCustomer.showViews("show");
+				}
+			})
+		},
+		editPage: function(e,customerId){
+			e.preventDefault();
+			$.ajax({
+				url: this.urls.editPath(customerId),
+				dataType: 'json',
+				method: 'get',
+				success: function(data){
+					$('.admin-customer-form').html(data['template']);
+					adminCustomer.showViews("form");				
+				}
+			})
+		},
+		destroy: function(e,customerId){
+			e.preventDefault();
+			if (confirm('即將刪除')){
+				$.ajax({
+					url: this.urls.destroyPath(customerId),
+					dataType: 'json',
+					method: 'delete',
+					success: function(data){
+						if (data['result'].toLowerCase()=="ok"){
+							location.reload();
+						}
+					}
+				})				
+			}
+		},
+		create: function(e, object){
+			e.preventDefault();
+			var data = $(object).closest('form').serialize();
+			$.ajax({
+				url: this.urls.createPath(),
+				dataType: 'json',
+				method: 'post',
+				data: data,
+				success: function(data){
+					$('.admin-customer-show').html(data['template']);
+					adminCustomer.showViews("show");
+				}
+			})
+		},
+		update: function(e,customerId,object){
+			e.preventDefault();
+			var data = $(object).closest('form').serialize();
+			$.ajax({
+				url: this.urls.updatePath(customerId),
+				dataType: 'json',
+				method: 'patch',
+				data:data,
+				success: function(data){
+					$('.admin-customer-show').html(data['template']);
+					adminCustomer.showViews("show");				
+				}
+			})
+		},
+		setStatus: function(e,customerId,object){
+			e.preventDefault();
+			var submitData = {};
+			if ($(object).text()=="經營中"){
+				submitData['status'] = "結束"
+			}else if($(object).text()=="結束"){
+				submitData['status'] = "經營中"
+			}
+
+			$.ajax({
+				url: this.urls.setStatus(customerId),
+				dataType: "json",
+				method:'post',
+				data: submitData,
+				success:function(data){
+					if (data['result'].toLowerCase()=="ok"){
+						$(object).text(submitData['status']);
+						adminCustomer.refreshStatus();
+					}
+				}
+			})			
+		},
+		refreshStatus: function(){
+			$('.customer-status').each(function(i,elm){
+				var text = $(elm).text();
+				if(text=="經營中"){
+					$(elm).addClass('active');
+					$(elm).removeClass('inactive');					
+				}else if(text=="結束"){
+					$(elm).addClass('inactive');
+					$(elm).removeClass('active');					
+				}
+			})
+		},
+		addCustomerRow: function(e,object){
+			e.preventDefault();
+			var tr = $(object).closest('tr');
+			var index = parseInt(tr.attr('index'));
+			var newTr = tr.clone();
+			newTr.find('[name]').each(function(i,elm){
+				var name = $(elm).attr('name');
+				var id = $(elm).attr('id');
+				$(elm).attr('name', $(elm).attr('name').replace(index,index+1));
+				$(elm).attr('id', $(elm).attr('id').replace(index,index+1));
+				$(elm).val("");
+			})
+			newTr.find('label').each(function(i,elm){
+				$(elm).text($(elm).text().replace(index+1,index+2));
+			})
+			newTr.attr('index',index+1)
+			tr.find('a').remove();
+
+			tr.after(newTr);
+		},
+		removeCustomerRow: function(e,object){
+			e.preventDefault();
+			var tr = $(object).closest('tr');
 		}
 	}
 
-	$('.admin-customers').on('click','.admin-customer-new-button',function(e){
-		e.preventDefault();
-		$.ajax({
-			url: adminCustomer.urls.newPath(),
-			dataType: 'json',
-			success:function(data){
-				$('.admin-customer-form').html(data['template'])
-				adminCustomer.showViews('form')
-			}
-		})
-	})
-
-	$('.admin-customers').on('click','.admin-customer-show-button',function(e){
-		e.preventDefault();
-		var customerId = $(this).attr('customer_id')
-		$.ajax({
-			url: adminCustomer.urls.showPath(customerId),
-			dataType: 'json',
-			success:function(data){
-				$('.admin-customer-show').html(data['template']);
-				adminCustomer.showViews("show");
-			}
-		})
-	})
-
-	$('.admin-customer-show').on('click','.admin-customer-edit-button',function(e){
-		e.preventDefault();
-		var customerId = $(this).attr('customer_id');
-		$.ajax({
-			url: adminCustomer.urls.editPath(customerId),
-			dataType: 'json',
-			method: 'get',
-			success: function(data){
-				$('.admin-customer-form').html(data['template']);
-				adminCustomer.showViews("form");				
-			}
-		})
-	})
-
-	$('.admin-customer-show').on('click','.admin-customer-destroy-button',function(e){
-		e.preventDefault();
-		var customerId = $(this).attr('customer_id');
-		$.ajax({
-			url: adminCustomer.urls.destroyPath(customerId),
-			dataType: 'json',
-			method: 'delete',
-			success: function(data){
-				$('.admin-customers').html(data['template']);
-				adminCustomer.showViews("index");
-			}
-		})
-	})	
-
-	$('.admin-customer-form').on('click','.admin-customer-create-button',function(e){
-		e.preventDefault();
-		var data = $(this).closest('form').serialize();
-		console.log(data);
-		$.ajax({
-			url: adminCustomer.urls.createPath(),
-			dataType: 'json',
-			method: 'post',
-			success: function(data){
-				$('.admin-customer-show').html(data['template']);
-				adminCustomer.showViews("show");
-			}
-		})
-	})
-
-	$('.admin-customer-form').on('click','.admin-customer-update-button',function(e){
-		e.preventDefault();
-		var customerId = $(this).attr('customer_id');
-		var data = $(this).closest('form').serialize;
-		console.log(data);
-		$.ajax({
-			url: adminCustomer.urls.updatePath(customerId),
-			dataType: 'json',
-			method: 'patch',
-			success: function(data){
-				$('.admin-customers').html(data['template']);
-				adminCustomer.showViews("index");				
-			}
-		})
-	})
-
-	$('.admin-customers').on('click','.customer-status-button',function(e){
-		e.preventDefault();
-		var customerId = $(this).attr('customer_id');
-		$.ajax({
-			url: adminCustomer.urls.setStatus(customerId),
-			dataType: "json",
-			success:function(data){
-
-			}
-		})
-		console.log($(this).text());
-
-	})	
+	adminCustomer.refreshStatus();
 
 </script>
 

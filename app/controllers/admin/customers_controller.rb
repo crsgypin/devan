@@ -1,5 +1,5 @@
 class Admin::CustomersController < ApplicationController
-	before_action :set_customer, :only=>[:show,:edit,:destroy]
+	before_action :set_customer, :only=>[:show,:edit,:update,:destroy]
 
 	def index
 		# @customers = Customer.all
@@ -29,8 +29,9 @@ class Admin::CustomersController < ApplicationController
 	def create
 		@customer = Customer.new(customer_params)
 		if @customer.save
-			flash[:notice] = "客戶#{@customer.name} 儲存成功"
-			redirect_to customer_path(@customer)
+			respond_to do |format|
+				format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/show.html",:locals=>{:customer=>@customer})}}
+			end
 		else
 
 			render 'customers/new'
@@ -40,23 +41,32 @@ class Admin::CustomersController < ApplicationController
 
 	def edit
 		respond_to do |format|
-			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/edit.html",:locals=>{:customer=>@customer})}}
+			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/form.html",:locals=>{:customer=>@customer})}}
 		end
 	end
 
 	def update
 		if @customer.update(customer_params)
-			flash[:notice] = "客戶#{@customer.name} 修改成功"
-			redirect_to customer_path(@customer)
-		else
-
-			render 'customers/edit'
+			respond_to do |format|
+				format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/show.html",:locals=>{:customer=>@customer})}}
+			end
 		end
 	end
 
 	def destroy
-		@custoemr.destory
+		@customer.destroy
+		respond_to do |format|
+			format.json {render :json=>{:result=>"OK"}}
+		end
+	end
 
+	def set_status
+		@customer = Customer.find(params[:id])
+		@customer.status = params[:status]
+		@customer.save!
+		respond_to do |format|
+			format.json {render :json=>{:result=>"OK"}}
+		end
 	end
 
 private
@@ -66,10 +76,10 @@ private
 
 	def customer_params
 		params.require(:customer).permit(:code, :name, :description, :status,
-															:phones_attributes=>[:number],
-															:faxes_attributes=>[:number],
-															:addresses_attributes=>[:address,:city_id,:district_id],
-															:customer_delivery_day_attributes=>[:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
+															:phones_attributes=>[:id,:number],
+															:faxes_attributes=>[:id,:number],
+															:addresses_attributes=>[:id,:address,:city_id,:district_id],
+															:customer_delivery_day_attributes=>[:id,:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
 	end
 
 	def set_search

@@ -3,31 +3,35 @@
 <% if customer.new_record? %>
 	新增客戶
 <% else %>
-	編輯客戶:<%= customer.name %> 
+	<%= "編輯客戶: #{customer.name}" %> 
 <% end %>
 </h3>
 
 <%= form_tag "" do %>
 	<div class="admin-customer-submit">	
 		<% if customer.new_record? %>
-			<%= link_to "儲存","",:class=>"btn btn-primary admin-customer-create-button" %>
+			<%= link_to "儲存","",:class=>"btn btn-primary", :onClick=>"adminCustomer.create(event,this)" %>
 		<% else %>
-			<%= link_to "儲存","",:class=>"btn btn-primary admin-customer-update-button" %>
+			<%= link_to "儲存","",:class=>"btn btn-primary", :onClick=>"adminCustomer.update(event,#{customer.id},this)" %>
 		<% end %>			
 	</div>
 
 	<table class="table table-bordered">
 		<tr>
 			<td> <%= label_tag "customer[code]","編號" %> </td> 
-			<td> <%= text_field_tag "customer[code]", customer.code %> </td>
+			<td> <%= text_field_tag "customer[code]", customer.code, :required=>true %> </td>
+			<td></td>
 		</tr>
 		<tr>
 			<td> <%= label_tag "customer[name]","名字" %> </td> 
-			<td> <%= text_field_tag "customer[name]", customer.name %> </td>
+			<td> <%= text_field_tag "customer[name]", customer.name, :required=>true %> </td>
+			<td></td>
 		</tr>
 		<tr>
 			<td> <%= label_tag "customer[status]", "狀態" %> </td> 
-			<td> <%= text_field_tag "customer[status]", customer.status %> </td>
+			<td> <%= select_tag "customer[status]", options_for_select(["經營中","結束"],customer.status) %> 
+			</td>
+			<td></td>
 		</tr>
 
 		<% customer.addresses.each_with_index do |address,index| %>
