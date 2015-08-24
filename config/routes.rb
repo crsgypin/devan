@@ -38,9 +38,15 @@ Rails.application.routes.draw do
       get :form_values
     end
   end
-  resources :manufacturers
-  resources :cities
-  resources :districts
+
+  namespace :admin do 
+    resources :customers do
+      member do
+        post :set_status
+      end
+    end
+
+  end
 
 
   # The priority is based upon order of creation: first created -> highest priority.

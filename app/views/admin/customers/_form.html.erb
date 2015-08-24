@@ -1,97 +1,58 @@
-<%# form%>
+<%# customer %>
+<h3>
+<% if customer.new_record? %>
+	新增客戶
+<% else %>
+	編輯客戶:<%= customer.name %> 
+<% end %>
+</h3>
 
-<table class="table table-striped customer-new-table">
-	<tr>
-		<td> 編號 </td>
-		<td> <%= form.text_field :code,:required=>true,:auto_focus=>true,:class=>"t-field" %> </td>
-	</tr>
+<%= form_tag "" do %>
+	<div class="admin-customer-submit">	
+		<% if customer.new_record? %>
+			<%= link_to "儲存","",:class=>"btn btn-primary admin-customer-create-button" %>
+		<% else %>
+			<%= link_to "儲存","",:class=>"btn btn-primary admin-customer-update-button" %>
+		<% end %>			
+	</div>
 
-	<tr>
-		<td> 名字</td>
-		<td> <%= form.text_field :name,:required=>true,:class=>"t-field" %> </td>
-	</tr>
+	<table class="table table-bordered">
+		<tr>
+			<td> <%= label_tag "customer[code]","編號" %> </td> 
+			<td> <%= text_field_tag "customer[code]", customer.code %> </td>
+		</tr>
+		<tr>
+			<td> <%= label_tag "customer[name]","名字" %> </td> 
+			<td> <%= text_field_tag "customer[name]", customer.name %> </td>
+		</tr>
+		<tr>
+			<td> <%= label_tag "customer[status]", "狀態" %> </td> 
+			<td> <%= text_field_tag "customer[status]", customer.status %> </td>
+		</tr>
 
-	<tr>
-		<td> 電話 </td>
-		<td> <%= text_field_tag "customer[phones_attributes][0][number]", @customer.phones[0].try(:number),:class=>"t-field" %> </td>
-	</tr>
+		<% customer.addresses.each_with_index do |address,index| %>
+			<% pre_text = "customer[addresses_attributes][#{index}]" %>
+			<tr>
+				<td> <%= label_tag "#{pre_text}[address]","地址#{index+1}" %> </td> 
+				<td> <%= text_field_tag "#{pre_text}[address]",address.address %> </td>
+			</tr>
+		<% end %>
+		
+		<% customer.phones.each_with_index do |phone,index| %>		
+			<% pre_text = "customer[phones_attributes][#{index}]" %>
+			<tr>
+				<td> <%= label_tag "#{pre_text}[number]","電話#{index+1}" %> </td> 
+				<td> <%= text_field_tag "#{pre_text}[number]",phone.number %> </td>
+			</tr>
+		<% end %>
 
-	<tr>
-		<td> 傳真 </td>
-		<td> <%= text_field_tag "customer[faxes_attributes][0][number]", @customer.faxes[0].try(:number),:class=>"t-field" %> </td>
-	</tr>
-
-	<tr>
-		<td> 描述 </td>
-		<td> <%= form.text_field :description,:class=>"t-area" %> </td>
-	</tr>
-
-	<tr>
-		<td> 縣市 </td>
-		<td> <%= select_tag "customer[addresses_attributes][0][city_id]", options_from_collection_for_select(City.all, "id", "name"),:class=>"customer-city-select"%> </td>
-	</tr>
-
-	<tr>
-		<td> 市/鎮/區 </td>
-		<td> <%= select_tag "customer[addresses_attributes][0][district_id]",
-			 options_from_collection_for_select(City.all.first.districts, "id", "name"),:class=>"customer-district-select"%> </td>
-	</tr>
-
-	<tr>
-		<td> 地址 </td>
-		<td> <%= text_field_tag "customer[addresses_attributes][0][address]", @customer.addresses[0].try(:address),:class=>"t-area" %> </td>
-	</tr>
-
-	<tr>
-		<td> 狀態 </td>
-		<td> <%= form.select :status, [["經營中","經營中"],["結束","結束"]] %> </td>
-	</tr>
-	
-	<tr>
-		<td> 送貨日 </td>
-		<td> 
-			<% day_list.each_with_index do |day,index| %>
-				<div class="t-field">
-					<%= check_box "customer[customer_delivery_day_attributes]","#{day[:eng]}",{:checked=>@customer.customer_delivery_day[day[:eng]] },1, 0%>
-					<%= label_tag "customer[customer_delivery_day_attributes][#{day[:eng]}]", day[:ch] %>			
-				</div>
-			<% end %>
-			<%= hidden_field_tag "customer[customer_delivery_day_attributes][id]",@customer.customer_delivery_day.id %>
-		</td>
-	</tr>	
-
-	<% form.fields_for :customer_delivery_day do |ff| %>
-	<tr>
-		<td> test</td>
-		<td> 
-			<%= ff.check_box :monday %> 
-			<%= ff.check_box :tuesday %> 
-			<%= ff.check_box :wednesday %> 
-		</td>
-	</tr>
-	<% end %>
-
-</table>
-
-<div class="customer-store" style="display:none;"><%=city_district_list%></div>
-
-<script>
-
-	$('.customer-city-select').change(function(e){
-		var list = $.parseJSON($('.customer-store').text());
-		var index = parseInt($(this).val());
-		var districts = list[index];
-		var options = ""
-		districts.forEach(function(district){
-
-			options += "<option value=" + district['id'] + ">" + district['name'] + "</option>"
-		})
-
-		$('.customer-district-select').html(options)
-	})
-
-
-</script>
-
-
+		<% customer.faxes.each_with_index do |fax,index| %>		
+			<% pre_text = "customer[faxes_attributes][#{index}]" %>
+			<tr>
+				<td> <%= label_tag "#{pre_text}[number]","傳真#{index+1}" %> </td> 
+				<td> <%= text_field_tag "#{pre_text}[number]",fax.number %> </td>
+			</tr>
+		<% end %>
+	</table>
+<% end %> <%# form tag %>
 

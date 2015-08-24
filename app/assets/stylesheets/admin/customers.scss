@@ -1,3 +1,50 @@
-// Place all the styles related to the admin::customers controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.admin-customers{
+	
+	.info-box{
+		.page-box{
+			float: left;
+		}
+
+		.search{
+			float: right;
+			margin: 20px;
+		}
+
+	}
+
+	.info-box::after{
+		display: block;
+		content: "";
+		clear: both;
+	}
+
+	
+	.admin-customer-content{
+		table-layout: fixed;
+
+		.customer-status{
+			color:green;
+			border-radius: 5px;
+	    display: block;
+	    padding: 2px;
+	    text-align: center
+    }
+		 	
+		.customer-status.active{
+	 		background-color: #dd3;
+		}
+					
+		.customer-status.inactive{
+			background-color: #eee;
+		}
+		
+		ul{
+			padding-left:10px;
+		}
+
+	}
+
+}
+
