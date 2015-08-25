@@ -6,14 +6,27 @@
 	</div>
 </div>
 
-<%= form_for @manufacturer, :url=>admin_manufacturer_path(@manufacturer), :method=>:patch do |form| %>
+<div class="content-box">
+	<div class="content-inner">
 
-	<div class="content-box">
-		<div class="content-inner">
-		
-		<%= render :partial=>'manufacturers/form', :locals=>{:form=>form, :cities=>@cities} %>
+		<div class="admin-manufacturer">
+			<%= form_for @manufacturer, :url=>admin_manufacturer_path(@manufacturer), :method=>:patch do |form| %>		
 
-		</div> <%# content-inner %>
-	</div> <%# content-box %>
-<% end %>
+				<div class="info-box">
+					<%= link_to "不儲存回清單", admin_manufacturers_path, :class=>"btn btn-default back"%>
+					<p class="message"> 
+						<%= flash[:success] %> 
+						<%= flash[:fail] %>
+					</p>					
+					<%= form.submit "儲存並回清單", :class=>"btn btn-warning save" %>
+				</div>
+				<%= render :partial=>'admin/manufacturers/form', :locals=>{:form=>form, :cities=>@cities} %>
+
+			<% end %>
+			<div class="manufacturer-remove">
+				<%= link_to "移除這家廠商資料", admin_manufacturer_path(@manufacturer),:method=>:delete, :data=>{:confirm=>"即將移除，如果有表單資料，將會移除失敗"} %>
+			</div>
+		</div>
+	</div> <%# content-inner %>
+</div> <%# content-box %>
 

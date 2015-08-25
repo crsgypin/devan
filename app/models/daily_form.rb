@@ -3,8 +3,6 @@ class DailyForm < ActiveRecord::Base
 	has_many :form_values
 	accepts_nested_attributes_for :form_values, allow_destroy: true
 
-	belongs_to :manufacturer
-
 	def self.limitDays(limit_days)
 		if limit_days == nil
 			limit_days = 10

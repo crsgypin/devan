@@ -3,17 +3,29 @@
 <table class="table table-striped manufacturer-new-table">
 	<tr>
 		<td> 廠商名</td>
-		<td> <%= form.text_field :name,:required=>true,:class=>"t-field" %> </td>
+		<td> 
+			<%= form.text_field :name,:required=>true,:class=>"t-field",:required=>true %>
+		</td>
 	</tr>
 
 	<tr>
 		<td> 電話 </td>
-		<td> <%= text_field_tag "manufacturer[phones_attributes][0][number]", @manufacturer.phones[0].try(:number),:class=>"t-field" %> </td>
+		<td>
+			<% @manufacturer.phones.each_with_index do |phone,index| %>
+				<%= hidden_field_tag "manufacturer[phones_attributes][#{index}][id]", phone.id %> 
+				<%= text_field_tag "manufacturer[phones_attributes][#{index}][number]", phone.number,:class=>"t-field" %> 
+			<% end %>
+		</td>
 	</tr>
 
 	<tr>
 		<td> 傳真 </td>
-		<td> <%= text_field_tag "manufacturer[faxes_attributes][0][number]", @manufacturer.faxes[0].try(:number),:class=>"t-field" %> </td>
+		<td> 
+			<% @manufacturer.faxes.each_with_index do |fax,index| %>
+				<%= hidden_field_tag "manufacturer[faxes_attributes][#{index}][id]", fax.id %> 
+				<%= text_field_tag "manufacturer[faxes_attributes][#{index}][number]", fax.number,:class=>"t-field" %> 
+			<% end %>
+		</td>
 	</tr>
 
 	<tr>
@@ -34,39 +46,15 @@
 
 	<tr>
 		<td> 地址 </td>
-		<td> <%= text_field_tag "manufacturer[addresses_attributes][0][address]", @manufacturer.addresses[0].try(:address),:class=>"t-area" %> </td>
+		<td> 
+			<% @manufacturer.addresses.each_with_index do |address,index| %>
+				<%= hidden_field_tag "manufacturer[addresses_attributes][#{index}][id]",address.id %>
+				<%= text_field_tag "manufacturer[addresses_attributes][#{index}][address]", address.address,:class=>"t-area" %> 
+			<% end %>
+		</td>
 	</tr>
 </table>
 
-	<h3> 表單欄位設定 </h3>	
-	<table class="table table-bordered">
-		<tr>
-			<td></td>
-			<td>欄位名稱</td>
-			<td>欄位說明</td>
-		</tr>
-	<% 8.times do |index| %>
-		<tr>
-			<td> 
-				<%= "表單欄位#{index+1}" %>
-				<%= hidden_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][id]", 
-					@manufacturer.manufacturer_keys[index].try(:id) %>
-				<%= hidden_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][mapping_key]", 
-					index+1 %>
-			</td>
-
-			<td>
-			 <%= text_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][name]", 
-					@manufacturer.manufacturer_keys[index].try(:name) %>
-			</td>
-
-			<td> 
-				<%= text_field_tag "manufacturer[manufacturer_keys_attributes][#{index}][note]", 
-						@manufacturer.manufacturer_keys[index].try(:note) %> 
-			</td>
-		</tr>
-		<% end %>
-	</table>	
 
 <div class="manufacturer-store" style="display:none;"><%=city_district_list%></div>
 

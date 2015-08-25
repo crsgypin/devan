@@ -1,3 +1,62 @@
-// Place all the styles related to the manufacturers controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.admin-manufacturers{
+	
+	.info-box{
+		padding: 20px 0 30px;
+
+		h1{
+			float: left;
+		}
+
+		.message{
+			margin: 10px 0 0 20px;
+			color:red;
+			float: left;
+		}
+
+		.add-new{
+			float: right;
+		}
+	}
+
+	.info-box::after{
+		display: block;
+		content: "";
+		clear: both;
+	}
+
+}
+
+.admin-manufacturer{
+
+	.info-box{
+		padding:20px 0 30px 0;
+
+		.back,.message{
+			float: left;
+		}
+
+		.message{
+			margin: 10px 0 0 20px;
+			float: left;
+			color:red;			
+		}
+		.save{
+			float: right;
+		}
+
+	}
+
+	.info-box::after{
+		display: block;
+		clear: both;
+		content:"";
+	}
+
+	.manufacturer-remove{
+		a{
+			color:#faa;
+		}
+	}
+}
+
+

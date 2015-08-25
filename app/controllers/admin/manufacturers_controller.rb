@@ -12,16 +12,19 @@ class Admin::ManufacturersController < ApplicationController
 
 	def new
 		@manufacturer = Manufacturer.new
+		@manufacturer.phones.new
+		@manufacturer.addresses.new
+		@manufacturer.faxes.new
 	end
 
 	def create
 		@manufacturer = Manufacturer.new(manufacturer_params)
 		if @manufacturer.save
 
-			redirect_to manufacturer_path(@manufacturer)
+			redirect_to admin_manufacturers_path
 		else
 
-			render 'manufacturers/new'
+			render 'admin/manufacturers/new'
 		end
 
 	end
@@ -33,13 +36,21 @@ class Admin::ManufacturersController < ApplicationController
 	def update
 		if @manufacturer.update(manufacturer_params)
 			
-			redirect_to manufacturer_path(@manufacturer)
+			redirect_to admin_manufacturers_path
 		else
 
-			render 'manufacturers/edit'
+			render 'admin/manufacturers/edit'
 		end
+	end
 
-
+	def destroy
+		if @manufacturer.destroy
+			flash[:success] = "#{@manufacturer.name} 已被移除"
+			redirect_to admin_manufacturers_path
+		else
+			flash[:fail] = "#{@manufacturer.name} 移除失敗"
+			render 'admin/manufacturers/edit'
+		end
 	end
 
 
