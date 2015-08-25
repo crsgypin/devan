@@ -198,6 +198,51 @@
 
 	adminCustomer.refreshStatus();
 
+	var customerRow = function(tr,index){
+		this.tr = $(tr);
+		this.index = function(){
+			return parseInt(this.tr.attr('index'));
+		};
+		this.addIndex = function(){
+			var newIndex = this.index+1
+			this.tr.find('[name]').each(function(index,elm){
+				var nameStr = $(elm).attr('name');
+				var idStr = $(elm).attr('id');
+				$(elm).attr('name',nameStr.replace('['+this.index+']','['+newIndex+']'));
+				$(elm).attr('id', idStr, repalce('_' + this.index) + '+','_' + newIndex +'_')
+
+			})
+		};
+		this.names = function(){
+				this.tr.find('[name]').each(function(index,elm){
+				console.log($(elm).attr('name'));
+				console.log($(elm).attr('id'));				
+				console.log('----');
+			})
+		}
+	}
+
+	var railsInput = function(objectName,subName,index){
+		this.objectName = objectName;
+		this.subName = subName;
+		this.index = index;
+
+		this.htmlInput = function(typeName,attribute){
+			var nameStr = this.objectName + '[' + this.subName + '_attributes][' + this.index + '][' + attribute + ']';
+			var idStr = this.objectName + '_' + this.subName + '_attributes_' + this.index + '_' + attribute;
+			var inputElm = $('<input>')
+			inputElm.attr('type',typeName);
+			inputElm.attr('name',nameStr);
+			inputElm.attr('id',idStr);
+			inputElm.attr('class',this.className);
+
+			console.log(nameStr);
+			console.log(idStr);
+			console.log(inputElm);
+			return inputElm;
+		};
+	}
+
 </script>
 
 
