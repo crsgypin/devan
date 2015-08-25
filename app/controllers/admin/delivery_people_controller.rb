@@ -1,18 +1,12 @@
-class DeliveryPeopleController < ApplicationController
+class Admin::DeliveryPeopleController < ApplicationController
 	before_action :set_delivery_person, :only=>[:show,:edit,:update,:destroy]
 	before_action :authenticate_user!, :except=>[:index,:show]
 
 	def index
-		@delivery_people = DeliveryPerson.where(:status=>"在職")
+		@active_delivery_people = DeliveryPerson.where(:status=>"在職")
+		@inactive_delivery_people = DeliveryPerson.where(:status=>"離職")
 		if params[:days]
 			@limit_days = params[:days].to_i
-		end
-
-		@delivery_people_all = DeliveryPerson.all
-
-		respond_to do |format|
-			format.html
-			format.json {render :json=>{:template=> render_to_string(:partial=>'delivery_people/index_list.html', :locals=>{:delivery_people=>@delivery_people, :limit_days=>@limit_days}) }}
 		end
 	end
 
@@ -36,10 +30,10 @@ class DeliveryPeopleController < ApplicationController
 		@delivery_person = DeliveryPerson.new(delivery_person_params)
 		if @delivery_person.save
 			flash[:success] = "#{@delivery_person.name} 新增成功"
-			redirect_to delivery_person_path(@delivery_person)
+			redirect_to admin_delivery_people_path
 		else
 			flash[:fail] = "#{@delivery_person.name} 新增失敗, #{@delivery_person.errors.full_messages}"
-			render 'delivery_people/new'
+			render 'admin/delivery_people/new'
 		end
 	end
 
@@ -49,10 +43,10 @@ class DeliveryPeopleController < ApplicationController
 	def update
 		if @delivery_person.update(delivery_person_params)
 			flash[:success] = "#{@delivery_person.name} 更新成功"
-			redirect_to delivery_person_path(@delivery_person)
+			redirect_to admin_delivery_people_path
 		else
 			flash[:fail] = "#{@delivery_person.name} 更新失敗"
-			render 'delivery_people/edit'
+			render 'admin/delivery_people/edit'
 		end
 	end
 
@@ -60,10 +54,10 @@ class DeliveryPeopleController < ApplicationController
 		@delivery_person = DeliveryPerson.find(params[:id])
 		if @delivery_person.destroy
 			flash[:success] = "#{@delivery_person.name} 已被移除"
-			redirect_to delivery_people_path
+			redirect_to admin_delivery_people_path
 		else
 			flash[:fail] = "#{@delivery_person.name} 移除失敗"
-			render 'delivery_people/show'
+			render 'admin/delivery_people/edit'
 		end
 	end
 

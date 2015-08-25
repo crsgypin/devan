@@ -1,4 +1,4 @@
-class DistrictsController < ApplicationController
+class Admin::DistrictsController < ApplicationController
 	before_action :set_district, :only=>[:show, :edit,:update,:destroy]
 	before_action :authenticate_user!, :except=>[:index,:show]
 

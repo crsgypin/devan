@@ -1,11 +1,10 @@
 <div class="menu-box">
-	<div class="menu-inner">
-		<%= link_to "客戶", "",:class=>"selected",:content=>".admin-customers"%>
-		<%= link_to "送貨員","",:class=>"", :content=>".admin-delivery-people"%>
-		<%= link_to "廠商","",:class=>"", :content=>".admin-manufacturer"%>
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"selected"%>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"", :content=>".admin-delivery-people"%>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"", :content=>".admin-manufacturer"%>
 	</div>
 </div>
-
 
 <div class="content-box">
 	<div class="content-inner">

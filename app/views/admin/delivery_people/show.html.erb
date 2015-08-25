@@ -1,33 +1,20 @@
-<div class="heading-box">
-	<div class="heading-inner">
-		<div class="info-box">
-			<h2 class="title">
-				<%= @delivery_person.name %>
-			</h2>
-
-			<div class="message">
-				<% if flash[:success].present? %>
-					<div class="success"> <%= flash[:success] %> </div>
-				<% elsif flash[:fail].present? %>
-					<div class="fail"> <%= flash[:fail] %> </div>
-				<% end %>
-			</div>
-
-			<ul class="sub-nav">
-				<li> <%= link_to "回清單", delivery_people_path %> </li>
-			</ul>			
-		</div>
-
-		<div class="submit-box">
-			<%= link_to "修改這送貨員資料", edit_delivery_person_path(@delivery_person), :class=>"btn btn-warning btn-xs" %>
-		</div>
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"selected" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"" %>
 	</div>
 </div>
+
 
 <div class="content-box">
 	<div class="content-inner">
 		
-		<div class="delivery-person">
+		<div class="admin-delivery-person">
+			<div class="info-box">
+				<%= link_to "回清單", admin_delivery_people_path, :class=>"btn btn-default" %>
+			</div>
+
 			<table class="table table-striped">
 				<tr>
 					<td> 編號 </td>

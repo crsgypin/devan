@@ -33,19 +33,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :delivery_people do 
-    member do
-      get :form_values
-    end
-  end
-
   namespace :admin do 
     resources :customers do
       member do
         post :set_status
       end
     end
-
+    resources :manufacturers
+    resources :delivery_people
   end
 
 

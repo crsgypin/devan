@@ -1,31 +1,12 @@
-<%= form_for @manufacturer, :url=>manufacturers_path do |form| %>
-
-	<div class="heading-box">
-		<div class="heading-inner">
-			<div class="info-box">
-				<h2 class="title">
-				  新增廠商資料
-				</h2>
-
-				<div class="message">
-					<% if flash[:success].present? %>
-						<div class="success"> <%= flash[:success] %> </div>
-					<% elsif flash[:fail].present? %>
-						<div class="fail"> <%= flash[:fail] %> </div>
-					<% end %>
-				</div>
-
-				<ul class="sub-nav">
-					<li> <%= link_to "回廠商清單", manufacturers_path %> </li>
-				</ul>			
-			</div>
-
-			<div class="submit-box"> 
-				<%= form.submit "繳交表單", :class=>"btn btn-primary"	%>
-			</div>
-		</div>
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"selected" %>
 	</div>
+</div>
 
+<%= form_for @manufacturer, :url=>admin_manufacturers_path do |form| %>
 	<div class="content-box">
 		<div class="content-inner">
 		

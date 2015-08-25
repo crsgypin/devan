@@ -34,4 +34,15 @@ RSpec.describe DeliveryPerson, type: :model do
     end
   end
 
+  describe "check destroy" do
+    before do
+      d = DeliveryPerson.create(:code=>"AA",:name=>"彈丸",:status=>"在職")
+      d.form_values.create(:daily_form_id=>1,:customer_id=>2,:key1=>3,:manufacturer_id=>3)
+      d.destroy
+    end
+
+    it "shouldn't be destroyed due to more than form_values" do
+      expect(DeliveryPerson.count).to eq(1)
+    end
+  end
 end

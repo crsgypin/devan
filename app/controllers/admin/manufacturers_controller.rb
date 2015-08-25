@@ -1,4 +1,4 @@
-class ManufacturersController < ApplicationController
+class Admin::ManufacturersController < ApplicationController
 	before_action :set_manufacturer, :only=>[:show, :edit, :update, :destroy]
 	before_action :authenticate_user!, :except=>[:index,:show]
 

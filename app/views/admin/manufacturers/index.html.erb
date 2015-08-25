@@ -1,26 +1,8 @@
-<div class="heading-box">
-	<div class="heading-inner">
-		<div class="info-box">
-			<h2 class="title">
-			  廠商總表
-			</h2>
-
-			<div class="message">
-				<% if flash[:success].present? %>
-					<div class="success"> <%= flash[:success] %> </div>
-				<% elsif flash[:fail].present? %>
-					<div class="fail"> <%= flash[:fail] %> </div>
-				<% end %>
-			</div>
-
-			<ul class="sub-nav">
-				<li> <%= link_to "廠商清單", manufacturers_path %> </li>
-			</ul>			
-		</div>
-
-		<div class="submit-box"> 
-			<%= link_to "新增廠商", new_manufacturer_path ,:class=>"btn btn-primary" %>
-		</div>
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"selected" %>
 	</div>
 </div>
 
@@ -39,7 +21,7 @@
 					<td> <%= manufacturer.name %> </td>
 					<td> <%= manufacturer.phones.map{|p| p.number}.join(',') %> </td>
 					<td> 
-						<%= link_to "詳細內容",manufacturer_path(manufacturer), :class=>"btn btn-primary" %>
+						<%= link_to "詳細內容",admin_manufacturer_path(manufacturer), :class=>"btn btn-primary" %>
 					</td>
 				</tr>
 			<% end %>

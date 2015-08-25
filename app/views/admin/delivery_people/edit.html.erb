@@ -1,53 +1,51 @@
-<%= form_for @delivery_person, :url=>delivery_person_path(@delivery_person) do |form| %>
-	<div class="heading-box">
-		<div class="heading-inner">
-			<div class="info-box">
-				<h2 class="title">
-				  編輯送貨員 @delivery_person
-				</h2>
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"selected" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"" %>
+	</div>
+</div>
 
-				<div class="message">
-					<% if flash[:success].present? %>
-						<div class="success"> <%= flash[:success] %> </div>
-					<% elsif flash[:fail].present? %>
-						<div class="fail"> <%= flash[:fail] %> </div>
-					<% end %>
+<div class="content-box">
+	<div class="content-inner">
+		
+		<div class="admin-delivery-person">
+				
+			<%= form_for @delivery_person, :url=>admin_delivery_person_path(@delivery_person) do |form| %>
+				
+				<div class="info-box">
+					<%= link_to "不儲存回清單", admin_delivery_people_path, :class=>"btn btn-default back"%>
+					<p class="message"> 
+						<%= flash[:success] %> 
+						<%= flash[:fail] %>
+					</p>					
+					<%= form.submit "儲存並回清單", :class=>"btn btn-warning save" %>
 				</div>
 
-				<ul class="sub-nav">
-					<li> <%= link_to "回清單", delivery_people_path %> </li>
-				</ul>			
-			</div>
-
-			<div class="submit-box">
-				<%= form.submit "繳交表單", :class=>"btn btn-primary"	%>
+				<table class="table">
+					<tr>
+						<td> <%= form.label :code, "編號" %> </td>
+						<td> <%= form.text_field :code, :required=>true %>  </td>
+					</tr>
+					<tr>
+						<td> <%= form.label :name, "名稱" %> </td>
+						<td> <%= form.text_field :name, :required=>true %> </td>
+					</tr>
+					<tr>
+						<td> <%= form.label :status, "狀態" %> </td>
+						<td> <%= form.select :status, [["在職"],["離職"]] %> </td>
+					</tr>
+					<tr>
+						<td> <%= form.label :user_id, "使用者帳號" %> </td>
+						<td> <%= form.select :user_id, User.all.map{|u| [u.email,u.id]}, :prompt => "無"%> </td>
+				</table>
+			<% end %>
+			<div class="delivery-person-remove">
+				<%= link_to "移除此業務員資料",admin_delivery_person_path(@delivery_person), :method=>:delete, :data=>{:confirm=>"即將刪除"} %>
 			</div>
 		</div>
+
 	</div>
+</div>
 
-	<div class="content-box">
-		<div class="content-inner">
-		
-			<table class="table">
-				<tr>
-					<td> <%= form.label :code, "編號" %> </td>
-					<td> <%= form.text_field :code, :required=>true %>  </td>
-				</tr>
-				<tr>
-					<td> <%= form.label :name, "名稱" %> </td>
-					<td> <%= form.text_field :name, :required=>true %> </td>
-				</tr>
-				<tr>
-					<td> <%= form.label :status, "狀態" %> </td>
-					<td> <%= form.select :status, [["在職"],["離職"]] %> </td>
-				</tr>
-				<tr>
-					<td> <%= form.label :user_id, "使用者帳號" %> </td>
-					<td> <%= form.select :user_id, User.all.map{|u| [u.email,u.id]}, :prompt => "無"%> </td>
-			</table>
-
-		</div>
-	</div>
-
-<% end %>
 

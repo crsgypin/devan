@@ -1,100 +1,89 @@
-<div class="heading-box">
-	<div class="heading-inner">
-		<div class="info-box">
-			<h2 class="title">
-			  送貨員清單
-			</h2>
-
-			<div class="message">
-				<% if flash[:success].present? %>
-					<div class="success"> <%= flash[:success] %> </div>
-				<% elsif flash[:fail].present? %>
-					<div class="fail"> <%= flash[:fail] %> </div>
-				<% end %>
-			</div>
-
-			<ul class="sub-nav">
-				<li> <%= link_to "送貨數", "", :class=>"sub-nav-1 selected" %> </li>
-				<li> <%= link_to "基本資料", "", :class=>"sub-nav-2" %> </li>
-			</ul>	
-		</div>
-
-		<div class="submit-box"> 
-			<%= link_to "新增送貨員", new_delivery_person_path ,:class=>"btn btn-primary btn-xs" %>
-		</div>
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"selected" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"" %>
 	</div>
 </div>
 
 <div class="content-box">
 	<div class="content-inner">
 		
-		<div class="delivery-person">
-			<div class="delivery-form-value">
-				<div class="date-select">
-						<%= label_tag "t-day", "顯示最近" %>
-						<%= number_field_tag "t-day", 7, :class=>"day-input" %>
-						天的資料 
-						(到<span class="until"> <%= Date.today - 7.days %></span> )
-
+		<div class="admin-delivery-people">
+			<div class="active">
+				<div class="active-title">
+					<h1> 現職送貨員 </h1>
+					<p class="message"> 
+						<%= flash[:success] %> 
+						<%= flash[:fail] %>
+					</p>
+					<p class="add-new">
+						<%= link_to "新增送貨員", new_admin_delivery_person_path, :class=>"btn btn-info" %>
+					</p>
 				</div>
-				<div class="t-list">
-					<%= render :partial=>"delivery_people/index_list.html", :locals=>{:delivery_people=>@delivery_people, :limit_days=> 7} %>
-				</div>
-				<div class="delivery-form-value-list"></div>
+				<table class="table table-striped">
+					<tr>
+						<td> 編號 </td>
+						<td> 名稱 </td>
+						<td> 送貨家數 </td>
+						<td></td>
+					</tr>
+					<% @active_delivery_people.each do |delivery_person| %>
+						<tr>
+							<td> <%= delivery_person.code %> </td>
+							<td> <%= delivery_person.name %> </td>
+							<td> <%= delivery_person.recent_form_values(10).count %> </td>
+							<td> <%= link_to "詳細資料",edit_admin_delivery_person_path(delivery_person), :class=>"btn btn-warning btn-xs" %> </td>
+						</tr>
+					<% end %>
+				</table>					
 			</div>
-
-			<div class="delivery-profiles" style="display:none">
-				<%= render :partial=>"delivery_people/index_profiles.html", :locals=>{:delivery_people_all=>@delivery_people_all} %>
+	
+			<div class="show-inactive">
+				<%= link_to "顯示離職送貨員", "", :onClick=>"showInactive(event)", :class=>"show-btn" %>
+				<%= link_to "隱藏離職送貨員", "", :onClick=>"hideInactive(event)", :class=>"hide-btn", :style=>"display:none" %>
 			</div>
+			<div class="inactive" style="display:none">
+				<table class="table table-striped">
+					<div class="inactive-title">
+						<p> 已離職送貨員 </p>
+					</div>
+					<tr>
+						<td> 編號 </td>
+						<td> 名稱 </td>
+						<td> 送貨家數 </td>
+					</tr>
+					<% @inactive_delivery_people.each do |delivery_person| %>
+						<tr>
+							<td> <%= delivery_person.code %> </td>
+							<td> <%= delivery_person.name %> </td>
+							<td> <%= link_to "詳細資料",edit_admin_delivery_person_path(delivery_person), :class=>"btn btn-warning btn-xs" %> </td>
+						</tr>
+					<% end %>
+				</table>								
+			</div>
+		</div>
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
 
 <script>
+ var showInactive = function(e){
+ 		e.preventDefault();
+ 		$('.admin-delivery-people .inactive').slideDown(300,function(){
+	 		$('.show-inactive .show-btn').hide();
+	 		$('.show-inactive .hide-btn').show(); 			
+ 		});
+ }
 
-
-	$('.sub-nav-1').click(function(e){
-		e.preventDefault();
-		$('.sub-nav-1').addClass('selected');
-		$('.sub-nav-2').removeClass('selected');
-
-		$('.delivery-form-value').show();
-		$('.delivery-profiles').hide();
-	})
-
-	$('.sub-nav-2').click(function(e){
-		e.preventDefault();
-		$('.sub-nav-1').removeClass('selected')
-		$('.sub-nav-2').addClass('selected')
-
-		$('.delivery-form-value').hide();
-		$('.delivery-profiles').show();
-	})
-
-	$('.day-input').change(function(e){
-		e.preventDefault();
-		$('.delivery-form-value-list').html('');
-
-		var days = $(this).val();
-		var fromDate = new Date();
-
-		fromDate.setDate(fromDate.getDate() - days);
-
-		var dateString = fromDate.getFullYear() + '-' + (parseInt(fromDate.getMonth())+1) + '-' + fromDate.getDate();
-		$('.until').html(dateString);
-
-		$.ajax({
-			url: "<%= delivery_people_path %>",
-			dataType: "json",
-			method: 'get',
-			data: {'days':days},
-			success: function(data){
-				$('.delivery-form-value .t-list').html(data['template']);
-			}
-		})
-	})
+ var hideInactive = function(e){
+ 		e.preventDefault();
+ 		$('.admin-delivery-people .inactive').slideUp(300,function(){
+	 		$('.show-inactive .show-btn').show();
+	 		$('.show-inactive .hide-btn').hide(); 			
+ 		});
+ }
 
 </script>
-
 
 
