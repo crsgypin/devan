@@ -42,7 +42,8 @@
 
 
 <script>
-$(document).ready(function(){
+$(document).on('page:load',function(){
+		console.log('customer-routes load');
 	$('.customer-routes').on('change','.date-selector',function(){
 		$('.customer-routes .day-form').submit();		
 	})

@@ -1,5 +1,6 @@
 //switch
-$(document).ready(function(){
+$(document).on('page:load',function(){
+	console.log('main load');
 	$('.menu-inner').on('click','a',function(e){
 		e.preventDefault();
 
