@@ -19,5 +19,5 @@
 //= require jquery-ui/sortable
 //= require underscore
 //= require gmaps/google
-//= require turbolinks
+
 //= require_tree .
