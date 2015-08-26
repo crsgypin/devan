@@ -11,20 +11,32 @@
 	<tr>
 		<td> 電話 </td>
 		<td>
-			<% @manufacturer.phones.each_with_index do |phone,index| %>
-				<%= hidden_field_tag "manufacturer[phones_attributes][#{index}][id]", phone.id %> 
-				<%= text_field_tag "manufacturer[phones_attributes][#{index}][number]", phone.number,:class=>"t-field" %> 
-			<% end %>
+			<div class="attribute-field-group">
+				<% @manufacturer.phones.each_with_index do |phone,index| %>
+					<div class="attribute-field">
+						<%= hidden_field_tag "manufacturer[phones_attributes][#{index}][id]", phone.id %> 
+						<%= text_field_tag "manufacturer[phones_attributes][#{index}][number]", phone.number,:class=>"t-field" %> 
+						<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+					</div>
+				<% end %>
+				<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-primary btn-xs" %>				
+			</div>
 		</td>
 	</tr>
 
 	<tr>
 		<td> 傳真 </td>
 		<td> 
-			<% @manufacturer.faxes.each_with_index do |fax,index| %>
-				<%= hidden_field_tag "manufacturer[faxes_attributes][#{index}][id]", fax.id %> 
-				<%= text_field_tag "manufacturer[faxes_attributes][#{index}][number]", fax.number,:class=>"t-field" %> 
-			<% end %>
+			<div class="attribute-field-group">
+				<% @manufacturer.faxes.each_with_index do |fax,index| %>
+					<div class="attribute-field">
+						<%= hidden_field_tag "manufacturer[faxes_attributes][#{index}][id]", fax.id %> 
+						<%= text_field_tag "manufacturer[faxes_attributes][#{index}][number]", fax.number,:class=>"t-field" %> 
+						<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+					</div>
+				<% end %>
+			<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-primary btn-xs" %>				
+			</div>
 		</td>
 	</tr>
 
@@ -47,10 +59,16 @@
 	<tr>
 		<td> 地址 </td>
 		<td> 
-			<% @manufacturer.addresses.each_with_index do |address,index| %>
-				<%= hidden_field_tag "manufacturer[addresses_attributes][#{index}][id]",address.id %>
-				<%= text_field_tag "manufacturer[addresses_attributes][#{index}][address]", address.address,:class=>"t-area" %> 
-			<% end %>
+			<div class="attribute-field-group">
+				<% @manufacturer.addresses.each_with_index do |address,index| %>
+					<div class="attribute-field">
+						<%= hidden_field_tag "manufacturer[addresses_attributes][#{index}][id]",address.id %>
+						<%= text_field_tag "manufacturer[addresses_attributes][#{index}][address]", address.address,:class=>"t-area" %>
+						<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+					</div>
+				<% end %>
+				<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-primary btn-xs" %>
+			</div>
 		</td>
 	</tr>
 </table>

@@ -170,30 +170,6 @@
 				}
 			})
 		},
-		addCustomerRow: function(e,object){
-			e.preventDefault();
-			var tr = $(object).closest('tr');
-			var index = parseInt(tr.attr('index'));
-			var newTr = tr.clone();
-			newTr.find('[name]').each(function(i,elm){
-				var name = $(elm).attr('name');
-				var id = $(elm).attr('id');
-				$(elm).attr('name', $(elm).attr('name').replace(index,index+1));
-				$(elm).attr('id', $(elm).attr('id').replace(index,index+1));
-				$(elm).val("");
-			})
-			newTr.find('label').each(function(i,elm){
-				$(elm).text($(elm).text().replace(index+1,index+2));
-			})
-			newTr.attr('index',index+1)
-			tr.find('a').remove();
-
-			tr.after(newTr);
-		},
-		removeCustomerRow: function(e,object){
-			e.preventDefault();
-			var tr = $(object).closest('tr');
-		}
 	}
 
 	adminCustomer.refreshStatus();

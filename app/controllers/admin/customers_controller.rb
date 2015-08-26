@@ -40,6 +40,10 @@ class Admin::CustomersController < ApplicationController
 	end
 
 	def edit
+		@customer.phones.new if @customer.phones.count ==0
+		@customer.faxes.new if @customer.faxes.count ==0
+		@customer.addresses.new if @customer.addresses.count ==0
+
 		respond_to do |format|
 			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/form.html",:locals=>{:customer=>@customer})}}
 		end
@@ -76,9 +80,9 @@ private
 
 	def customer_params
 		params.require(:customer).permit(:code, :name, :description, :status,
-															:phones_attributes=>[:id,:number],
-															:faxes_attributes=>[:id,:number],
-															:addresses_attributes=>[:id,:address,:city_id,:district_id],
+															:phones_attributes=>[:id,:number,:_destroy],
+															:faxes_attributes=>[:id,:number,:_destroy],
+															:addresses_attributes=>[:id,:address,:city_id,:district_id,:_destroy],
 															:customer_delivery_day_attributes=>[:id,:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
 	end
 

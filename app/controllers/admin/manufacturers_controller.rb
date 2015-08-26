@@ -30,7 +30,9 @@ class Admin::ManufacturersController < ApplicationController
 	end
 
 	def edit
-
+		@manufacturer.addresses.new if @manufacturer.addresses.count ==0
+		@manufacturer.phones.new if @manufacturer.phones.count ==0
+		@manufacturer.faxes.new if @manufacturer.faxes.count ==0
 	end
 
 	def update
@@ -62,9 +64,9 @@ private
 	def manufacturer_params
 		params.require(:manufacturer).permit(:name,:description, 
 											:manufacturer_keys_attributes=>[:id, :name, :note, :mapping_key],
-											:phones_attributes=>[:id, :number],
-											:faxes_attributes=>[:id, :number],
-											:addresses_attributes=>[:id, :address,:city_id,:district_id] )
+											:phones_attributes=>[:id, :number,:_destroy],
+											:faxes_attributes=>[:id, :number,:_destroy],
+											:addresses_attributes=>[:id, :address,:city_id,:district_id,:_destroy] )
 
 	end
 
