@@ -170,8 +170,10 @@
 				}
 			})
 		},
-		addCustomerRow: function(e,object){
+		addRow: function(e,object){
 			e.preventDefault();
+			var group = $(object).closest('attribute-field-group')
+
 			var tr = $(object).closest('tr');
 			var index = parseInt(tr.attr('index'));
 			var newTr = tr.clone();
@@ -190,7 +192,7 @@
 
 			tr.after(newTr);
 		},
-		removeCustomerRow: function(e,object){
+		removeRow: function(e,object){
 			e.preventDefault();
 			var tr = $(object).closest('tr');
 		}

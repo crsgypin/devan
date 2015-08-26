@@ -34,59 +34,56 @@
 			<td></td>
 		</tr>
 
-		<% customer.addresses.each_with_index do |address,index| %>
-			<% pre_text = "customer[addresses_attributes]" %>
-			<tr index="<%=index%>">
-				<td> 
-					<%= hidden_field_tag "#{pre_text}[#{index}][id]", address.id %>
-					<%= label_tag "#{pre_text}[#{index}][address]","地址#{index+1}" %> 
-				</td> 
-				<td> <%= text_field_tag "#{pre_text}[#{index}][address]",address.address %> </td>
-				<td>
-					<% if index== customer.addresses.length-1 %>
-						<%= link_to "新增欄位","", :onClick=>"adminCustomer.addCustomerRow(event,this)", :class=>"btn btn-primary btn-xs" %> 					
-						<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeCustomerRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+		<tr>
+			<td> 地址 </td>
+			<td>
+				<div class="attribute-field-group">
+					<% customer.addresses.each_with_index do |address,index| %>
+						<div class="attribute-field">
+							<%= hidden_field_tag "customer[addresses_attributes][#{index}][id]", address.id %>
+							<%= text_field_tag "customer[addresses_attributes][#{index}][address]",address.address %>
+							<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+						</div>
 					<% end %>
-				</td>
-			</tr>
-		<% end %>
+
+					<%= link_to "新增欄位","", :onClick=>"adminCustomer.addRow(event,this)", :class=>"btn btn-primary btn-xs" %> 					
+				</div>
+
+			</td>
+		</tr>
+
+		<tr>
+			<td> 電話 </td>
+			<td>
+				<div class="attribute-field-group">
+					<% customer.phones.each_with_index do |phone,index| %>		
+						<div class="attribute-field">
+							<%= hidden_field_tag "customer[phones_attributes][#{index}][id]", phone.id %>						
+							<%= text_field_tag "customer[phones_attributes][#{index}][number]",phone.number %> 
+						</div>					
+					<% end %>
+
+					<%= link_to "新增欄位","", :onClick=>"adminCustomer.addRow(event,this)", :class=>"btn btn-primary btn-xs" %>
+					<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+				</div>
+			</td>
+		</tr>
 		
-		<% customer.phones.each_with_index do |phone,index| %>		
-			<% pre_text = "customer[phones_attributes]" %>
-			<tr index="<%=index%>" class="admin-form-customer-rows">
-				<td> 
-					<%= hidden_field_tag "#{pre_text}[#{index}][id]", phone.id %>
-					<%= label_tag "#{pre_text}[#{index}][number]","電話#{index+1}" %> 
-				</td> 
-				<td>
-					<%= text_field_tag "#{pre_text}[#{index}][number]",phone.number %> 
-				</td>
-				<td> 
-					<% if index== customer.addresses.length-1 %>
-						<%= link_to "新增欄位","", :onClick=>"adminCustomer.addCustomerRow(event,this)", :class=>"btn btn-primary btn-xs" %>
-						<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeCustomerRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+		<tr>
+			<td> 傳真 </td>
+			<td>
+				<div class="attribute-field-group">
+					<% customer.faxes.each_with_index do |fax,index| %>				
+						<div class="attribute-field">
+							<%= hidden_field_tag "#customer[faxes_attributes][#{index}][id]", fax.id %>
+							<%= text_field_tag "customer[faxes_attributes][#{index}][number]",fax.number %>
+						</div>
 					<% end %>
-				</td>
-			</tr>
-		<% end %>
-
-		<% customer.faxes.each_with_index do |fax,index| %>		
-			<% pre_text = "customer[faxes_attributes]" %>
-			<tr index="<%=index%>">
-				<td> 
-					<%= hidden_field_tag "#{pre_text}[#{index}][id]", fax.id %>
-					<%= label_tag "#{pre_text}[#{index}][number]","傳真#{index+1}" %> 
-				</td> 
-				<td> <%= text_field_tag "#{pre_text}[#{index}][number]",fax.number %> </td>
-				<td>
-					<% if index== customer.addresses.length-1 %>
-						<%= link_to "新增欄位","", :onClick=>"adminCustomer.addCustomerRow(event,this)", :class=>"btn btn-primary btn-xs" %> 		
-						<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeCustomerRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
-
-					<% end %>
-				</td>
-			</tr>
-		<% end %>
+					<%= link_to "新增欄位","", :onClick=>"adminCustomer.addRow(event,this)", :class=>"btn btn-primary btn-xs" %> 		
+					<%= link_to "移除欄位","", :onClick=>"adminCustomer.removeRow(event,this)", :class=>"btn btn-danger btn-xs" %>						
+				</div>
+			</td>
+		</tr>
 	</table>
 <% end %> <%# form tag %>
 
