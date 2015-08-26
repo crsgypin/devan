@@ -170,16 +170,6 @@
 				}
 			})
 		},
-		addRow: function(e,object){
-			e.preventDefault();
-			var vAttrFieldGroup = new vAttributeFieldGroup($(object).closest('.attribute-field-group')[0])
-			vAttrFieldGroup.addRow();
-		},
-		removeRow: function(e,object){
-			e.preventDefault();
-			var vAttrField = new vAttributeField($(object).closest('.attribute-field')[0])
-			vAttrField.removeSelf();
-		}
 	}
 
 	adminCustomer.refreshStatus();

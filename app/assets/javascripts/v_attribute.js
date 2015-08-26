@@ -1,3 +1,14 @@
+var vAttributeAddRow = function(e,object){
+	e.preventDefault();
+	var vAttrFieldGroup = new vAttributeFieldGroup($(object).closest('.attribute-field-group')[0])
+	vAttrFieldGroup.addRow();
+}
+
+var vAttributeRemoveRow = function(e,object){
+	e.preventDefault();
+	var vAttrField = new vAttributeField($(object).closest('.attribute-field')[0])
+	vAttrField.removeSelf();
+}
 
 var vAttributeFieldGroup = function(html){
 	this.html = html;
@@ -63,6 +74,7 @@ var vAttributeField = function(html){
 			if(value){
 				$(element).attr('value',"")
 			};
+			$(element).val("");
 		})
 		return newObject;
 	}
