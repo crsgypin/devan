@@ -1,5 +1,4 @@
 class CustomersController < ApplicationController
-	before_action :set_customer, :only=>[:show,:edit,:update,:destroy]
 	before_action :authenticate_user!, :except=>[:index,:show]
 
 	def index
@@ -9,25 +8,14 @@ class CustomersController < ApplicationController
 		@customers = @customers.where(:status=>"經營中")
 		@customers = @customers.page(params[:page]).per(30)
 
-		@map_customers = Customer.includes(:addresses=>[:city]).joins(:addresses=>[:city])
-		@map_customers = @map_customers.where("address <> ''").first(10)
-		set_markers(@map_customers)
-
-		@date_list = []
-		5.times do |index|
-			@date_list << [index.day.ago.strftime('%m/%d %A'), index]
-		end
-
+		delivery_person = DeliveryPerson.first
+		set_customer_routes(Date.today, delivery_person)
 	end
 
 	def update_date
-		before_day = params[:day].to_i.day
-		wday = before_day.ago.strftime('%A').downcase
-
+		before_day = params[:day].to_i.day.ago
 		delivery_person = DeliveryPerson.first
-		@map_customers = Customer.joins(:customer_routes).where("customer_routes.wday = ?", wday).where("customer_routes.delivery_person_id = ?", delivery_person.id)
-		@map_customers = @map_customers.includes(:addresses=>[:city])
-		set_markers(@map_customers)
+		set_customer_routes(date, delivery_person)
 
 		respond_to do |format|
 			format.json {render :json=> {
@@ -64,15 +52,25 @@ class CustomersController < ApplicationController
 	end
 
 private 
-	def set_markers(customers)
+	def set_customer_routes(date,delivery_person)
+		wday = date.strftime('%A').downcase
+    @customer_routes = CustomerRoute.includes(:delivery_person,:customer=>[:addresses]).order(:row_order)
+    @customer_routes = @customer_routes.where(:wday=>wday,:delivery_person=>delivery_person)
+
 		customer_markers = [];
-		customers.each do |customer|
-			lat = customer.addresses[0].lat
-			lng = customer.addresses[0].lng
-			info = customer.name
+		@customer_routes.each do |customer_route|
+			customer = customer_route.customer
+			if customer.addresses[0].lat != nil
+				lat = customer.addresses[0].lat
+				lng = customer.addresses[0].lng
+				info = customer.name
+			else
+				lat = 25
+				lng = 121.5
+				info = customer.name
+			end
 			customer_markers << {:lat=>lat, :lng=>lng,:info=>info}
 		end
-
 		@markers = customer_markers.to_json
 	end
 end

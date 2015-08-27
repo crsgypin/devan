@@ -1,19 +1,53 @@
 
 
 .customer-index{
+
 	.customer-route{
-		
-		.list{
-			float: left;
-			padding: 20px 0;
-			width: 40%;
+
+		.info{
+			padding: 50px 20px 20px;
+
+			h1{
+				float: left;
+			}
+			.date-selector{
+				float: right;
+				
+				select{
+					border-radius: 0px;
+					width:300px;
+					height: 50px;
+					font-size: 2.0em;
+				}
+			}			
 		}
 
-		.map{
+		.info::after{
+			content: "";
+			display: block;
+			clear: both;
+		}
+
+		.list{
+			float: left;
+			padding: 20px 30px;
+			width: 100%;
+
+			table{
+				width: 90%;
+				margin: 0 auto;				
+			}
+		}
+
+		.map-box{
 			float: left;
 			padding: 20px 0;
-			width:calc(60% - 20px);
-			margin: 0 0 0 20px;
+			margin: 0 50px;
+
+			#map{
+				width: 800px;
+				height: 600px;
+			}
 		}
 
 		tr.selected{

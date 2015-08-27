@@ -1,11 +1,11 @@
-<%# map_customers %>
+<%# customer_routes %>
 
 <table class="table">
-	<% map_customers.each_with_index do |c,index| %>
+	<% customer_routes.each_with_index do |customer_route,index| %>
 		<tr index=<%=index%> >
 			<td> <%= index+1 %> </td>
-			<td> <%= "#{c.code} -#{c.name}" %> </td>
-			<td class="address"> <%= c.addresses.first.try(:address) %> </td>
+			<td> <%= "#{customer_route.customer.code} -#{customer_route.customer.name}" %> </td>
+			<td class="address"> <%= customer_route.customer.addresses.first.try(:address) %> </td>
 		</tr>
 	<% end %>				
 </table>					

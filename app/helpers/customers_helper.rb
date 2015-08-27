@@ -7,4 +7,13 @@ module CustomersHelper
 		end
 		customer
 	end
+
+	def date_list
+		list = []
+		5.times do |index|
+			list << [index.day.ago.strftime('%m/%d %A'), index]
+		end
+		list
+	end
+
 end
