@@ -109,11 +109,63 @@
 
 <script>
 
+var map;
+var markers=[];
+var bounds;
+function initMap(lat, lng) {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: lat, lng: lng},
+    zoom: 13
+  });
+}
+
+function markCurrentLocation(loc){
+	initMap(loc.coords.latitude, loc.coords.longitude);
+}
+
+function vMarker(lat,lng,infoContent,map){
+	var _this = this;
+	this.infoWindow = new google.maps.InfoWindow({
+		content:infoContent
+	})
+	this.marker = new google.maps.Marker({
+		position: {lat:lat,lng:lng}
+	})
+	this.map = map;
+
+	this.showMarker = function(){
+		_this.marker.setMap(_this.map)
+	}
+
+	this.openInfoWindow = function(){
+		_this.infoWindow.open(_this.map, _this.marker);
+	}
+
+	this.closeInfoWindow = function(){
+		_this.infoWindow.close();
+	}
+
+	this.marker.addListener('click',function(){
+		_this.infoWindow.open(_this.map, _this.marker);
+	})
+}	
 
 $(document).ready(function(){
 
 //route page
-	var customer_markers = <%= @markers %>;
+	var customer_markers = <%=raw @markers %>;
+	initMap(customer_markers[0].lat, customer_markers[0].lng);
+
+	for(i=0;i<customer_markers.length;i++){
+		var cm = customer_markers[i]
+		var vm = new vMarker(cm.lat, cm.lng, cm.info, map)
+		markers.push(vm);
+	}
+	// navigator.geolocation.getCurrentPosition(markCurrentLocation);
+
+	markers.forEach(function(marker){
+		marker.showMarker();
+	})
 
 	$('.customer-route').on('click','tr',function(e){
 		var index = parseInt($(this).attr('index'));
@@ -127,35 +179,29 @@ $(document).ready(function(){
 
 		var subindex = (index < customer_markers.length-1)? index+1 : index-1
 		$($('.customer-index').find('[index=' + (subindex) + ']')).addClass('subselected');			
-		buildMap( [customer_markers[index], customer_markers[subindex]] );			
+		
+		markers.forEach(function(marker){
+			marker.closeInfoWindow();
+		})
+
+		var mainMarker = markers[index];
+		var subMarker = markers[subindex];
+		bounds = new google.maps.LatLngBounds();
+    bounds.extend(mainMarker.marker.getPosition());
+    bounds.extend(subMarker.marker.getPosition());
+    map.fitBounds(bounds);
+
+    bd = new boundd(bounds);
 
 
-
+		mainMarker.openInfoWindow();
+		subMarker.openInfoWindow();
 	}
 
-	var buildMap = function(selected_markers){
-		handler = Gmaps.build('Google');
-		handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
-		  markers = handler.addMarkers(selected_markers);
-
-		  handler.bounds.extendWith(markers);
-		  handler.map.centerOn(markers[0]);
-		  handler.fitMapToBounds();
-
-		  marker = markers[0].getServiceObject();
-		  google.maps.event.addListener(marker, 'mouseover', function() {
-		  	console.log('mouseover');
-
-		  	// var infowindow = new google.maps.InfoWindow({content: 'content' });
-		  	// console.log(infowindow);
-     //    infowindow.open( handler.getMap());
-        // infowindow.serviceObject.open(Gmaps.map.map, marker.serviceObject);
-      });
-
-		});		
+	var boundd = function(bounds){
+		this.bounds = bounds
 	}
 
-	updateMap(0);
 
 //date select
 	$('.customer-route .date-select').change(function(e){
@@ -178,26 +224,5 @@ $(document).ready(function(){
 });
 
 </script>
-
-<%#
-	handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
-	  markers = handler.addMarkers([
-	    {
-	      "lat": 25.0822863,
-	      "lng": 121.5494786,
-	      "picture": {
-	        "width":  36,
-	        "height": 36
-	      },
-	      "infowindow": "hello!"
-	    },
-	    {
-	    	"lat":25.09,
-	    	"lng":121.551,
-	    	"infowindow": "Yep"
-	    }
-	  ]);
-
-%>
 
 

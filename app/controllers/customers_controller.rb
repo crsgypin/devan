@@ -65,19 +65,15 @@ class CustomersController < ApplicationController
 
 private 
 	def set_markers(customers)
-		hash = Gmaps4rails.build_markers(customers) do |customer, marker|
-			if customer.addresses[0].try(:lat)
-			  marker.lat customer.addresses[0].try(:lat)
-			  marker.lng customer.addresses[0].try(:lng)
- 		  else
- 		  	marker.lat 25
- 		  	marker.lng 121.5
- 		  end
-		  # marker.infowindow "#{customer.code} <br> #{customer.name} <br> #{customer.addresses[0].try(:address)}"
-		  marker.infowindow "#{customer.code} <br> #{customer.name}"
+		customer_markers = [];
+		customers.each do |customer|
+			lat = customer.addresses[0].lat
+			lng = customer.addresses[0].lng
+			info = customer.name
+			customer_markers << {:lat=>lat, :lng=>lng,:info=>info}
 		end
 
-		@markers = hash.to_json.html_safe
+		@markers = customer_markers.to_json
 	end
-
 end
+

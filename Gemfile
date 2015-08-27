@@ -38,8 +38,6 @@ gem 'nested_form_fields'
 gem 'kaminari'
 gem "mysql2"
 
-gem 'gmaps4rails'
-gem 'underscore-rails'
 gem 'geocoder'
 
 
