@@ -1,0 +1,53 @@
+<%# daily_form, form_values %>
+
+<div class="title">
+	<h1> <%= daily_form_title(daily_form) %> </h1>
+	<div class="date">
+		<%= select_tag "form_date", options_for_select(@form_list,daily_form.id),:class=>"form-date" %>
+	</div>
+	<div class="edit"> 
+		<%= link_to "編寫表單","", :class=>"btn btn-warning edit-button" %> 
+	</div>		
+</div>
+
+<table class="table table-striped form-value-show-table">
+	<thead>		
+		<tr>
+			<td>			 </td>
+			<td> 客戶   </td>
+			<td> 廠商   </td>
+			<td> 送貨員 </td>
+			<td> 欄數   </td>
+			<td> 現金 	  </td>
+			<td> 月結   </td>
+			<td> 特結   </td>
+			<td> 未收   </td>
+			<td> 運費   </td>
+			<td> 應收現  </td>	
+			<td> 備註   </td>
+			<td> </td>
+		</tr>
+	</thead>
+	<tbody>		
+	<% form_values.each_with_index do |form_value,index| %>
+		<tr class="form-value-<%=form_value.form_value_index%>">
+			<td> <%= index +1 %> </td>
+			<td> <%= form_value.customer.try(:name) %> </td>
+			<td> <%= form_value.manufacturer.try(:name) %> </td>
+			<td> <%= form_value.delivery_person.try(:name) %> </td>	
+			<td> <%= form_value.basket %> </td>
+			<td> <%= form_value.key1 %> </td>
+			<td> <%= form_value.key2 %> </td>
+			<td> <%= form_value.key3 %> </td>
+			<td> <%= form_value.key4 %> </td>
+			<td> <%= form_value.key5 %> </td>
+			<td> <%= form_value.key6 %> </td>
+			<td> <%= form_value.note %> </td>
+		</tr>
+	<% end %>
+	</tbody>
+</table>
+
+
+
+

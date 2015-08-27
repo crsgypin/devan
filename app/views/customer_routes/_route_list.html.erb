@@ -1,0 +1,18 @@
+<%# delivery_person, wday %>
+
+<table class="table table-bordered delivery-person-col" >
+	<% customer_routes = delivery_person.customer_routes.includes(:customer).where('wday = ?',wday.downcase).order(:row_order) %>
+
+	<% customer_routes.each do |customer_route| %>
+		<tr url=<%= customer_route_move_path(customer_route) %> >
+			<td> 
+				<div class="name">
+					<%= "#{customer_route.customer.code}-#{customer_route.customer.name}" %>
+				</div>  
+				<div class="action">
+					<%= link_to "X", customer_route_path(customer_route), :class=>"btn btn-danger btn-xs remove", :target=>".delivery-person-#{delivery_person.id}" %>
+				</div>
+			</td>
+		</tr>
+	<% end %>
+</table>

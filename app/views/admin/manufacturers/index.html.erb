@@ -1,0 +1,49 @@
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"selected" %>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+	
+		<div class="admin-manufacturers">
+			<div class="info-box">
+				<h1> 合作廠商 </h1>
+				<p class="message"> 
+					<%= flash[:success] %> 
+					<%= flash[:fail] %>
+				</p>
+				<p class="add-new">
+					<%= link_to "新增廠商", new_admin_manufacturer_path, :class=>"btn btn-info" %>
+				</p>				
+			</div>
+
+			<table class="table table-striped">
+				<tr>
+					<td width="20%"> 名字 </td>
+					<td width="20%"> 電話 </td>
+					<td width="20%"> 傳真 </td>
+					<td width="20%"> 地址 </td>
+					<td width="10%"></td>
+				</tr>
+
+				<% @manufacturers.each do |manufacturer| %>
+					<tr>
+						<td> <%= manufacturer.name %> </td>
+						<td> <%= manufacturer.phones.map{|p| p.number}.join(',') %> </td>
+						<td> <%= manufacturer.faxes.map{|f| f.number}.join(',') %> </td>
+						<td> <%= manufacturer.addresses.map{|addr| addr.address}.join(';') %> </td>
+						<td> 
+							<%= link_to "詳細內容",edit_admin_manufacturer_path(manufacturer), :class=>"btn btn-primary btn-xs" %>
+						</td>
+					</tr>
+				<% end %>
+			</table>			
+		</div>
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+

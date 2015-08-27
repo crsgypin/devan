@@ -1,0 +1,134 @@
+
+<%# selector for new dialogue %>
+<div class="daily-form-dialogue">
+	<h3 class="title">
+		請選擇製造商與日期
+	</h3>
+	<%= form_tag new_daily_form_path, :method=>:get, :class=>"daily-form-new-form" do %>
+		<div class="manufacturer-select">
+			<%= select :daily_form, :manufacturer_id, Manufacturer.all.map{|m| [m.name,m.id]} %>
+		</div>
+		<div class="date-select">
+			<%= text_field_tag "daily_form[date]", Date.today.strftime('%F'), :class=>"daily-form-date" %>
+		</div>
+		<div class="form-submit">
+			<%= link_to "新增表單", "", :class=>"btn btn-info daily-form-check" %>			
+			<%= link_to "取消","", :class=>"btn btn-warning cancel-daily-form-dialogue" %>
+		</div>
+	<% end %>
+</div>
+
+<%# background for popout dialogue %>
+<%= link_to "","", :class=>"overlay cancel-daily-form-dialogue cancel-daily-form-fail-dialogue"%>
+
+<%# fail dialogue %>
+<div class="daily-form-fail-dialogue">
+	<h3> 抱歉，你選擇的製造商表單在今天已經被開啟囉 </h3>
+	<%= link_to "我知道了", "",:class=>"btn btn-warning cancel-daily-form-fail-dialogue" %>
+</div>
+
+
+<script>
+
+	$('.add-new-daily-form').click(function(e){
+		e.preventDefault();
+		openFormDialogue();
+	})
+
+	$('.cancel-daily-form-dialogue').click(function(e){
+		e.preventDefault();
+		closeFormDialogue();
+	})
+
+	$('.cancel-daily-form-fail-dialogue').click(function(e){
+		closeFailDialogue();
+		e.preventDefault();
+	})
+
+
+	$('.daily-form-date').datepicker({ dateFormat: 'yy-mm-dd' });
+
+	$('.daily-form-check').click(function(e){
+		e.preventDefault();
+		var form = $('.daily-form-new-form')
+		var valuesToSubmit = form.serialize();
+
+	  $.ajax({
+      url: "<%= check_daily_form_daily_forms_path %>", //sumbits it to the given url of the form
+      data: valuesToSubmit,
+      dataType: "JSON" // you want a difference between normal and ajax-calls, sand json is standard
+	  }).success(function(json){
+	  	if (json['result']){
+	  		closeFormDialogue(openFailDialogue);
+	  	}else{
+	  		form.submit();
+	  	}
+	  });
+	})
+
+
+	var openFormDialogue = function(callback){
+		$('.overlay').show(10,function(){
+			$('.daily-form-dialogue').slideDown(200,function(){
+				(callback && typeof(callback) === "function") && callback();
+			});
+		})		
+	}
+
+	var closeFormDialogue = function(callback){
+		$('.daily-form-dialogue').slideUp(200,function(){
+			$('.overlay').hide(10,function(){
+				(callback && typeof(callback) === "function") && callback();
+			});
+		});		
+	}
+
+	var openFailDialogue = function(callback){
+		$('.overlay').show(10,function(){
+			$('.daily-form-fail-dialogue').slideDown(200,function(){
+				(callback && typeof(callback) === "function") && callback();
+			});
+		})		
+	}
+
+	var closeFailDialogue = function(callback){
+		$('.daily-form-fail-dialogue').slideUp(200,function(){
+			$('.overlay').hide(10,function(){
+				(callback && typeof(callback) === "function") && callback();
+			});
+		});		
+	}
+
+
+// $('.daily-form-dialogue').hide();
+
+//arrow up down left and right
+	$('.t-field').keydown(function(e){
+		var col = parseInt($($(this).parent()).attr('col'));
+		var row = parseInt($($(this).parent().parent()).attr('row'));
+
+		if (e.keyCode===37) {
+			goToDOM(row,col-1)
+		}else if(e.keyCode===38) {
+			goToDOM(row-1,col)
+		}else if(e.keyCode===39) {
+			goToDOM(row,col+1)
+		}else if (e.keyCode===40 || e.keyCode===13) {
+			goToDOM(row+1,col)
+		}
+		if (e.keyCode===13) {
+			e.preventDefault();
+		}
+	})
+
+	var goToDOM = function(row,col){
+		var rowAttr = '[row=' + row + ']'
+		var colAttr = '[col=' + col + ']'
+		var target = $($(rowAttr).find(colAttr));
+		target.find('.t-field').focus();
+
+	}
+
+</script>
+
+

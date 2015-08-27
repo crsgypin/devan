@@ -16,5 +16,6 @@
 //= require select2
 //= require nested_form_fields
 //= require jquery_ujs
-//= require turbolinks
+//= require jquery-ui/sortable
+
 //= require_tree .

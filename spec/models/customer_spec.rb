@@ -4,16 +4,16 @@ RSpec.describe Customer, type: :model do
 
   before do
     @manufacturer = Manufacturer.create(:name=>"aa")
-    @daily_form = @manufacturer.daily_forms.create(:date=> Date.today)
+    @customer = Customer.create(:name=>"aa")
+    @daily_form = DailyForm.create(:date=> Date.today)
 
   end
 
   describe "確認刪除: " do
 
   	before do
-      @customer = Customer.create(:name=>"aa")
-      @daily_form.form_values.create(:customer=>@custoemr, :delivery_person_id=>1,:key1=>123)
-      @daily_form.form_values.create(:customer=>@customer, :delivery_person_id=>1,:key1=>44)
+      @daily_form.form_values.create(:manufacturer=>@manufacturer, :customer=>@customer, :delivery_person_id=>1,:key1=>123)
+      @daily_form.form_values.create(:manufacturer=>@manufacturer, :customer=>@customer, :delivery_person_id=>1,:key1=>44)
       @customer.destroy
   	end
 
@@ -25,7 +25,6 @@ RSpec.describe Customer, type: :model do
 
   describe "確認刪除: " do 
     before do
-      @customer = Customer.create(:name=>"aa")
       @customer.destroy
     end
 

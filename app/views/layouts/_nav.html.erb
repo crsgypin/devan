@@ -1,7 +1,7 @@
 <div class="nav-box">
 	<div class="nav">
 		<h1 class="brand">
-			品冠貨運公司
+			<%= link_to "品冠貨運公司", root_path %>
 		</h1>
 
 		<div class="function">
@@ -15,11 +15,7 @@
 			<ul class="item-list">
 				<li><%= link_to "報表", daily_forms_path %> </li>
 				<li><%= link_to "客戶", customers_path %> </li>
-				<li><%= link_to "廠商", manufacturers_path %> </li>
-				<li><%= link_to "送貨員", delivery_people_path %> </li>
-				<li><%= link_to "縣市", cities_path %> </li>
-				<li><%= link_to "市/鎮/區", districts_path %> </li>
-
+				<li><%= link_to "設定", admin_customers_path %> </li>
 			</ul>
 		</div>
 	</div>

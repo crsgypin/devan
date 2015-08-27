@@ -3,39 +3,40 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  resources :daily_forms do
-    collection do
-      get :check_daily_form
-    end
+  root "homes#index"
 
-    member do
-      get :add_row
-      get :print
+  resources :daily_forms do
+
+    collection do
+      delete 'delete_form_value/:id', :to=>'daily_forms#delete_form_value', 
+                                                  :as=>'form_value'
+      get :new_form_value
     end
+  end
+
+  resources :customer_routes do
+    post :move
+
   end
 
   resources :customers do 
-    collection do 
-      get :profiles
-      get :deliveried_days
-      get :delivery_plan_days
-    end
-
-    member do
-      post :update_status
+    collection do
+      get :update_date
+      get :delivery_routes
     end
   end
 
-  resources :delivery_people do 
-    member do
-      get :form_values
+  namespace :admin do 
+    resources :customers do
+      member do
+        post :set_status
+      end
     end
+    resources :manufacturers
+    resources :delivery_people
   end
-  resources :manufacturers
-  resources :cities
-  resources :districts
 
-  root "daily_forms#index"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -1,0 +1,44 @@
+<%# daily_form, form_values %>
+<div class="title">
+	<h1> <%=daily_form_title(daily_form)%> 
+		<span class="label label-warning editing">編輯中 </span>
+	</h1>
+	<div class="submit"> 
+		<%= link_to "儲存並繳交","", :class=>'submit-button btn btn-primary' %>
+	</div>		
+</div>
+
+<%= form_tag '#', :class=>"form-value-form" do %>
+	<%= hidden_field_tag :daily_form_id, daily_form.id, :class=>"daily-form-id" %>
+	<table class="table form-value-form-table">
+		<thead>		
+			<tr>
+				<td col="0"></td>
+				<td col="1"> 客戶 </td>
+				<td col="2"> 廠商 </td>
+				<td col="3"> 送貨員 </td>
+				<td col="4"> 欄數 </td>
+				<td col="5"> 現金 </td>
+				<td col="6"> 月結 </td>
+				<td col="7"> 特結 </td>
+				<td col="8"> 未收 </td>
+				<td col="9"> 運費 </td>
+ 				<td col="10"> 應收現</td>	
+				<td col="11"> 備註 </td>
+				<td col="12"></td>
+			</tr>
+		</thead>
+		<tbody>		
+		
+		<%= render :partial=>"daily_forms/form_values_edit_row.html", 
+							 :collection=> form_values, 
+							 :as=> :form_value %>
+
+		</tbody>
+	</table>
+
+	<%= link_to "新增行數", "", :class=>"form-value-new btn btn-success" %>
+
+<% end %>
+
+

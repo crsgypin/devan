@@ -1,176 +1,35 @@
-<div class="heading-box">
-	<div class="heading-inner">
-		<div class="info-box">
-			<h2 class="title">
-			  報表清單
-			</h2>
-
-			<div class="message">
-				<% if flash[:success].present? %>
-					<div class="success"> <%= flash[:success] %> </div>
-				<% elsif flash[:fail].present? %>
-					<div class="fail"> <%= flash[:fail] %> </div>
-				<% end %>
-			</div>
-
-			<ul class="sub-nav">
-				<li> <%= link_to "全部", daily_forms_path, :class=>"selected" %> </li>
-			</ul>			
-		</div>
-
-		<div class="submit-box"> 
-			<%= link_to "新增表單","",:class=>"btn btn-primary add-new-daily-form" %>
-		</div>
+<div class="menu-box">
+	<div class="menu-inner">
+		<%= link_to "農場表單", "",:class=>"selected",:content=>".daily-form"%>
+		<%= link_to "表單紀錄","",:class=>"", :content=>".daily-form-log"%>
 	</div>
 </div>
-
 
 <div class="content-box">
 	<div class="content-inner">
 
-		<div class="daily-form-index">
-			<div class="page-box">
-				<%= paginate @daily_forms %>				
+		<div class="daily-form-index">			
+
+			<div class="daily-form">
+				<div class="form-show">
+					<%= render :partial=>"daily_forms/form_values_show", :locals=>{:daily_form=>@daily_form, :form_values=>@form_values} %>			
+				</div>
+				<div class="form-edit" style="display:none;">
+				</div>
 			</div>
 
-			<table class="table table-bordered content">
-				<thead>
-					<tr>
-						<th>日期</th>
-						<th>製造商</th>
-						<th>編寫者</th>
-						<th></th>	
-					</tr>
-				</thead>
-				<tbody>
-					<% @daily_forms.each do |daily_form| %>
-						<tr>
-							<td>
-								<%= daily_form.date %>
-							</td>
-							<td>
-								<%= daily_form.manufacturer.name %>
-							</td>
-							<td>
-								<%= daily_form.users.map{|u| u.email}.join(', ') %>
-							</td>
-							<td>
-								<%= link_to "查看", daily_form_path(daily_form),:class=>"btn btn-primary" %>
-							</td>
-						</tr>
-					<% end %>
-				</tbody>
-			</table>
-		</div>
+			<div class="daily-form-log" style="display:none;">
+				<%= render :partial=>"daily_forms/daily_form_log", :locals=>{:daily_forms=>@daily_forms} %>
+			</div>
+
+		</div> <%# daily-form-index %>
+
 
 	</div> <%# content-inner %>
 </div> <%# content-box %>
 
-
-<%# selector for new dialogue %>
-<div class="daily-form-dialogue">
-	<h3 class="title">
-		請選擇製造商與日期
-	</h3>
-	<%= form_tag new_daily_form_path, :method=>:get, :class=>"daily-form-new-form" do %>
-		<div class="manufacturer-select">
-			<%= select :daily_form, :manufacturer_id, Manufacturer.all.map{|m| [m.name,m.id]} %>
-		</div>
-		<div class="date-select">
-			<%= text_field_tag "daily_form[date]", Date.today.strftime('%F'), :class=>"daily-form-date" %>
-		</div>
-		<div class="form-submit">
-			<%= link_to "新增表單", "", :class=>"btn btn-info daily-form-check" %>			
-			<%= link_to "取消","", :class=>"btn btn-warning cancel-daily-form-dialogue" %>
-		</div>
-	<% end %>
-</div>
-
-<%# background for popout dialogue %>
-<%= link_to "","", :class=>"overlay cancel-daily-form-dialogue cancel-daily-form-fail-dialogue"%>
-
-<%# fail dialogue %>
-<div class="daily-form-fail-dialogue">
-	<h3> 抱歉，你選擇的製造商表單在今天已經被開啟囉 </h3>
-	<%= link_to "我知道了", "",:class=>"btn btn-warning cancel-daily-form-fail-dialogue" %>
-</div>
+<%= render :partial=>"daily_forms/form_values_js",:locals=>{:daily_form=>@daily_form, :customer_list=>@customer_list} %>
 
 
-<script>
-
-	$('.add-new-daily-form').click(function(e){
-		e.preventDefault();
-		openFormDialogue();
-	})
-
-	$('.cancel-daily-form-dialogue').click(function(e){
-		e.preventDefault();
-		closeFormDialogue();
-	})
-
-	$('.cancel-daily-form-fail-dialogue').click(function(e){
-		closeFailDialogue();
-		e.preventDefault();
-	})
-
-
-	$('.daily-form-date').datepicker({ dateFormat: 'yy-mm-dd' });
-
-	$('.daily-form-check').click(function(e){
-		e.preventDefault();
-		var form = $('.daily-form-new-form')
-		var valuesToSubmit = form.serialize();
-
-	  $.ajax({
-      url: "<%= check_daily_form_daily_forms_path %>", //sumbits it to the given url of the form
-      data: valuesToSubmit,
-      dataType: "JSON" // you want a difference between normal and ajax-calls, sand json is standard
-	  }).success(function(json){
-	  	if (json['result']){
-	  		closeFormDialogue(openFailDialogue);
-	  	}else{
-	  		form.submit();
-	  	}
-	  });
-	})
-
-
-	var openFormDialogue = function(callback){
-		$('.overlay').show(10,function(){
-			$('.daily-form-dialogue').slideDown(200,function(){
-				(callback && typeof(callback) === "function") && callback();
-			});
-		})		
-	}
-
-	var closeFormDialogue = function(callback){
-		$('.daily-form-dialogue').slideUp(200,function(){
-			$('.overlay').hide(10,function(){
-				(callback && typeof(callback) === "function") && callback();
-			});
-		});		
-	}
-
-	var openFailDialogue = function(callback){
-		$('.overlay').show(10,function(){
-			$('.daily-form-fail-dialogue').slideDown(200,function(){
-				(callback && typeof(callback) === "function") && callback();
-			});
-		})		
-	}
-
-	var closeFailDialogue = function(callback){
-		$('.daily-form-fail-dialogue').slideUp(200,function(){
-			$('.overlay').hide(10,function(){
-				(callback && typeof(callback) === "function") && callback();
-			});
-		});		
-	}
-
-
-// $('.daily-form-dialogue').hide();
-
-
-</script>
 
 

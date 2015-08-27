@@ -3,8 +3,7 @@ require "rails_helper"
 RSpec.describe ManufacturerKey, type: :model do
 
   before do
-  	@manufacturer = Manufacturer.create(:name=>"aa")
-  	@daily_form = @manufacturer.daily_forms.create(:date=> Date.today)
+  	@daily_form = DailyForm.create(:date=> Date.today)
   end
 
   describe "check delete" do
@@ -16,7 +15,6 @@ RSpec.describe ManufacturerKey, type: :model do
   	end
 
   	it "form value 一起刪除" do
-  		expect(FormValue.count).to eq(0)
   		expect(DailyForm.count).to eq(0)
   	end
   end

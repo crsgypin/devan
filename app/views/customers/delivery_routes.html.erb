@@ -1,0 +1,153 @@
+
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "今日路線", delivery_routes_customers_path,:class=>"selected",:content=>".customer-route"%>
+		<%= link_to "查詢", customers_path, :content=>".customer-search"%>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+
+		<div class="delivery-routes">
+			<div class="info">
+				<h1>路線(<%=@customer_routes.length%>)</h1>
+				<div class="date-selector">
+					<%= form_tag delivery_routes_customers_path,:method=>:get do %>
+						<%= select_tag "date_select", 
+										options_for_select(date_list,@before_day), 
+										:class=>"date-select",
+										:name=>"day", 
+										:url=> update_date_customers_path %>		
+					<% end %>	
+				</div>					
+			</div>
+
+
+			<div class="map-box">
+				<div>
+				  <div id="map"></div>
+				</div>
+			</div>
+
+			<div class="list">
+				<table class="table">
+					<% @customer_routes.each_with_index do |customer_route,index| %>
+						<tr index=<%=index%> >
+							<td> <%= index+1 %> </td>
+							<td> <%= "#{customer_route.customer.code} -#{customer_route.customer.name}" %> </td>
+							<td class="address"> <%= customer_route.customer.addresses.first.try(:address) %> </td>
+						</tr>
+					<% end %>				
+				</table>			
+			</div>
+			
+		</div>
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+
+<script src="//maps.google.com/maps/api/js?v=3.13&amp;sensor=false&amp;libraries=geometry" type="text/javascript"></script>
+<script src='//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js' type='text/javascript'></script>				
+
+<script>
+
+$('.delivery-routes .date-select').change(function(e){
+	e.preventDefault();
+	var form = this.closest('form')
+	form.submit();
+})
+
+var map;
+var markers=[];
+function initMap(lat, lng) {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: lat, lng: lng},
+    zoom: 13
+  });
+}
+
+function markCurrentLocation(loc){
+	initMap(loc.coords.latitude, loc.coords.longitude);
+}
+
+function vMarker(lat,lng,infoContent,map){
+	var _this = this;
+	this.infoWindow = new google.maps.InfoWindow({
+		content:infoContent
+	})
+	this.marker = new google.maps.Marker({
+		position: {lat:lat,lng:lng}
+	})
+	this.map = map;
+
+	this.showMarker = function(){
+		_this.marker.setMap(_this.map)
+	}
+
+	this.openInfoWindow = function(){
+		_this.infoWindow.open(_this.map, _this.marker);
+	}
+
+	this.closeInfoWindow = function(){
+		_this.infoWindow.close();
+	}
+
+	this.marker.addListener('click',function(){
+		_this.infoWindow.open(_this.map, _this.marker);
+	})
+}	
+
+function setBound(markers,map){
+	var bounds = new google.maps.LatLngBounds();
+	markers.forEach(function(marker){
+		bounds.extend(marker.marker.getPosition());
+	})
+  map.fitBounds(bounds);
+}
+
+$('.delivery-routes').on('click','tr',function(e){
+	var index = parseInt($(this).attr('index'));
+	updateMap(index);
+})
+
+var updateMap = function(index){
+	$('.delivery-routes').find('[index]').removeClass('selected');
+	$('.delivery-routes').find('[index]').removeClass('subselected');
+	$($('.delivery-routes').find('[index=' + index + ']')).addClass('selected');
+
+	var subindex = (index < markers.length-1)? index+1 : index-1
+	$($('.delivery-routes').find('[index=' + (subindex) + ']')).addClass('subselected');			
+	
+	markers.forEach(function(marker){
+		marker.closeInfoWindow();
+	})
+
+	markers[index].openInfoWindow();
+	markers[subindex].openInfoWindow();
+}
+
+
+$(document).ready(function(){
+
+//route page
+	var customer_markers = <%=raw @markers %>;
+
+	initMap(customer_markers[0].lat, customer_markers[0].lng);
+
+	for(i=0;i<customer_markers.length;i++){
+		var cm = customer_markers[i]
+		var vm = new vMarker(cm.lat, cm.lng, cm.info, map)
+		markers.push(vm);
+	}
+	// navigator.geolocation.getCurrentPosition(markCurrentLocation);
+
+	markers.forEach(function(marker){
+		marker.showMarker();
+	})
+
+	setBound(markers,map);
+});
+
+</script>
+
+

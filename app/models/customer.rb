@@ -14,6 +14,8 @@ class Customer < ActiveRecord::Base
 	has_many :form_values
 	has_many :daily_forms, :through=>:form_values
 
+	has_many :customer_routes
+
 	has_one :customer_delivery_day
 	accepts_nested_attributes_for :customer_delivery_day, allow_destroy: true
 
@@ -21,6 +23,11 @@ class Customer < ActiveRecord::Base
 
 	def recent_form_values(day_count)
 		self.form_values.includes(:daily_form,:customer).joins(:daily_form).where("date >= ?",Date.today - day_count.days).order('daily_forms.date desc')
+	end
+
+	def self.active
+		self.where(:status=>"經營中")
+		#to-do merge all about customer atatus
 	end
 
 private

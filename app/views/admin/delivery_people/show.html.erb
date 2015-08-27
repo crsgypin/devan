@@ -1,0 +1,45 @@
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"selected" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"" %>
+	</div>
+</div>
+
+
+<div class="content-box">
+	<div class="content-inner">
+		
+		<div class="admin-delivery-person">
+			<div class="info-box">
+				<%= link_to "回清單", admin_delivery_people_path, :class=>"btn btn-default" %>
+			</div>
+
+			<table class="table table-striped">
+				<tr>
+					<td> 編號 </td>
+					<td> <%= @delivery_person.code %> </td>
+				</tr>
+				<tr>
+					<td> 名字 </td>
+					<td> <%= @delivery_person.name %></td>
+				</tr>
+				<tr>
+					<td> 狀態 </td>
+					<td> <%= @delivery_person.status %></td>
+				</tr>
+				<tr>
+					<td> 使用者帳號 </td>
+					<td> <%= @delivery_person.user_email %></td>
+				</tr>
+
+			</table>
+		</div>
+		<% if @delivery_person.form_values ==0 %>
+			<%= link_to "移除這送貨員資料",delivery_person_path(@delivery_person), :method=>:delete,:class=>"link t-red", :data=>{:confirm=>"#{@delivery_person.name}即將被移除"} %>
+		<% end %>
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+
+

@@ -1,0 +1,39 @@
+
+
+.customer-routes{
+	
+	.day-form{
+		padding: 0 0 20px 20px;
+
+		.date-selector{
+			border-radius: 0px;
+			width:300px;
+			height: 40px;
+			font-size: 1.6em;
+		}
+
+	}
+
+	.content{
+
+		.name{
+			float: left;
+			width:80%;
+		}		
+
+		.action{
+			float: right;
+			width:20%;
+
+			a{
+				display: block;
+				float: right;
+			}
+		}
+	}
+
+
+
+}
+
+

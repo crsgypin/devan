@@ -1,0 +1,180 @@
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"selected"%>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"", :content=>".admin-delivery-people"%>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"", :content=>".admin-manufacturer"%>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+		<div class="admin-customers">
+			<%= render :partial=>"admin/customers/index.html", :locals=>{:customers=>@customers, :search_key=>@search_key} %>
+		</div>
+
+		<div class="admin-customer-show" style="display:none"></div>
+		<div class="admin-customer-form" style="display:none"></div>
+	</div>
+</div>
+
+<script>
+	
+	var adminCustomer = {
+		urls: {
+			indexPath: function(){
+				return ("/admin/customers");
+			},
+			newPath: function(){
+				return ("/admin/customers/new");
+			},
+			showPath: function(customerId){
+				return ("/admin/customers/" + customerId);
+			},
+			createPath: function(){
+				return ("/admin/customers")
+			},
+			editPath: function(customerId){
+				return ("/admin/customers/" + customerId + "/edit");
+			},
+			updatePath: function(customerId){
+				return ("/admin/customers/" + customerId);
+			},
+			destroyPath:function(customerId){
+				return ("/admin/customers/" + customerId);				
+			},
+			setStatus:function(customerId){
+				return ("/admin/customers/" + customerId + "/set_status");
+			}
+		},
+		showViews: function(view){
+			$('.admin-customers').hide();
+			$('.admin-customer-show').hide();
+			$('.admin-customer-form').hide();
+
+			if (view=="index"){
+				$('.admin-customers').show();				
+			}else if(view=="show"){
+				$('.admin-customer-show').show();				
+			}else if(view=="form"){
+				$('.admin-customer-form').show();				
+			}
+		},
+		newPage: function(e){
+			e.preventDefault();
+			$.ajax({
+				url: this.urls.newPath(),
+				dataType: 'json',
+				success:function(data){
+					$('.admin-customer-form').html(data['template'])
+					adminCustomer.showViews('form')
+				}
+			})
+		},
+		showPage: function(e,customerId){
+			e.preventDefault();
+			$.ajax({
+				url: adminCustomer.urls.showPath(customerId),
+				dataType: 'json',
+				success:function(data){
+					$('.admin-customer-show').html(data['template']);
+					adminCustomer.showViews("show");
+				}
+			})
+		},
+		editPage: function(e,customerId){
+			e.preventDefault();
+			$.ajax({
+				url: this.urls.editPath(customerId),
+				dataType: 'json',
+				method: 'get',
+				success: function(data){
+					$('.admin-customer-form').html(data['template']);
+					adminCustomer.showViews("form");				
+				}
+			})
+		},
+		destroy: function(e,customerId){
+			e.preventDefault();
+			if (confirm('即將刪除')){
+				$.ajax({
+					url: this.urls.destroyPath(customerId),
+					dataType: 'json',
+					method: 'delete',
+					success: function(data){
+						if (data['result'].toLowerCase()=="ok"){
+							location.reload();
+						}
+					}
+				})				
+			}
+		},
+		create: function(e, object){
+			e.preventDefault();
+			var data = $(object).closest('form').serialize();
+			$.ajax({
+				url: this.urls.createPath(),
+				dataType: 'json',
+				method: 'post',
+				data: data,
+				success: function(data){
+					$('.admin-customer-show').html(data['template']);
+					adminCustomer.showViews("show");
+				}
+			})
+		},
+		update: function(e,customerId,object){
+			e.preventDefault();
+			var data = $(object).closest('form').serialize();
+			$.ajax({
+				url: this.urls.updatePath(customerId),
+				dataType: 'json',
+				method: 'patch',
+				data:data,
+				success: function(data){
+					$('.admin-customer-show').html(data['template']);
+					adminCustomer.showViews("show");				
+				}
+			})
+		},
+		setStatus: function(e,customerId,object){
+			e.preventDefault();
+			var submitData = {};
+			if ($(object).text()=="經營中"){
+				submitData['status'] = "結束"
+			}else if($(object).text()=="結束"){
+				submitData['status'] = "經營中"
+			}
+
+			$.ajax({
+				url: this.urls.setStatus(customerId),
+				dataType: "json",
+				method:'post',
+				data: submitData,
+				success:function(data){
+					if (data['result'].toLowerCase()=="ok"){
+						$(object).text(submitData['status']);
+						adminCustomer.refreshStatus();
+					}
+				}
+			})			
+		},
+		refreshStatus: function(){
+			$('.customer-status').each(function(i,elm){
+				var text = $(elm).text();
+				if(text=="經營中"){
+					$(elm).addClass('active');
+					$(elm).removeClass('inactive');					
+				}else if(text=="結束"){
+					$(elm).addClass('inactive');
+					$(elm).removeClass('active');					
+				}
+			})
+		},
+	}
+
+	adminCustomer.refreshStatus();
+
+</script>
+
+
+

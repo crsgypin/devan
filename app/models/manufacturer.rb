@@ -3,7 +3,9 @@ class Manufacturer < ActiveRecord::Base
 
 	has_many :manufacturer_keys
 	accepts_nested_attributes_for :manufacturer_keys, allow_destroy: true	
-	has_many :daily_forms
+
+	has_many :form_values
+	accepts_nested_attributes_for :manufacturer_keys
 
 	has_many :addresses, :as => :address_link, :dependent=>:destroy
 	accepts_nested_attributes_for :addresses, allow_destroy: true
@@ -17,4 +19,13 @@ class Manufacturer < ActiveRecord::Base
 										 :dependent=>:destroy
 	accepts_nested_attributes_for :faxes, allow_destroy: true
 
+	before_destroy :check_form_values
+
+private
+	
+	def check_form_values
+		if self.form_values.count >0 
+			return false
+		end
+	end
 end

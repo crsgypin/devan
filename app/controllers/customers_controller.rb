@@ -1,128 +1,64 @@
 class CustomersController < ApplicationController
-	before_action :set_customer, :only=>[:show,:edit,:update,:destroy]
 	before_action :authenticate_user!, :except=>[:index,:show]
 
 	def index
-		update_session_search
-		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones,:addresses=>[:city])
-		@customers = @customers.where(@seach_sql)
-		@customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
-		@customers = @customers.where(:status=>"經營中")
-		@customers = @customers.page(params[:page]).per(30)
-
+		@customers = Customer.active.includes(:phones,:addresses=>[:city])
+		@search_key = params[:search]		
+		set_search if @search_key.present?
+		@customers = @customers.page(params[:page]).per(20)
 	end
 
-	def profiles
-		update_session_search
-		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones,:addresses=>[:city])
-		@customers = @customers.where(@seach_sql)
-		@customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
-		@customers = @customers.page(params[:page]).per(30)
-		# @customers = @customers.where(["customers.name like ? OR address like ? OR number LIKE ?","%#{@customer_search}%","%#{key_address}%", "%#{key_number}%"])
-	end
+	def delivery_routes
+		if params[:day]
+			@before_day = params[:day].to_i
+		else
+			@before_day = 0
+		end
+		delivery_person = DeliveryPerson.first
+		set_customer_routes(@before_day, delivery_person)
 
-	def update_status
-		@customer = Customer.find(params[:id])
-		@customer.update(:status=>params[:status])
 		respond_to do |format|
-			format.json {render :json=>{:result=>"success"}}
+			format.html
+			format.json {render :json=> {
+													:markers=> @markers,
+													:template=> render_to_string(:partial=>"customers/customer_route_list.html", :locals=>{:map_customers=>@map_customers})}}
 		end
 
 	end
 
-	def deliveried_days
-
-		# @customers = Customer.includes(:form_values=>:daily_form).joins(:form_values=>:daily_form)
-		@customers = Customer.includes(:form_values=>:daily_form).joins(:form_values=>:daily_form)
-		@customers = @customers.where('daily_forms.date > ?', Time.now-7.days)
-		@customers = @customers.page(params[:page]).per(30)
-	end
-
-	def delivery_plan_days
-		@customers = Customer.includes(:customer_delivery_day).joins(:customer_delivery_day)
-		@customers = @customers.order("#{params[:sort]} desc") if params[:sort]
-		@customers = @customers.page(params[:page]).per(30)
-	end
-
-	def new
-		@customer = Customer.new
-		@customer.phones.new
-		@customer.addresses.new
-		@customer.faxes.new
-	end
-
-	def create
-		@customer = Customer.new(customer_params)
-		if @customer.save
-			flash[:notice] = "客戶#{@customer.name} 儲存成功"
-			redirect_to customer_path(@customer)
-		else
-
-			render 'customers/new'
-		end
-
-	end
-
-	def show
-	end
-
-	def edit
-
-	end
-
-	def update
-		if @customer.update(customer_params)
-			flash[:notice] = "客戶#{@customer.name} 修改成功"
-			redirect_to customer_path(@customer)
-		else
-
-			render 'customers/edit'
-		end
-
-	end
-
-private
-	def set_customer
-		@customer = Customer.find(params[:id])
-	end
-
-	def customer_params
-		params.require(:customer).permit(:code, :name, :description, :status,
-															:phones_attributes=>[:number],
-															:faxes_attributes=>[:number],
-															:addresses_attributes=>[:address,:city_id,:district_id],
-															:customer_delivery_day_attributes=>[:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
-	end
-
-	def update_session_search
-		session[:customer_search] = params[:customer_search] if params[:customer_address]
-		session[:customer_city] = params[:customer_city].to_i if params[:customer_city]
-		list = %w(customer_code customer_name customer_address customer_phone)
-		list.each do |item|
-			if params[item]
-				if params[item].to_i == 1
-					session[item] = true
-				else
-					session[item] = false
-				end
-			else
-				session[item]= true if session[item] ==nil
-			end
-		end
-
-		@customer_search = session[:customer_search]
-		@customer_code = session[:customer_code]
-		@customer_phone = session[:customer_phone]
-		@customer_name = session[:customer_name]
-		@customer_address = session[:customer_address]
-		@customer_city = session[:customer_city] ||=0
-
+private 
+	def set_search
+		@customers = @customers.joins(:addresses,:phones,:form_values=>:daily_form)
+		# @customers = @customers.joins("LEFT JOIN addresses on addresses.address_link_type= 'Customer' and address )
 		states = []
-		states<< "customers.code LIKE '%#{@customer_search}%'" if @customer_code
-		states<< "customers.name LIKE '%#{@customer_search}%'" if @customer_name
-		states<< "address LIKE '%#{@customer_search}%'" if @customer_address
-		states<< "number LIKE '%#{@customer_search}%'" if @customer_phone
-		@seach_sql = "#{states.join(" OR ")}"
+		states<< "customers.code LIKE '%#{params[:search]}%'"
+		states<< "customers.name LIKE '%#{params[:search]}%'"
+		states<< "address LIKE '%#{params[:search]}%'"
+		states<< "phones.number LIKE '%#{params[:search]}%'"
+		@customers = @customers.where(states.join(" OR ")).group('customers.name')
+	end
 
+
+	def set_customer_routes(before_day,delivery_person)
+		wday = before_day.day.ago.strftime('%A').downcase
+    @customer_routes = CustomerRoute.includes(:delivery_person,:customer=>[:addresses]).order(:row_order)
+    @customer_routes = @customer_routes.where(:wday=>wday,:delivery_person=>delivery_person)
+
+		customer_markers = [];
+		@customer_routes.each do |customer_route|
+			customer = customer_route.customer
+			if customer.addresses[0] && customer.addresses[0].lat != nil
+				lat = customer.addresses[0].lat
+				lng = customer.addresses[0].lng
+				info = customer.name
+			else
+				lat = 25
+				lng = 121.5
+				info = customer.name
+			end
+			customer_markers << {:lat=>lat, :lng=>lng,:info=>info}
+		end
+		@markers = customer_markers.to_json
 	end
 end
+
