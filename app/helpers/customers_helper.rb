@@ -11,7 +11,9 @@ module CustomersHelper
 	def date_list
 		list = []
 		5.times do |index|
-			list << [index.day.ago.strftime('%m/%d %A'), index]
+			date = index.day.ago
+			name = date.strftime('%m月%d日') + "  " + t("week_day.#{date.strftime('%A')}")
+			list << [name, index]
 		end
 		list
 	end
