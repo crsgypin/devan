@@ -6,6 +6,7 @@ class DeliveryPerson < ActiveRecord::Base
 	has_many :customer_routes
 	belongs_to :user
 	delegate :email, :to=> :user, :prefix=>true, :allow_nil=>true
+	before_destroy :check_form_values
 
 	def recent_form_values(day_count)
 		self.form_values.includes(:daily_form,:customer).joins(:daily_form).where("date >= ?",Date.today - day_count.days).order('daily_forms.date desc')
@@ -15,4 +16,10 @@ class DeliveryPerson < ActiveRecord::Base
 		self.where(:status=>"在職")
 	end
 
+private
+	def check_form_values
+		if self.form_values.count >0
+			return false
+		end
+	end
 end

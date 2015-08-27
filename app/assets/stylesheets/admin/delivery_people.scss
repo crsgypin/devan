@@ -1,0 +1,76 @@
+
+
+.admin-delivery-person{
+	.info-box{
+		padding:30px 20px 20px 0px;
+
+		.back{
+			float: left;
+		}
+
+		.message{
+			float: left;
+			color:red;
+			margin: 10px 0 0 20px;
+		}
+
+		.save{
+			float: right;
+		}
+	}
+
+	.info-box::after{
+		content: "";
+		display: block;
+		clear:both;
+	}
+
+	.delivery-person-remove a{
+		color:#faa;
+	}
+
+
+}
+
+.admin-delivery-people{
+	padding: 0px 0px 400px 0px;
+	.active{
+		padding: 30px 0 0 0;
+		.active-title{
+			padding: 10px 0 20px 0;
+			h1{
+				display: inline-block;
+			}
+
+			.message{
+				display: inline-block;
+				color:red;
+			}
+
+			.add-new{
+				float: right;
+			}
+		}
+	}
+
+	.inactive{
+		padding: 30px 0 100px;
+		.inactive-title{
+			padding: 10px 0 0 0;
+		}
+	}
+
+	.show-inactive{
+		a{
+			color: #aaa;
+		}
+		a:hover{
+			text-decoration: none;
+		}
+		a:active{
+			text-decoration: none;
+		}
+	}
+}
+
+

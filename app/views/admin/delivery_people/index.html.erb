@@ -1,0 +1,89 @@
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"selected" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"" %>
+	</div>
+</div>
+
+<div class="content-box">
+	<div class="content-inner">
+		
+		<div class="admin-delivery-people">
+			<div class="active">
+				<div class="active-title">
+					<h1> 現職送貨員 </h1>
+					<p class="message"> 
+						<%= flash[:success] %> 
+						<%= flash[:fail] %>
+					</p>
+					<p class="add-new">
+						<%= link_to "新增送貨員", new_admin_delivery_person_path, :class=>"btn btn-info" %>
+					</p>
+				</div>
+				<table class="table table-striped">
+					<tr>
+						<td> 編號 </td>
+						<td> 名稱 </td>
+						<td> 送貨家數 </td>
+						<td></td>
+					</tr>
+					<% @active_delivery_people.each do |delivery_person| %>
+						<tr>
+							<td> <%= delivery_person.code %> </td>
+							<td> <%= delivery_person.name %> </td>
+							<td> <%= delivery_person.recent_form_values(10).count %> </td>
+							<td> <%= link_to "詳細資料",edit_admin_delivery_person_path(delivery_person), :class=>"btn btn-warning btn-xs" %> </td>
+						</tr>
+					<% end %>
+				</table>					
+			</div>
+	
+			<div class="show-inactive">
+				<%= link_to "顯示離職送貨員", "", :onClick=>"showInactive(event)", :class=>"show-btn" %>
+				<%= link_to "隱藏離職送貨員", "", :onClick=>"hideInactive(event)", :class=>"hide-btn", :style=>"display:none" %>
+			</div>
+			<div class="inactive" style="display:none">
+				<table class="table table-striped">
+					<div class="inactive-title">
+						<p> 已離職送貨員 </p>
+					</div>
+					<tr>
+						<td> 編號 </td>
+						<td> 名稱 </td>
+						<td> 送貨家數 </td>
+					</tr>
+					<% @inactive_delivery_people.each do |delivery_person| %>
+						<tr>
+							<td> <%= delivery_person.code %> </td>
+							<td> <%= delivery_person.name %> </td>
+							<td> <%= link_to "詳細資料",edit_admin_delivery_person_path(delivery_person), :class=>"btn btn-warning btn-xs" %> </td>
+						</tr>
+					<% end %>
+				</table>								
+			</div>
+		</div>
+
+	</div> <%# content-inner %>
+</div> <%# content-box %>
+
+<script>
+ var showInactive = function(e){
+ 		e.preventDefault();
+ 		$('.admin-delivery-people .inactive').slideDown(300,function(){
+	 		$('.show-inactive .show-btn').hide();
+	 		$('.show-inactive .hide-btn').show(); 			
+ 		});
+ }
+
+ var hideInactive = function(e){
+ 		e.preventDefault();
+ 		$('.admin-delivery-people .inactive').slideUp(300,function(){
+	 		$('.show-inactive .show-btn').show();
+	 		$('.show-inactive .hide-btn').hide(); 			
+ 		});
+ }
+
+</script>
+
+

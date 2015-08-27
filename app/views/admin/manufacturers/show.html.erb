@@ -1,27 +1,8 @@
-<div class="heading-box">
-	<div class="heading-inner">
-		<div class="info-box">
-			<h2 class="title">
-			  廠商- <%= @manufacturer.name %>
-			</h2>
-
-			<div class="message">
-				<% if flash[:success].present? %>
-					<div class="success"> <%= flash[:success] %> </div>
-				<% elsif flash[:fail].present? %>
-					<div class="fail"> <%= flash[:fail] %> </div>
-				<% end %>
-			</div>
-
-			<ul class="sub-nav">
-				<li> <%= link_to "回廠商清單", manufacturers_path %> </li>
-			</ul>			
-		</div>
-
-		<div class="submit-box"> 
-			<%= link_to "移除這份表單",manufacturer_path(@manufacturer), :method=>:delete,:class=>"btn btn-danger", :data=>{:confirm=>"#{@manufacturer.name}即將被移除"} %>
-			<%= link_to "修改資料", edit_manufacturer_path(@manufacturer), :class=>"btn btn-warning" %>
-		</div>
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,:class=>"" %>
+		<%= link_to "送貨員",admin_delivery_people_path,:class=>"" %>
+		<%= link_to "廠商", admin_manufacturers_path,:class=>"selected" %>
 	</div>
 </div>
 

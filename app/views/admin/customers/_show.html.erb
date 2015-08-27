@@ -1,0 +1,49 @@
+<%# customer %>
+<h3> <%= "#{customer.name}的資料" %> </h3>
+<div class="info">
+	<%= link_to "回主選單", "", :onClick=>"location.reload(); return false;", :class=>"btn btn-info" %>
+</div>	
+<table class="table table-bordered">
+	<tr>
+		<td> 編號 </td> 
+		<td> <%= customer.code %> </td>
+	</tr>
+	<tr>
+		<td> 名字 </td> 
+		<td> <%= customer.name %> </td>
+	</tr>
+	<tr>
+		<td> 狀態 </td> 
+		<td> <%= customer.status %> </td>
+	</tr>
+
+	<% customer.addresses.each_with_index do |address,index| %>
+		<tr>
+			<td> <%= "地址#{index+1}" %> </td> 
+			<td> <%= address.address %> </td>
+		</tr>
+	<% end %>
+	
+	<% customer.phones.each_with_index do |phone,index| %>		
+		<tr>
+			<td> <%= "電話#{index+1}" %> </td> 
+			<td> <%= phone.number %> </td>
+		</tr>
+	<% end %>
+
+	<% customer.faxes.each_with_index do |fax,index| %>		
+		<% pre_text = "customer[faxes_attributes][#{index}]" %>
+		<tr>
+			<td> <%= "傳真#{index+1}" %> </td> 
+			<td> <%= fax.number %> </td>
+		</tr>
+	<% end %>
+</table>
+<div class="edit-box">
+	<%= link_to "編輯這份資料", "",:onClick=>"adminCustomer.editPage(event, #{customer.id});	",:class=>"btn btn-warning btn-xs" %>
+</div>
+<div class="destroy-box">
+	<%= link_to "移除這份客戶資料","",:onClick=>"adminCustomer.destroy(event, #{customer.id});",:class=>"btn btn-danger btn-xs" %>
+</div>
+
+

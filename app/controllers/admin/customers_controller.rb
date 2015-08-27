@@ -1,18 +1,19 @@
 class Admin::CustomersController < ApplicationController
+	before_action :set_customer, :only=>[:show,:edit,:update,:destroy]
 
-
-	def deliveried_days
-
-		# @customers = Customer.includes(:form_values=>:daily_form).joins(:form_values=>:daily_form)
-		@customers = Customer.includes(:form_values=>:daily_form).joins(:form_values=>:daily_form)
-		@customers = @customers.where('daily_forms.date > ?', Time.now-7.days)
+	def index
+		# @customers = Customer.all
+		@customers = Customer.includes(:addresses,:phones,:faxes,:form_values=>:daily_form)
+		@search_key = params[:search]
+		set_search if @search_key.present?
 		@customers = @customers.page(params[:page]).per(30)
+
 	end
 
-	def delivery_plan_days
-		@customers = Customer.includes(:customer_delivery_day).joins(:customer_delivery_day)
-		@customers = @customers.order("#{params[:sort]} desc") if params[:sort]
-		@customers = @customers.page(params[:page]).per(30)
+	def show
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/show.html",:locals=>{:customer=>@customer})}}
+		end
 	end
 
 	def new
@@ -20,13 +21,17 @@ class Admin::CustomersController < ApplicationController
 		@customer.phones.new
 		@customer.addresses.new
 		@customer.faxes.new
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/form.html",:locals=>{:customer=>@customer})}}
+		end
 	end
 
 	def create
 		@customer = Customer.new(customer_params)
 		if @customer.save
-			flash[:notice] = "客戶#{@customer.name} 儲存成功"
-			redirect_to customer_path(@customer)
+			respond_to do |format|
+				format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/show.html",:locals=>{:customer=>@customer})}}
+			end
 		else
 
 			render 'customers/new'
@@ -34,28 +39,62 @@ class Admin::CustomersController < ApplicationController
 
 	end
 
+	def edit
+		@customer.phones.new if @customer.phones.count ==0
+		@customer.faxes.new if @customer.faxes.count ==0
+		@customer.addresses.new if @customer.addresses.count ==0
+
+		respond_to do |format|
+			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/form.html",:locals=>{:customer=>@customer})}}
+		end
+	end
+
 	def update
 		if @customer.update(customer_params)
-			flash[:notice] = "客戶#{@customer.name} 修改成功"
-			redirect_to customer_path(@customer)
-		else
-
-			render 'customers/edit'
+			respond_to do |format|
+				format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/show.html",:locals=>{:customer=>@customer})}}
+			end
 		end
+	end
 
+	def destroy
+		@customer.destroy
+		respond_to do |format|
+			format.json {render :json=>{:result=>"OK"}}
+		end
+	end
+
+	def set_status
+		@customer = Customer.find(params[:id])
+		@customer.status = params[:status]
+		@customer.save!
+		respond_to do |format|
+			format.json {render :json=>{:result=>"OK"}}
+		end
 	end
 
 private
 	def set_customer
-		@customer = Customer.find(params[:id])
+		@customer = Customer.includes(:addresses,:phones,:faxes,:form_values=>:daily_form).find(params[:id])
 	end
 
 	def customer_params
 		params.require(:customer).permit(:code, :name, :description, :status,
-															:phones_attributes=>[:number],
-															:faxes_attributes=>[:number],
-															:addresses_attributes=>[:address,:city_id,:district_id],
-															:customer_delivery_day_attributes=>[:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
+															:phones_attributes=>[:id,:number,:_destroy],
+															:faxes_attributes=>[:id,:number,:_destroy],
+															:addresses_attributes=>[:id,:address,:city_id,:district_id,:_destroy],
+															:customer_delivery_day_attributes=>[:id,:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
+	end
+
+	def set_search
+		@customers = @customers.joins(:addresses,:phones,:form_values=>:daily_form)
+		# @customers = @customers.joins("LEFT JOIN addresses on addresses.address_link_type= 'Customer' and address )
+		states = []
+		states<< "customers.code LIKE '%#{params[:search]}%'"
+		states<< "customers.name LIKE '%#{params[:search]}%'"
+		states<< "address LIKE '%#{params[:search]}%'"
+		states<< "phones.number LIKE '%#{params[:search]}%'"
+		@customers = @customers.where(states.join(" OR ")).group('customers.name')
 	end
 
 	def update_session_search
