@@ -1,5 +1,5 @@
 class CustomersController < ApplicationController
-	before_action :authenticate_user!, :except=>[:index,:show]
+	before_action :authenticate_user!
 
 	def index
 		@customers = Customer.active.includes(:phones,:addresses=>[:city])

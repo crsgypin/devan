@@ -1,0 +1,49 @@
+<div class="menu-box">
+  <div class="menu-inner-1">
+    <%= link_to "個人資料", "/users/edit_profile", :class=>"selected"%>
+    <%= link_to "修改密碼", "/users/edit" %>
+  </div>
+</div>
+
+<div class="content-box">
+  <div class="content-inner">
+    
+    <div class="devise-user">
+      <%= form_for(@user, url: "/users/update_profile", :method=>:patch) do |f| %>
+
+        <div class="field">
+          <%= f.label :email, :class=>"v-label" %>
+          <%= f.email_field :email, autofocus: true, :required=>true %>
+        </div>
+
+        <div class="field">
+          <%= f.label :name, "姓名",:class=>"v-label" %>
+          <%= f.text_field :name,  autocomplete: "off" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :username, "暱稱",:class=>"v-label" %>
+          <%= f.text_field :username, autocomplete: "off" %>
+        </div>
+
+        <div class="field">
+          <div class="v-label"> 送貨員編號 </div>
+          <div>
+            <% if @user.delivery_person %>
+              <%= @user.delivery_person.try(:code) %>
+            <% else %>
+              無
+            <% end %>
+          </div>
+        </div>
+
+        <div class="actions">
+          <%= f.submit "儲存設定", :class=>"btn btn-primary" %>
+          <%= link_to "離開", root_path, :class=>"btn btn-default" %>
+        </div>
+      <% end %>
+      
+    </div>
+
+  </div>
+</div>
