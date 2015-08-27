@@ -2,11 +2,10 @@ class CustomersController < ApplicationController
 	before_action :authenticate_user!, :except=>[:index,:show]
 
 	def index
-
-		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones,:addresses=>[:city])
-		# @customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
-		@customers = @customers.where(:status=>"經營中")
-		@customers = @customers.page(params[:page]).per(30)
+		@customers = Customer.active.includes(:phones,:addresses=>[:city])
+		@search_key = params[:search]		
+		set_search if @search_key.present?
+		@customers = @customers.page(params[:page]).per(20)
 	end
 
 	def delivery_routes
@@ -28,6 +27,18 @@ class CustomersController < ApplicationController
 	end
 
 private 
+	def set_search
+		@customers = @customers.joins(:addresses,:phones,:form_values=>:daily_form)
+		# @customers = @customers.joins("LEFT JOIN addresses on addresses.address_link_type= 'Customer' and address )
+		states = []
+		states<< "customers.code LIKE '%#{params[:search]}%'"
+		states<< "customers.name LIKE '%#{params[:search]}%'"
+		states<< "address LIKE '%#{params[:search]}%'"
+		states<< "phones.number LIKE '%#{params[:search]}%'"
+		@customers = @customers.where(states.join(" OR ")).group('customers.name')
+	end
+
+
 	def set_customer_routes(before_day,delivery_person)
 		wday = before_day.day.ago.strftime('%A').downcase
     @customer_routes = CustomerRoute.includes(:delivery_person,:customer=>[:addresses]).order(:row_order)
