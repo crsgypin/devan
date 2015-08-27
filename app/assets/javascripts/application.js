@@ -17,7 +17,5 @@
 //= require nested_form_fields
 //= require jquery_ujs
 //= require jquery-ui/sortable
-//= require underscore
-//= require gmaps/google
-//= require turbolinks
+
 //= require_tree .

@@ -1,83 +1,64 @@
 class CustomersController < ApplicationController
-	before_action :set_customer, :only=>[:show,:edit,:update,:destroy]
 	before_action :authenticate_user!, :except=>[:index,:show]
 
 	def index
-
-		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones,:addresses=>[:city])
-		# @customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
-		@customers = @customers.where(:status=>"經營中")
-		@customers = @customers.page(params[:page]).per(30)
-
-		@map_customers = Customer.includes(:addresses=>[:city]).joins(:addresses=>[:city])
-		@map_customers = @map_customers.where("address <> ''").first(10)
-		set_markers(@map_customers)
-
-		@date_list = []
-		5.times do |index|
-			@date_list << [index.day.ago.strftime('%m/%d %A'), index]
-		end
-
+		@customers = Customer.active.includes(:phones,:addresses=>[:city])
+		@search_key = params[:search]		
+		set_search if @search_key.present?
+		@customers = @customers.page(params[:page]).per(20)
 	end
 
-	def update_date
-		before_day = params[:day].to_i.day
-		wday = before_day.ago.strftime('%A').downcase
-
+	def delivery_routes
+		if params[:day]
+			@before_day = params[:day].to_i
+		else
+			@before_day = 0
+		end
 		delivery_person = DeliveryPerson.first
-		@map_customers = Customer.joins(:customer_routes).where("customer_routes.wday = ?", wday).where("customer_routes.delivery_person_id = ?", delivery_person.id)
-		@map_customers = @map_customers.includes(:addresses=>[:city])
-		set_markers(@map_customers)
+		set_customer_routes(@before_day, delivery_person)
 
 		respond_to do |format|
+			format.html
 			format.json {render :json=> {
-												:markers=> @markers,
-												:template=> render_to_string(:partial=>"customers/customer_route_list.html", :locals=>{:map_customers=>@map_customers})}}
+													:markers=> @markers,
+													:template=> render_to_string(:partial=>"customers/customer_route_list.html", :locals=>{:map_customers=>@map_customers})}}
 		end
-
-	end
-
-	def profiles
-
-		@customers = Customer.includes(:phones,:addresses=>[:city]).joins(:phones,:addresses=>[:city])
-		# @customers = @customers.where("addresses.city_id = #{@customer_city}") if @customer_city >0
-		@customers = @customers.page(params[:page]).per(30)
-		# @customers = @customers.where(["customers.name like ? OR address like ? OR number LIKE ?","%#{@customer_search}%","%#{key_address}%", "%#{key_number}%"])
-	end
-
-	def update_status
-		@customer = Customer.find(params[:id])
-		@customer.update(:status=>params[:status])
-		respond_to do |format|
-			format.json {render :json=>{:result=>"success"}}
-		end
-
-	end
-
-
-
-	def show
-	end
-
-	def edit
 
 	end
 
 private 
-	def set_markers(customers)
-		hash = Gmaps4rails.build_markers(customers) do |customer, marker|
-			if customer.addresses[0].try(:lat)
-			  marker.lat customer.addresses[0].try(:lat)
-			  marker.lng customer.addresses[0].try(:lng)
- 		  else
- 		  	marker.lat 25
- 		  	marker.lng 121.5
- 		  end
-		  # marker.infowindow "#{customer.code} <br> #{customer.name} <br> #{customer.addresses[0].try(:address)}"
-		  marker.infowindow "#{customer.code} <br> #{customer.name}"
-		end
-
-		@markers = hash.to_json.html_safe
+	def set_search
+		@customers = @customers.joins(:addresses,:phones,:form_values=>:daily_form)
+		# @customers = @customers.joins("LEFT JOIN addresses on addresses.address_link_type= 'Customer' and address )
+		states = []
+		states<< "customers.code LIKE '%#{params[:search]}%'"
+		states<< "customers.name LIKE '%#{params[:search]}%'"
+		states<< "address LIKE '%#{params[:search]}%'"
+		states<< "phones.number LIKE '%#{params[:search]}%'"
+		@customers = @customers.where(states.join(" OR ")).group('customers.name')
 	end
 
+
+	def set_customer_routes(before_day,delivery_person)
+		wday = before_day.day.ago.strftime('%A').downcase
+    @customer_routes = CustomerRoute.includes(:delivery_person,:customer=>[:addresses]).order(:row_order)
+    @customer_routes = @customer_routes.where(:wday=>wday,:delivery_person=>delivery_person)
+
+		customer_markers = [];
+		@customer_routes.each do |customer_route|
+			customer = customer_route.customer
+			if customer.addresses[0] && customer.addresses[0].lat != nil
+				lat = customer.addresses[0].lat
+				lng = customer.addresses[0].lng
+				info = customer.name
+			else
+				lat = 25
+				lng = 121.5
+				info = customer.name
+			end
+			customer_markers << {:lat=>lat, :lng=>lng,:info=>info}
+		end
+		@markers = customer_markers.to_json
+	end
 end
+
