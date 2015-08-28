@@ -1,0 +1,12 @@
+<%# selected %>
+
+<div class="menu-box">
+	<div class="menu-inner-1">
+		<%= link_to "客戶", admin_customers_path,
+											:class=>("selected" if selected=="customer") %>
+		<%= link_to "運送員",admin_delivery_people_path,
+											:class=>("selected" if selected=="delivery_person") %>
+		<%= link_to "廠商", admin_manufacturers_path,
+											:class=>("selected" if selected=="manufacturer") %>
+	</div>
+</div>
