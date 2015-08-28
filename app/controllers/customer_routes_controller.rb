@@ -1,4 +1,6 @@
 class CustomerRoutesController < ApplicationController
+	before_action :authenticate_user!
+	before_action :check_editor?
 
 	def index
 		@delivery_people = DeliveryPerson.on_job.includes(:customer_routes)
@@ -36,6 +38,13 @@ class CustomerRoutesController < ApplicationController
 
 		respond_to do |format|
 			format.json {render :json=>{:result=>true}}
+		end
+	end
+
+private
+	def check_editor?
+		if !current_user.editor?
+			redirect_to root_path
 		end
 	end
 end

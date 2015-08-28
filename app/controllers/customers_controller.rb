@@ -1,5 +1,6 @@
 class CustomersController < ApplicationController
 	before_action :authenticate_user!
+	before_action :check_member?
 
 	def index
 		@customers = Customer.active.includes(:phones,:addresses=>[:city])
@@ -55,6 +56,13 @@ private
 			customer_markers << {:lat=>lat, :lng=>lng,:info=>info}
 		end
 		@markers = customer_markers.to_json
+	end
+
+private
+	def check_member?
+		if !current_user.member?
+			redirect_to root_path
+		end
 	end
 end
 

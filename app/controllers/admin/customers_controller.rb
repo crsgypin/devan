@@ -1,6 +1,7 @@
 class Admin::CustomersController < ApplicationController
 	before_action :set_customer, :only=>[:show,:edit,:update,:destroy]
 	before_action :authenticate_user!
+	before_action :check_editor?
 
 	def index
 		# @customers = Customer.all
@@ -129,4 +130,11 @@ private
 		@seach_sql = "#{states.join(" OR ")}"
 
 	end
+
+	def check_editor?
+		if !current_user.editor?
+			redirect_to root_path
+		end
+	end
+
 end

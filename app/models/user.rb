@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
   has_many :form_values, :through=>:form_value_users
 
   before_create :set_permission
-private
 
   def display_name
   	if self.username.present?
@@ -27,6 +26,19 @@ private
     return User.all - User.joins(:delivery_person)
   end
 
+  def member?
+    return self.permission.member
+  end
+
+  def editor?
+    return self.permission.editor
+  end
+
+  def admin?
+    return self.permission.admin
+  end
+
+private
   def set_permission
     p = self.build_permission
     Permission.columns.map do |c|

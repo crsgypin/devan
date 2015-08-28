@@ -12,11 +12,22 @@
 				<%= link_to "登出", "/users/sign_out",:method=>:delete, :class=>"btn btn-warning btn-xs" %> 
 			</p>
   	</div>
+		
+		<% if current_user.member?%>
+			<div class="box"> 
+				<%= link_to "客戶", delivery_routes_customers_path %>
+			</div>
+			<div class="box"> 
+				<%= link_to "表單", daily_forms_path %>	
+			</div>
 
-		<div class="box"> <%= link_to "客戶", delivery_routes_customers_path %></div>
-		<div class="box"> <%= link_to "表單", daily_forms_path %>	</div>
-		<div class="box"> <%= link_to "路線規劃", customer_routes_path %> </div>
-		<div class="box"> <%= link_to "設定",admin_customers_path %> </div>
+			<% if current_user.editor? %>
+				<div class="box"> <%= link_to "路線規劃", customer_routes_path %> </div>
+				<div class="box"> <%= link_to "設定",admin_customers_path %> </div>
+			<% end %>
+
+			
+		<% end %>
 	<% else %>
 		<div class="box"> <%= link_to "登入", new_user_session_path %> </div>
 		<div class="box"> <%= link_to "註冊", new_user_registration_path %> </div>
