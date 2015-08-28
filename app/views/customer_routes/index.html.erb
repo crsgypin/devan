@@ -12,7 +12,8 @@
 					<% @delivery_people.each do |delivery_person| %>					
 						<td> 
 							<div>
-								<%= delivery_person.name %>								
+								<%= delivery_person.name %>
+													
 							</div>
 							<%= form_tag customer_routes_path, 
 										:target=>".delivery-person-#{delivery_person.id}",

@@ -25,14 +25,14 @@
 					<tr>
 						<td> 編號 </td>
 						<td> 名稱 </td>
-						<td> 送貨家數 </td>
+						<td> 對應使用者 </td>
 						<td></td>
 					</tr>
 					<% @active_delivery_people.each do |delivery_person| %>
 						<tr>
 							<td> <%= delivery_person.code %> </td>
 							<td> <%= delivery_person.name %> </td>
-							<td> <%= delivery_person.recent_form_values(10).count %> </td>
+							<td> <%= "#{delivery_person.user.email} (#{delivery_person.user.display_name})" if delivery_person.user  %> </td>
 							<td> <%= link_to "詳細資料",edit_admin_delivery_person_path(delivery_person), :class=>"btn btn-warning btn-xs" %> </td>
 						</tr>
 					<% end %>
@@ -51,7 +51,7 @@
 					<tr>
 						<td> 編號 </td>
 						<td> 名稱 </td>
-						<td> 送貨家數 </td>
+						<td> </td>
 					</tr>
 					<% @inactive_delivery_people.each do |delivery_person| %>
 						<tr>

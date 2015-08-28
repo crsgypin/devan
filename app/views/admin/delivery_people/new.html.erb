@@ -32,7 +32,10 @@
 					</tr>
 					<tr>
 						<td> <%= form.label :user_id, "使用者帳號" %> </td>
-						<td> <%= form.select :user_id, User.all.map{|u| [u.email,u.id]}, :prompt => "無"%> </td>
+						<td> <%= form.select :user_id, 
+											User.without_delivery_person.map{|u| [u.email,u.id]}, 
+											:prompt => "無"%> 
+						</td>
 				</table>
 
 			<% end %>

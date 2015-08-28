@@ -30,7 +30,7 @@
           <div class="v-label"> 送貨員編號 </div>
           <div>
             <% if @user.delivery_person %>
-              <%= @user.delivery_person.try(:code) %>
+              <%= "#{@user.delivery_person.code}-#{@user.delivery_person.name}" %>
             <% else %>
               無
             <% end %>
