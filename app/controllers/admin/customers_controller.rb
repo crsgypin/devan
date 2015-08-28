@@ -4,11 +4,12 @@ class Admin::CustomersController < ApplicationController
 	before_action :check_edit_setting?
 
 	def index
-		# @customers = Customer.all
+		@sort = params[:sort] ? params[:sort] : "id"
+		@order = params[:order] ? params[:order] : "DESC"
 		@customers = Customer.includes(:addresses,:phones,:faxes,:form_values=>:daily_form)
 		@search_key = params[:search]
 		set_search if @search_key.present?
-		@customers = @customers.page(params[:page]).per(30)
+		@customers = @customers.order("#{@sort} #{@order}").page(params[:page]).per(30)
 
 	end
 
