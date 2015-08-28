@@ -4,9 +4,13 @@
 	<div class="menu-inner-1">
 		<%= link_to "客戶", admin_customers_path,
 											:class=>("selected" if selected=="customer") %>
-		<%= link_to "運送員",admin_delivery_people_path,
-											:class=>("selected" if selected=="delivery_person") %>
 		<%= link_to "廠商", admin_manufacturers_path,
 											:class=>("selected" if selected=="manufacturer") %>
+		<%= link_to "運送員",admin_delivery_people_path,
+											:class=>("selected" if selected=="delivery_person") %>
+		<% if current_user.edit_permission? %>
+			<%= link_to "使用者", admin_user_permissions_path,
+											:class=>("selected" if selected=="user_permission") %>
+		<% end %>
 	</div>
 </div>

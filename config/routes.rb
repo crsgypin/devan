@@ -21,7 +21,6 @@ Rails.application.routes.draw do
 
   resources :customer_routes do
     post :move
-
   end
 
   resources :customers do 
@@ -40,6 +39,7 @@ Rails.application.routes.draw do
     resources :manufacturers
     resources :delivery_people
     resources :users
+    resources :user_permissions
   end
 
 

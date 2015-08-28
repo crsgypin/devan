@@ -13,7 +13,7 @@
 				<% end %>
 			</div>
 
-			<% if current_user && current_user.member? %>
+			<% if current_user && current_user.edit_form? %>
 				<ul class="item-list">
 					<li><%= link_to "報表", daily_forms_path %> </li>
 					<li><%= link_to "客戶", customers_path %> </li>

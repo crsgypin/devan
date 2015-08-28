@@ -1,6 +1,6 @@
 class CustomersController < ApplicationController
 	before_action :authenticate_user!
-	before_action :check_member?
+	before_action :check_edit_form?
 
 	def index
 		@customers = Customer.active.includes(:phones,:addresses=>[:city])
@@ -59,8 +59,8 @@ private
 	end
 
 private
-	def check_member?
-		if !current_user.member?
+	def check_edit_form?
+		if !current_user.edit_form?
 			redirect_to root_path
 		end
 	end

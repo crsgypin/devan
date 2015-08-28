@@ -1,7 +1,7 @@
 class Admin::ManufacturersController < ApplicationController
 	before_action :set_manufacturer, :only=>[:show, :edit, :update, :destroy]
 	before_action :authenticate_user!
-	before_action :check_editor?
+	before_action :check_edit_setting?
 
 	def index
 		@manufacturers = Manufacturer.all
@@ -71,8 +71,8 @@ private
 
 	end
 
-	def check_editor?
-		if !current_user.editor?
+	def check_edit_setting?
+		if !current_user.edit_setting?
 			redirect_to root_path
 		end
 	end

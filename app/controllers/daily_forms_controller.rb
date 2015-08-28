@@ -1,6 +1,6 @@
 class DailyFormsController < ApplicationController
 	before_action :authenticate_user!
-	before_action :check_member?
+	before_action :check_edit_form?
 
 	def index
 		@daily_forms = DailyForm.includes(:form_values=>[:manufacturer,:delivery_person,:customer])
@@ -114,8 +114,8 @@ private
 		@manufacturer_list = Manufacturer.all.map{|m| [m.name, m.id]}
 	end
 
-	def check_member?
-		if !current_user.member?
+	def check_edit_form?
+		if !current_user.edit_form?
 			redirect_to root_path
 		end
 	end

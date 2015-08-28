@@ -13,7 +13,7 @@
 			</p>
   	</div>
 		
-		<% if current_user.member?%>
+		<% if current_user.edit_form?%>
 			<div class="box"> 
 				<%= link_to "客戶", delivery_routes_customers_path %>
 			</div>
@@ -21,7 +21,7 @@
 				<%= link_to "表單", daily_forms_path %>	
 			</div>
 
-			<% if current_user.editor? %>
+			<% if current_user.edit_setting? %>
 				<div class="box"> <%= link_to "路線規劃", customer_routes_path %> </div>
 				<div class="box"> <%= link_to "設定",admin_customers_path %> </div>
 			<% end %>

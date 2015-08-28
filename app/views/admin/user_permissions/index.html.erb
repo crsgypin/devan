@@ -1,0 +1,108 @@
+<%= render :partial=>"admin/header.html",:locals=>{:selected=>"user_permission"} %>
+
+<div class="content-box">
+	<div class="content-inner">
+	
+		<div class="user-permissions">
+			<div class="info">
+				<h1> 使用者清單 </h1>
+			</div>
+
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<td>	email	</td>
+						<td>	名稱	</td>
+						<td>  暱稱 </td>
+						<td>	運送員	</td>
+						<td>  身份 </td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<% @users.each do |user| %>
+						<tr>
+							<td> <%= user.email %> </td>
+							<td> <%= user.name %> </td>
+							<td> <%= user.username %> </td>
+							<td> 
+								<%= "#{user.delivery_person.code}-#{user.delivery_person.name}" if user.delivery_person %> 
+							</td>
+							<td class="user-status-<%=user.id%>">
+								<%= t("permission.#{user.status}") %>
+							</td>
+							<td>
+								<% if user!=current_user %>
+									<%= link_to "變更身份","",
+											:user_id=>user.id,
+											:email=>user.email,
+											:class=>"btn btn-warning btn-xs update" %>
+								<% end %>
+							</td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+
+			<div class="background"></div>
+			<div class="selection">
+				<h3 class="email"></h3>
+				<% User.status_list.each do |status| %>
+					<%= link_to "",:class=>"option btn btn-default", 
+												 :permission=>status do %>
+						<p> <%= t("permission.#{status}") %> </p>
+					<% end %>
+				<% end %>
+				<a href="" class="cancel">取消</a>
+			</div>
+
+		</div>
+	</div>
+</div>
+<script>
+var userId = "";
+
+	$('.user-permissions').on('click',".update",function(e){
+		e.preventDefault();
+		var email = $(this).attr('email');
+		userId = $(this).attr('user_id');
+		$('.user-permissions .selection .email').text(email);
+
+		$('.user-permissions .background').show(10,function(){
+			$('.user-permissions .selection').slideDown(300);
+		})
+	})
+
+	$('.user-permissions').on('click',".option",function(e){
+		e.preventDefault();
+		var text = $(this).text();
+		$.ajax({
+			url:"/admin/user_permissions/" + userId,
+			data: {status:$(this).attr('permission')},
+			method: 'patch',
+			dataType:'json',
+			success:function(data){
+				if (data['result'].toLowerCase()=="ok"){
+					$('.user-status-' + userId).text(text)
+					closeWindow();
+				}
+			}
+		})
+	})
+
+	$('.user-permissions').on('click','.cancel',function(e){
+		e.preventDefault();
+		closeWindow();
+	})
+
+	function closeWindow(){
+		$('.user-permissions .selection').slideUp(300,function(){
+			$('.user-permissions .background').hide();		
+		})		
+	}
+
+</script>
+
+
+
+
