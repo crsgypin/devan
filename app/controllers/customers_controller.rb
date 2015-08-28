@@ -3,9 +3,10 @@ class CustomersController < ApplicationController
 	before_action :check_edit_form?
 
 	def index
-		@customers = Customer.active.includes(:phones,:addresses=>[:city])
-		@search_key = params[:search]		
-		set_search if @search_key.present?
+		@search_key = params[:search]
+		@customers = @search_key.present? ? Customer.search(@search_key) : Customer.all
+
+		@customers = @customers.active.includes(:faxes,:phones,:addresses=>[:city])
 		@customers = @customers.page(params[:page]).per(20)
 	end
 
@@ -24,18 +25,6 @@ class CustomersController < ApplicationController
 	end
 
 private 
-	def set_search
-		@customers = @customers.joins(:addresses,:phones,:form_values=>:daily_form)
-		# @customers = @customers.joins("LEFT JOIN addresses on addresses.address_link_type= 'Customer' and address )
-		states = []
-		states<< "customers.code LIKE '%#{params[:search]}%'"
-		states<< "customers.name LIKE '%#{params[:search]}%'"
-		states<< "address LIKE '%#{params[:search]}%'"
-		states<< "phones.number LIKE '%#{params[:search]}%'"
-		@customers = @customers.where(states.join(" OR ")).group('customers.name')
-	end
-
-
 	def set_customer_routes(before_day,delivery_person)
 		wday = before_day.day.ago.strftime('%A').downcase
     @customer_routes = CustomerRoute.includes(:delivery_person,:customer=>[:addresses]).order(:row_order)

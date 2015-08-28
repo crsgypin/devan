@@ -30,6 +30,21 @@ class Customer < ActiveRecord::Base
 		#to-do merge all about customer atatus
 	end
 
+	def self.search(key_word)
+		@customer_ids = Customer.select(:id)
+		@customer_ids = @customer_ids.joins("LEFT OUTER JOIN addresses ON addresses.address_link_id = customers.id AND addresses.address_link_type = 'Customer'")
+		@customer_ids = @customer_ids.joins("LEFT OUTER JOIN phones ON phones.phone_link_id = customers.id AND (phones.phone_link_type = 'Customer' OR phones.phone_link_type = 'CustomerFax')")
+
+		states = []
+		states<< "customers.code LIKE '%#{key_word}%'"
+		states<< "customers.name LIKE '%#{key_word}%'"
+		states<< "addresses.address LIKE '%#{key_word}%'"
+		states<< "phones.number LIKE '%#{key_word}%'"
+		@customer_ids = @customer_ids.where(states.join(" OR ")).group('customers.name')
+		@customers = Customer.where(:id=>@customer_ids.map{|c| c.id})		
+	end
+
+
 private
 
 	def check_form_values

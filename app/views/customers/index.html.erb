@@ -18,8 +18,14 @@
 				<% end %>
 			</div>
 
-			<div class="page-box">
-				<%= paginate @customers %>								
+			<div class="page-info">
+				<div class="page-box">
+					<%= paginate @customers %>	
+				</div>
+				<div class="page-box1">
+					<%= page_entries_info @customers, :entry_name=>"客戶" %>							
+				</div>
+
 			</div>
 
 			<table class="table table-striped customer-index-table">

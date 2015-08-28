@@ -75,13 +75,29 @@
 		}
 	}
 
-	.page-box{
+	.page-info{
 		padding:20px;
-		nav.pagination{
-			padding:0px;
-			margin:0px;
+
+		.page-box{
+			float:left;
+
+			nav.pagination{
+				padding:0px;
+				margin:0px;
+			}
 		}
+
+		.page-box1{
+			float:right
+		}	
 	}
+	.page-info::after{
+		display:block;
+		content:"";
+		clear:both;
+	}
+
+
 }
 
 
