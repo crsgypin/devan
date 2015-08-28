@@ -4,12 +4,11 @@ class Admin::CustomersController < ApplicationController
 	before_action :check_edit_setting?
 
 	def index
-		@customers = Customer.includes(:addresses,:phones,:faxes,:form_values=>:daily_form)
 		@search_key = params[:search]
-		set_search if @search_key.present?
+		@customers = @search_key.present? ? Customer.search(@search_key) : Customer.all
 		set_order
-		@customers = @customers.page(params[:page]).per(30)
-
+		@customers = @customers.includes(:phones,:faxes,:addresses).page(params[:page])
+		@customers = @customers.page(params[:page]).per(20)
 	end
 
 	def show
@@ -91,7 +90,7 @@ private
 	def set_order
 		@sort = params[:sort] ? params[:sort] : "id"
 		@order = params[:order] ? params[:order] : "DESC"
-		if @sort == "id" || @sort == "updated_at"
+		if @sort == "id" || @sort == "updated_at" || @sort == "created_at"
 			order_word = "customers.#{@sort} #{@order}"
 		else
 			order_word = "#{@sort} #{@order}"
@@ -100,16 +99,6 @@ private
 
 	end
 
-	def set_search
-		@customers = @customers.joins(:addresses,:phones,:form_values=>:daily_form)
-		# @customers = @customers.joins("LEFT JOIN addresses on addresses.address_link_type= 'Customer' and address )
-		states = []
-		states<< "customers.code LIKE '%#{params[:search]}%'"
-		states<< "customers.name LIKE '%#{params[:search]}%'"
-		states<< "address LIKE '%#{params[:search]}%'"
-		states<< "phones.number LIKE '%#{params[:search]}%'"
-		@customers = @customers.where(states.join(" OR ")).group('customers.name')
-	end
 
 	def update_session_search
 		session[:customer_search] = params[:customer_search] if params[:customer_address]

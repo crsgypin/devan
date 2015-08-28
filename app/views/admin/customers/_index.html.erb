@@ -1,16 +1,5 @@
 <%# customers, search_key %>
 
-<div class="info-box">
-	<div class="page-box">
-		<%= paginate customers %>	
-	</div>
-
-	<div class="new-button">
-		<%= link_to "新增客戶資料","",:class=>"btn btn-primary btn-xs", :onClick=>"adminCustomer.newPage(event)" %>
-	</div>
-
-</div>
-
 <div class="info-box2">
 	<%= form_tag admin_customers_path, :method=>:get do %>
 	<div class="search">
@@ -23,6 +12,7 @@
 				options_for_select([["無","id"],
 														["客戶編號","code"],
 														["店名","name"],
+														["狀態","status"],
 														["編輯時間","updated_at"],
 														["建立時間","created_at"]],@sort) %>
 		<%= select_tag "order", 
@@ -30,8 +20,21 @@
 		<%= submit_tag "排序", :class=>"btn btn-info btn-xs" %>
 	</div>
 	<% end %>
+
+	<div class="new-button">
+		<%= link_to "新增客戶資料","",:class=>"btn btn-primary btn-xs", :onClick=>"adminCustomer.newPage(event)" %>
+	</div>
 </div>
 
+<div class="info-box">
+	<div class="page-box">
+		<%= paginate customers %>	
+	</div>
+	<div class="page-box1">
+		<%= page_entries_info customers, :entry_name=>"客戶" %>		
+	</div>
+
+</div>
 
 <table class="admin-customer-content table table-bordered">
 	<thead>
@@ -79,7 +82,7 @@
 			</td>
 			<td> <%= customer.description %> </td>
 			<td> 
-				<%= link_to "詳細資料","#",:class=>"btn btn-warning btn-xs", :onClick=>"adminCustomer.showPage(event,#{customer.id})"  %> 
+				<%= link_to "檢視","#",:class=>"btn btn-warning btn-xs", :onClick=>"adminCustomer.showPage(event,#{customer.id})"  %> 
 			</td>
 		</tr>
 		<% end %>
