@@ -29,7 +29,7 @@
 						<td> <%= manufacturer.name %> </td>
 						<td> <%= manufacturer.phones.map{|p| p.number}.join(',') %> </td>
 						<td> <%= manufacturer.faxes.map{|f| f.number}.join(',') %> </td>
-						<td> <%= manufacturer.addresses.map{|addr| addr.address}.join(';') %> </td>
+						<td> <%= manufacturer.address_address %> </td>
 						<td> 
 							<%= link_to "詳細內容",edit_admin_manufacturer_path(manufacturer), :class=>"btn btn-primary btn-xs" %>
 						</td>

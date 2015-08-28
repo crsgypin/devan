@@ -14,8 +14,8 @@ class Admin::ManufacturersController < ApplicationController
 	def new
 		@manufacturer = Manufacturer.new
 		@manufacturer.phones.new
-		@manufacturer.addresses.new
 		@manufacturer.faxes.new
+		@manufacturer.build_address
 	end
 
 	def create
@@ -31,7 +31,7 @@ class Admin::ManufacturersController < ApplicationController
 	end
 
 	def edit
-		@manufacturer.addresses.new if @manufacturer.addresses.count ==0
+		@manufacturer.build_address if @manufacturer.address ==nil
 		@manufacturer.phones.new if @manufacturer.phones.count ==0
 		@manufacturer.faxes.new if @manufacturer.faxes.count ==0
 	end
@@ -67,7 +67,7 @@ private
 											:manufacturer_keys_attributes=>[:id, :name, :note, :mapping_key],
 											:phones_attributes=>[:id, :number,:_destroy],
 											:faxes_attributes=>[:id, :number,:_destroy],
-											:addresses_attributes=>[:id, :address,:city_id,:district_id,:_destroy] )
+											:address_attributes=>[:id, :address,:city_id,:district_id,:_destroy] )
 
 	end
 

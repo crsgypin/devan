@@ -7,7 +7,7 @@ class Admin::CustomersController < ApplicationController
 		@search_key = params[:search]
 		@customers = @search_key.present? ? Customer.search(@search_key) : Customer.all
 		set_order
-		@customers = @customers.includes(:phones,:faxes,:addresses).page(params[:page])
+		@customers = @customers.includes(:phones,:faxes,:address).page(params[:page])
 		@customers = @customers.page(params[:page]).per(20)
 	end
 
@@ -20,7 +20,7 @@ class Admin::CustomersController < ApplicationController
 	def new
 		@customer = Customer.new
 		@customer.phones.new
-		@customer.addresses.new
+		@customer.build_address
 		@customer.faxes.new
 		respond_to do |format|
 			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/form.html",:locals=>{:customer=>@customer})}}
@@ -43,7 +43,7 @@ class Admin::CustomersController < ApplicationController
 	def edit
 		@customer.phones.new if @customer.phones.count ==0
 		@customer.faxes.new if @customer.faxes.count ==0
-		@customer.addresses.new if @customer.addresses.count ==0
+		@customer.buidl_address if @customer.address ==nil
 
 		respond_to do |format|
 			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/form.html",:locals=>{:customer=>@customer})}}
@@ -76,14 +76,14 @@ class Admin::CustomersController < ApplicationController
 
 private
 	def set_customer
-		@customer = Customer.includes(:addresses,:phones,:faxes,:form_values=>:daily_form).find(params[:id])
+		@customer = Customer.includes(:address,:phones,:faxes,:form_values=>:daily_form).find(params[:id])
 	end
 
 	def customer_params
 		params.require(:customer).permit(:code, :name, :description, :status,
 															:phones_attributes=>[:id,:number,:_destroy],
 															:faxes_attributes=>[:id,:number,:_destroy],
-															:addresses_attributes=>[:id,:address,:city_id,:district_id,:_destroy],
+															:address_attributes=>[:id,:address,:city_id,:district_id,:_destroy],
 															:customer_delivery_day_attributes=>[:id,:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
 	end
 

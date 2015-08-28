@@ -9,8 +9,7 @@ RSpec.describe Customer, type: :model do
 
   end
 
-  describe "確認刪除: " do
-
+  describe "刪除測試: " do
   	before do
       @daily_form.form_values.create(:manufacturer=>@manufacturer, :customer=>@customer, :delivery_person_id=>1,:key1=>123)
       @daily_form.form_values.create(:manufacturer=>@manufacturer, :customer=>@customer, :delivery_person_id=>1,:key1=>44)
@@ -23,7 +22,7 @@ RSpec.describe Customer, type: :model do
   	end
   end
 
-  describe "確認刪除: " do 
+  describe "刪除測試: " do 
     before do
       @customer.destroy
     end
@@ -32,4 +31,33 @@ RSpec.describe Customer, type: :model do
       expect(Customer.count).to eq(0)
     end
   end
+
+  describe "address儲存測試: " do
+    before do
+      @customer.build_address(:address=>"台北市")
+      @customer.save
+    end
+
+    it "address 一併儲存" do
+      expect(Customer.count).to eq(1)
+      expect(Address.count).to eq(1)
+    end
+  end
+
+  describe "address刪除測試: " do
+    before do
+      @customer.build_address(:address=>"台北市")
+      @customer.save
+      @customer.destroy
+    end
+
+    it "address 一併刪除" do
+      expect(Customer.count).to eq(0)
+      expect(Address.count).to eq(0)
+    end
+  end
+  
 end
+
+
+

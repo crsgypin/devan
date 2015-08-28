@@ -60,11 +60,7 @@
 				<%= link_to setup_customer_status(customer).status, "", :onClick=>"adminCustomer.setStatus(event,#{customer.id},this)", :class=>"customer-status" %> 
 			</td>
 			<td>
-					<ul>
-						<% customer.addresses.each do |address| %>
-							<li> <%= address.address %> </li>
-						<% end %>						
-					</ul>
+				<%= customer.address_address %>
 			</td>
 			<td>
 					<ul>

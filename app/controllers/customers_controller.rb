@@ -6,7 +6,7 @@ class CustomersController < ApplicationController
 		@search_key = params[:search]
 		@customers = @search_key.present? ? Customer.search(@search_key) : Customer.all
 
-		@customers = @customers.active.includes(:faxes,:phones,:addresses=>[:city])
+		@customers = @customers.active.includes(:faxes,:phones,:address=>[:city])
 		@customers = @customers.page(params[:page]).per(20)
 	end
 
@@ -27,16 +27,16 @@ class CustomersController < ApplicationController
 private 
 	def set_customer_routes(before_day,delivery_person)
 		wday = before_day.day.ago.strftime('%A').downcase
-    @customer_routes = CustomerRoute.includes(:delivery_person,:customer=>[:addresses]).order(:row_order)
+    @customer_routes = CustomerRoute.includes(:delivery_person,:customer=>[:address]).order(:row_order)
     @customer_routes = @customer_routes.where(:wday=>wday,:delivery_person=>delivery_person)
 
 		customer_markers = [];
 		@customer_routes.each do |customer_route|
 			customer = customer_route.customer
-			if customer.addresses[0] && customer.addresses[0].lat != nil
-				lat = customer.addresses[0].lat
-				lng = customer.addresses[0].lng
-				info = "#{customer.name} <br> #{customer.addresses[0].try(:address)}"
+			if customer.address && customer.address.lat != nil
+				lat = customer.address.lat
+				lng = customer.address.lng
+				info = "#{customer.name} <br> #{customer.address_address}"
 			else
 				lat = 25
 				lng = 121.5

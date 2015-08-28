@@ -43,7 +43,9 @@
 						<tr index=<%=index%> >
 							<td> <%= index+1 %> </td>
 							<td> <%= "#{customer_route.customer.code} -#{customer_route.customer.name}" %> </td>
-							<td class="address"> <%= customer_route.customer.addresses.first.try(:address) %> </td>
+							<td class="address"> 
+								<%= customer_route.customer.address_address %> 
+							</td>
 						</tr>
 					<% end %>				
 				</table>			

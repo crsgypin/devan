@@ -39,20 +39,8 @@
 		<tr>
 			<td> 地址 </td>
 			<td>
-				<div class="attribute-field-group">
-					<% customer.addresses.each_with_index do |address,index| %>
-						<div class="attribute-field">
-							<%= hidden_field_tag "customer[addresses_attributes][#{index}][id]", address.id %>
-							<%= text_field_tag "customer[addresses_attributes][#{index}][address]",address.address %>
-							<% if index ==0 %>
-								<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
-							<% end %>
-						</div>
- 					<% end %>
-
-					<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-primary btn-xs" %> 					
-				</div>
-
+				<%= hidden_field_tag "customer[address_attributes][id]", customer.address.try(:id) %>
+				<%= text_field_tag "customer[address_attributes][address]", customer.address_address %>
 			</td>
 		</tr>
  

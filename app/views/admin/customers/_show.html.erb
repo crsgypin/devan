@@ -17,12 +17,10 @@
 		<td> <%= customer.status %> </td>
 	</tr>
 
-	<% customer.addresses.each_with_index do |address,index| %>
 		<tr>
-			<td> <%= "地址#{index+1}" %> </td> 
-			<td> <%= address.address %> </td>
+			<td> <%= "地址" %> </td> 
+			<td> <%= customer.address_address %> </td>
 		</tr>
-	<% end %>
 	
 	<% customer.phones.each_with_index do |phone,index| %>		
 		<tr>

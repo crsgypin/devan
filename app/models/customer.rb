@@ -1,6 +1,7 @@
 class Customer < ActiveRecord::Base
-	has_many :addresses, :as => :address_link, :dependent=>:destroy
-	accepts_nested_attributes_for :addresses, allow_destroy: true
+	has_one :address, :as => :address_link, :dependent=>:destroy
+	accepts_nested_attributes_for :address, allow_destroy: true
+	delegate :address, :to=>:address, :prefix=>true, :allow_nil=>true
 
 	has_many :phones, :as => :phone_link, :dependent=>:destroy
 	accepts_nested_attributes_for :phones, allow_destroy: true

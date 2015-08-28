@@ -26,17 +26,18 @@
 
 			<tr>
 				<td> 縣市 </td>
-				<td> <%= @manufacturer.addresses.first.city.name if @manufacturer.addresses.first %></td>
+				<td> 
+					<%= @manufacturer.address.city.name if @manufacturer.address %></td>
 			</tr>
 
 			<tr>
 				<td> 市/鎮/區 </td>
-				<td> <%= @manufacturer.addresses.first.district.name if @manufacturer.addresses.first %></td>
+				<td> <%= @manufacturer.address.district.name if @manufacturer.address %></td>
 			</tr>
 
 			<tr>
 				<td> 地址 </td>
-				<td> <%= @manufacturer.addresses.first.try(:address) %> </td>
+				<td> <%= @manufacturer.address_address %> </td>
 			</tr>
 
 		</table>

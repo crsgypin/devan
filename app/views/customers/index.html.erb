@@ -23,7 +23,7 @@
 					<%= paginate @customers %>	
 				</div>
 				<div class="page-box1">
-					<%= page_entries_info @customers, :entry_name=>"客戶" %>							
+					<%= page_entries_info @customers, :entry_name=>"客戶" %>						
 				</div>
 
 			</div>
@@ -35,8 +35,9 @@
 						<th width="10%"> 編號 </th>
 						<th width="15%"> 名字 </th>
 						<th width="10%"> 縣市 </th>
-						<th width="20%"> 地址 </th>
-						<th width="20%"> 電話 </th>
+						<th width="30%"> 地址 </th>
+						<th width="10%"> 電話 </th>
+						<th width="10%"> 傳真 </th>
 					</tr>
 				</thead>
 
@@ -46,9 +47,9 @@
 							<td> <%= index+1 %> </td>
 							<td> <%= customer.code %> </td>
 							<td> <%= customer.name %> </td>
-							<td> <%= customer.addresses.first.city.try(:name) if customer.addresses.first %> </td>
+							<td> <%= customer.address.city.try(:name) if customer.address_address %> </td>
 							<td>
-								<%= customer.addresses.first.try(:address) %>
+								<%= customer.address_address %>
 							</td>
 
 							<td> 
@@ -58,6 +59,15 @@
 									<% end %>
 								</ul>
 							</td>
+
+							<td> 
+								<ul>
+									<% customer.faxes.each do |fax| %>
+										<li> <%= fax.number %> </li>
+									<% end %>
+								</ul>
+							</td>
+
 						</tr>
 					<% end %>
 
