@@ -1,8 +1,8 @@
 
 <div class="menu-box">
 	<div class="menu-inner-1">
-		<%= link_to "今日路線", delivery_routes_customers_path,:class=>"selected",:content=>".customer-route"%>
-		<%= link_to "查詢", customers_path, :content=>".customer-search"%>
+		<%= link_to "今日路線", delivery_routes_customers_path,:class=>"selected" %>
+		<%= link_to "查詢", customers_path %>
 	</div>
 </div>
 
@@ -11,7 +11,6 @@
 
 		<div class="delivery-routes">
 			<div class="info">
-				<h1>路線(<%=@customer_routes.length%>)</h1>
 				<div class="date-selector">
 					<%= form_tag delivery_routes_customers_path,:method=>:get do %>
 						<%= select_tag "date_select", 
@@ -20,9 +19,17 @@
 										:name=>"day", 
 										:url=> update_date_customers_path %>		
 					<% end %>	
-				</div>					
-			</div>
+				</div>
 
+				<h1>
+					<% if @delivery_person %>
+						<%= "運送員 #{@delivery_person.name} 的路線，共 #{@customer_routes.length} 個" %>
+					<% else %>
+						你目前沒有送貨員的身份
+					<% end %>
+				</h1>
+
+			</div>
 
 			<div class="map-box">
 				<div>
@@ -93,6 +100,9 @@ function vMarker(lat,lng,infoContent,map){
 	}
 
 	this.marker.addListener('click',function(){
+		markers.forEach(function(marker){
+			marker.closeInfoWindow();	
+		})
 		_this.infoWindow.open(_this.map, _this.marker);
 	})
 }	

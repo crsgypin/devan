@@ -1,0 +1,41 @@
+
+.devise-user{
+	margin:0 auto;
+	padding: 40px 0 0 0;
+	width: 50%;
+
+	.field{
+		text-align: center;
+		padding: 20px;
+
+		.v-label{
+			width:100px;
+		}
+
+		.check-remember-me{
+			margin: 5px 0 0 40px;
+		}
+
+		.remember-me{
+			padding: 0 0 0 20px;
+		}
+
+		
+	}
+
+	.field>*{
+		float: left;
+	}
+
+	.field::after{
+		display: block;
+		clear: both;
+		content: "";
+	}
+
+	.actions{
+		padding: 10px 0 10px 50px;
+	}
+
+}
+

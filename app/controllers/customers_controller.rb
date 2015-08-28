@@ -1,5 +1,6 @@
 class CustomersController < ApplicationController
-	before_action :authenticate_user!, :except=>[:index,:show]
+	before_action :authenticate_user!
+	before_action :check_edit_form?
 
 	def index
 		@customers = Customer.active.includes(:phones,:addresses=>[:city])
@@ -9,13 +10,9 @@ class CustomersController < ApplicationController
 	end
 
 	def delivery_routes
-		if params[:day]
-			@before_day = params[:day].to_i
-		else
-			@before_day = 0
-		end
-		delivery_person = DeliveryPerson.first
-		set_customer_routes(@before_day, delivery_person)
+		@before_day = params[:day] ? params[:day].to_i : 0
+		@delivery_person = current_user.delivery_person
+		set_customer_routes(@before_day, @delivery_person)
 
 		respond_to do |format|
 			format.html
@@ -50,7 +47,7 @@ private
 			if customer.addresses[0] && customer.addresses[0].lat != nil
 				lat = customer.addresses[0].lat
 				lng = customer.addresses[0].lng
-				info = customer.name
+				info = "#{customer.name} <br> #{customer.addresses[0].try(:address)}"
 			else
 				lat = 25
 				lng = 121.5
@@ -59,6 +56,13 @@ private
 			customer_markers << {:lat=>lat, :lng=>lng,:info=>info}
 		end
 		@markers = customer_markers.to_json
+	end
+
+private
+	def check_edit_form?
+		if !current_user.edit_form?
+			redirect_to root_path
+		end
 	end
 end
 

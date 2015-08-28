@@ -7,16 +7,20 @@
 		<div class="function">
 			<div class="user-box">
 				<% if current_user %>
-					<p> 哈囉! <%= link_to current_user.display_name, destroy_user_session_path, :method=>:delete %> </p>
+					<p> 哈囉! <%= link_to current_user.display_name, "/users/edit_profile" %> </p>
 				<% else %>
 					<p> <%= link_to "登入", user_session_path %> </p>
 				<% end %>
 			</div>
-			<ul class="item-list">
-				<li><%= link_to "報表", daily_forms_path %> </li>
-				<li><%= link_to "客戶", customers_path %> </li>
-				<li><%= link_to "設定", admin_customers_path %> </li>
-			</ul>
+
+			<% if current_user && current_user.edit_form? %>
+				<ul class="item-list">
+					<li><%= link_to "報表", daily_forms_path %> </li>
+					<li><%= link_to "客戶", customers_path %> </li>
+					<li><%= link_to "設定", admin_customers_path %> </li>
+				</ul>
+			<% end %>
+
 		</div>
 	</div>
 </div>

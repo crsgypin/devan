@@ -44,5 +44,9 @@ en:
     Friday: "星期五"
     Saturday: "星期六"
     Sunday: "星期天"
-
+  permission:
+    guest: "訪客"
+    member: "員工"
+    editor: "編輯者"
+    admin: "管理員"
 

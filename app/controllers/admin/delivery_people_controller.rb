@@ -1,6 +1,7 @@
 class Admin::DeliveryPeopleController < ApplicationController
 	before_action :set_delivery_person, :only=>[:show,:edit,:update,:destroy]
-	before_action :authenticate_user!, :except=>[:index,:show]
+	before_action :authenticate_user!
+	before_action :check_edit_setting?
 
 	def index
 		@active_delivery_people = DeliveryPerson.where(:status=>"在職")
@@ -70,4 +71,11 @@ private
 	def delivery_person_params
 		params.require(:delivery_person).permit(:code,:name,:status,:user_id)
 	end
+
+	def check_edit_setting?
+		if !current_user.edit_setting?
+			redirect_to root_path
+		end
+	end
+
 end

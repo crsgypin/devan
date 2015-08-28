@@ -2,11 +2,16 @@ Rails.application.routes.draw do
   get 'delivery_people/index'
 
   devise_for :users
+  resources :users, :only=>[] do
+    collection do 
+      get :edit_profile
+      patch :update_profile
+    end
+  end
 
   root "homes#index"
 
   resources :daily_forms do
-
     collection do
       delete 'delete_form_value/:id', :to=>'daily_forms#delete_form_value', 
                                                   :as=>'form_value'
@@ -16,7 +21,6 @@ Rails.application.routes.draw do
 
   resources :customer_routes do
     post :move
-
   end
 
   resources :customers do 
@@ -34,6 +38,8 @@ Rails.application.routes.draw do
     end
     resources :manufacturers
     resources :delivery_people
+    resources :users
+    resources :user_permissions
   end
 
 

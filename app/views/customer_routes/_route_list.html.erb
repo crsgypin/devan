@@ -1,7 +1,8 @@
 <%# delivery_person, wday %>
 
+<% customer_routes = delivery_person.customer_routes.includes(:customer).where('wday = ?',wday.downcase).order(:row_order) %>
+<p> <%= customer_routes.length %> </p>
 <table class="table table-bordered delivery-person-col" >
-	<% customer_routes = delivery_person.customer_routes.includes(:customer).where('wday = ?',wday.downcase).order(:row_order) %>
 
 	<% customer_routes.each do |customer_route| %>
 		<tr url=<%= customer_route_move_path(customer_route) %> >

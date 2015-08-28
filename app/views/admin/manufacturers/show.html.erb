@@ -1,10 +1,4 @@
-<div class="menu-box">
-	<div class="menu-inner-1">
-		<%= link_to "客戶", admin_customers_path,:class=>"" %>
-		<%= link_to "送貨員",admin_delivery_people_path,:class=>"" %>
-		<%= link_to "廠商", admin_manufacturers_path,:class=>"selected" %>
-	</div>
-</div>
+<%= render :partial=>"admin/header.html",:locals=>{:selected=>"manufacturer"} %>
 
 <div class="content-box">
 	<div class="content-inner">

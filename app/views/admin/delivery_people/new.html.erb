@@ -1,10 +1,4 @@
-<div class="menu-box">
-	<div class="menu-inner-1">
-		<%= link_to "客戶", admin_customers_path,:class=>"" %>
-		<%= link_to "送貨員",admin_delivery_people_path,:class=>"selected" %>
-		<%= link_to "廠商", admin_manufacturers_path,:class=>"" %>
-	</div>
-</div>
+<%= render :partial=>"admin/header.html",:locals=>{:selected=>"delivery_person"} %>
 
 <div class="content-box">
 	<div class="content-inner">
@@ -32,7 +26,10 @@
 					</tr>
 					<tr>
 						<td> <%= form.label :user_id, "使用者帳號" %> </td>
-						<td> <%= form.select :user_id, User.all.map{|u| [u.email,u.id]}, :prompt => "無"%> </td>
+						<td> <%= form.select :user_id, 
+											User.without_delivery_person.map{|u| [u.email,u.id]}, 
+											:prompt => "無"%> 
+						</td>
 				</table>
 
 			<% end %>
