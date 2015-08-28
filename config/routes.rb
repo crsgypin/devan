@@ -39,6 +39,7 @@ Rails.application.routes.draw do
     end
     resources :manufacturers
     resources :delivery_people
+    resources :users
   end
 
 

@@ -4,9 +4,14 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   has_one :delivery_person
+  has_one :permission, :dependent =>:destroy
+  accepts_nested_attributes_for :permission, allow_destroy: true
 
   has_many :form_value_users
   has_many :form_values, :through=>:form_value_users
+
+  before_create :set_permission
+private
 
   def display_name
   	if self.username.present?
@@ -22,4 +27,15 @@ class User < ActiveRecord::Base
     return User.all - User.joins(:delivery_person)
   end
 
+  def set_permission
+    p = self.build_permission
+    Permission.columns.map do |c|
+      if c.type == :boolean
+        p[c.name] = false
+      end
+    end
+  end
 end
+
+
+
