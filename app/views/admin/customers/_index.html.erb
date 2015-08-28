@@ -20,7 +20,11 @@
 
 	<div class="sort">
 		<%= select_tag "sort", 
-				options_for_select([["無","id"],["客戶編號","code"],["店名","name"],["編輯時間","updated_at"]],@sort) %>
+				options_for_select([["無","id"],
+														["客戶編號","code"],
+														["店名","name"],
+														["編輯時間","updated_at"],
+														["建立時間","created_at"]],@sort) %>
 		<%= select_tag "order", 
 				options_for_select([["小->大","ASC"],["大->小","DESC"]],@order) %>
 		<%= submit_tag "排序", :class=>"btn btn-info btn-xs" %>

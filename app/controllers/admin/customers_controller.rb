@@ -4,12 +4,11 @@ class Admin::CustomersController < ApplicationController
 	before_action :check_edit_setting?
 
 	def index
-		@sort = params[:sort] ? params[:sort] : "id"
-		@order = params[:order] ? params[:order] : "DESC"
 		@customers = Customer.includes(:addresses,:phones,:faxes,:form_values=>:daily_form)
 		@search_key = params[:search]
 		set_search if @search_key.present?
-		@customers = @customers.order("#{@sort} #{@order}").page(params[:page]).per(30)
+		set_order
+		@customers = @customers.page(params[:page]).per(30)
 
 	end
 
@@ -87,6 +86,18 @@ private
 															:faxes_attributes=>[:id,:number,:_destroy],
 															:addresses_attributes=>[:id,:address,:city_id,:district_id,:_destroy],
 															:customer_delivery_day_attributes=>[:id,:id, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, :unstable_day] )
+	end
+
+	def set_order
+		@sort = params[:sort] ? params[:sort] : "id"
+		@order = params[:order] ? params[:order] : "DESC"
+		if @sort == "id" || @sort == "updated_at"
+			order_word = "customers.#{@sort} #{@order}"
+		else
+			order_word = "#{@sort} #{@order}"
+		end
+		@customers = @customers.order(order_word)
+
 	end
 
 	def set_search
