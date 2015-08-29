@@ -12,22 +12,42 @@
 			font-size: 1.6em;
 		}
 
+		.delivery-person-selector{
+			border-radius:  0px;
+			width:300px;
+			margin: 0 0 0 40px;
+			font-size: 1.6em;
+			height: 40px;
+		}
+
 	}
 
 	.content{
 
 		.name{
 			float: left;
-			width:80%;
+
 		}		
 
 		.action{
-			float: right;
-			width:20%;
 
-			a{
-				display: block;
-				float: right;
+			.action-move-up, .action-move-down, .action-remove{
+				float: left;
+				width: 30%;
+				height: 20px;
+
+				a{
+					display: block;
+					width:80%;
+					margin:0 auto;
+
+				}
+				
+				.remove{
+					text-align: center;
+					color:red;
+					margin: 8px;
+				}
 			}
 		}
 	}

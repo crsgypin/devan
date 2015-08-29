@@ -2,16 +2,35 @@
 
 <% customer_routes = delivery_person.customer_routes.includes(:customer).where('wday = ?',wday.downcase).order(:row_order) %>
 <p> <%= customer_routes.length %> </p>
-<table class="table table-bordered delivery-person-col" >
+<table class="table table-striped delivery-person-col" >
 
-	<% customer_routes.each do |customer_route| %>
-		<tr url=<%= customer_route_move_path(customer_route) %> >
+	<% customer_routes.each_with_index do |customer_route,index| %>
+		<tr url=<%= customer_route_move_path(customer_route) %> index=<%= index %> >
 			<td> 
+					<%= customer_route.customer.code %>					
+			</td>
+			<td>
 				<div class="name">
-					<%= "#{customer_route.customer.code}-#{customer_route.customer.name}" %>
-				</div>  
+					<%= customer_route.customer.name %>									
+				</div>
+			</td>
+			<td>
 				<div class="action">
-					<%= link_to "X", customer_route_path(customer_route), :class=>"btn btn-danger btn-xs remove", :target=>".delivery-person-#{delivery_person.id}" %>
+					<div class="action-move-up">
+						<% if index!=0 %>
+							<%= link_to "向上", customer_route_path(customer_route), :class=>"btn btn-primary move-up" %>
+						<% end %>
+					</div>
+
+					<div class="action-move-down">
+						<% if index != (customer_routes.length-1) %>
+							<%= link_to "向下", customer_route_path(customer_route), :class=>"btn btn-success move-down" %>
+						<% end %>
+					</div>
+
+					<div class="action-remove">
+						<%= link_to "X", customer_route_path(customer_route), :class=>"remove" %>
+					</div>
 				</div>
 			</td>
 		</tr>
