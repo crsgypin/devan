@@ -5,6 +5,11 @@
 		padding: 20px 20px 20px;
 
 		h1{
+			
+			.delivery-person-select{
+				border-radius: 0px;
+			}
+
 		}
 		.date-selector{
 			padding: 20px 0;
@@ -23,41 +28,117 @@
 		clear: both;
 	}
 
-	.list{
-		float: left;
-		padding: 20px 30px;
-		width: 100%;
-
-		table{
-			width: 90%;
-			margin: 0 auto;				
-		}
-	}
-
 	.map-box{
 		float: left;
 		padding: 20px 0;
-		margin: 0 50px;
 
 		#map{
-			width: 800px;
-			height: 400px;
+			width: 700px;
+			height: 500px;
 		}
 	}
 
-	tr.selected{
-		background-color: rgba(0, 255, 32, 0.6);
-	}
+	.list{
+		float: left;
+		padding: 20px 30px;
+		width: 300px;
 
-	tr.subselected{
-		background-color: rgba(0, 255, 32, 0.2);
-	}
+		table{
+			width: 100%;
+			margin: 0;	
+			table-layout: fixed;
 
-	tr:hover{
-		background-color: rgba(0, 255, 229, 0.6);
+			td:nth-child(1){
+				width:10%;
+			}
+			
+			tr{
+				td{
+					padding: 2px;
+				}
+
+				.name{
+					font-size: 0.8em;
+				}
+				.address{
+					font-size: 0.5em;
+					color: #aaa;
+				}
+			}
+			
+			tr.no-address{
+				color: #aaa;
+			}
+
+			tr.selected{
+				background-color: rgba(0, 255, 32, 0.6);
+			}
+
+			tr.subselected{
+				background-color: rgba(0, 255, 32, 0.2);
+			}
+
+			tr:hover{
+				background-color: rgba(0, 255, 229, 0.6);
+			}
+
+		}
 	}
 }
 
+@media screen and (max-device-width: 780px){
+	.delivery-routes{	
+		.map-box{
+			float: left;
+			padding: 20px 20px;
+
+			#map{
+				width: 1000px;
+				height: 800px;
+			}
+		}
+
+		.list{
+			padding: 20px 0;
+			width: 1000px;
+
+			table{
+				width: 90%;
+				margin: 0 auto;
+				table-layout: fixed;
+
+				td:nth-child(1){
+					font-size: 2em;
+					width:10%;
+				}
+			
+				td:nth-child(2){
+					width:90%;
+				}
+
+				tr{
+					height: 60px;
+
+					td{
+						padding: 2px;
+					}
+
+					.name{
+						font-size: 3em;
+					}
+					.address{
+						font-size: 2em;
+						color: #aaa;
+					}
+				}	
+			}	
+		}
+
+	}
+
+
+
+}
 
 .customer-index{
 	.search-box{

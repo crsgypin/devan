@@ -11,25 +11,36 @@
 
 		<div class="delivery-routes">
 			<div class="info">
+				<%= form_tag delivery_routes_customers_path,:method=>:get do %>
+
 				<div class="date-selector">
-					<%= form_tag delivery_routes_customers_path,:method=>:get do %>
 						<%= select_tag "date_select", 
 										options_for_select(date_list,@before_day), 
 										:class=>"date-select",
 										:name=>"day", 
 										:url=> update_date_customers_path %>		
-					<% end %>	
 				</div>
 
 				<h1>
-					<% if @delivery_person %>
-						<%= "運送員 #{@delivery_person.name} 的路線，共 #{@customer_routes.length} 個" %>
+					<% if current_user.edit_setting? %>
+							<% delivery_people = (DeliveryPerson.on_job.map{|d| [d.name,d.id]} <<["無",0]) %>
+							<% select_delivery_person = @delivery_person ? @delivery_person.id : 0 %>
+							運送員 <%= select_tag "delivery_person", 
+												options_for_select(delivery_people, select_delivery_person),
+												:class=>"delivery-person-select" %> 
+							的路線 共 <%= @customer_routes.length %> 個
 					<% else %>
-						你目前沒有送貨員的身份
+						<% if @delivery_person %>
+							<%= "運送員 #{@delivery_person.name} 的路線，共 #{@customer_routes.length} 個" %>
+						<% else %>
+							你目前沒有送貨員的身份
+						<% end %>
 					<% end %>
 				</h1>
 
-			</div>
+				<% end %>	
+
+			</div> <%# info %>
 
 			<div class="map-box">
 				<div>
@@ -40,11 +51,21 @@
 			<div class="list">
 				<table class="table">
 					<% @customer_routes.each_with_index do |customer_route,index| %>
-						<tr index=<%=index%> >
-							<td> <%= index+1 %> </td>
-							<td> <%= "#{customer_route.customer.code} -#{customer_route.customer.name}" %> </td>
-							<td class="address"> 
-								<%= customer_route.customer.address_address %> 
+						<tr index=<%=index%> 
+							<%= "class='no-address'" %> >
+							<td> 
+								<%= index+1 %> </td>
+							<td> 
+								<div class="name">
+									<%= "#{customer_route.customer.code} -#{customer_route.customer.name}" %>
+								</div>
+								<div class="address">
+									<% if customer_route.customer.address_address.present? %>
+										<%= customer_route.customer.address_address %>
+									<% else %>
+											沒有地址
+									<% end %>
+								</div>
 							</td>
 						</tr>
 					<% end %>				
@@ -66,18 +87,15 @@ $('.delivery-routes .date-select').change(function(e){
 	form.submit();
 })
 
+$('.delivery-routes .delivery-person-select').change(function(e){
+	e.preventDefault();
+	var form = this.closest('form')
+	form.submit();
+})
+
+
 var map;
 var markers=[];
-function initMap(lat, lng) {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: lat, lng: lng},
-    zoom: 13
-  });
-}
-
-function markCurrentLocation(loc){
-	initMap(loc.coords.latitude, loc.coords.longitude);
-}
 
 function vMarker(lat,lng,infoContent,map){
 	var _this = this;
@@ -91,6 +109,10 @@ function vMarker(lat,lng,infoContent,map){
 
 	this.showMarker = function(){
 		_this.marker.setMap(_this.map)
+	}
+
+	this.hideMarker = function(){
+		_this.marker.setMap(null)
 	}
 
 	this.openInfoWindow = function(){
@@ -109,46 +131,26 @@ function vMarker(lat,lng,infoContent,map){
 	})
 }	
 
-function setBound(markers,map){
+function setBound(vMarkers){
 	var bounds = new google.maps.LatLngBounds();
-	markers.forEach(function(marker){
-		bounds.extend(marker.marker.getPosition());
+	vMarkers.forEach(function(vMarker){
+		bounds.extend(vMarker.marker.getPosition());
 	})
   map.fitBounds(bounds);
 }
 
-$('.delivery-routes').on('click','tr',function(e){
-	var index = parseInt($(this).attr('index'));
-	updateMap(index);
-})
+function initMarkersAndMap(){
+	var json_markers = <%=raw @markers %>;
 
-var updateMap = function(index){
-	$('.delivery-routes').find('[index]').removeClass('selected');
-	$('.delivery-routes').find('[index]').removeClass('subselected');
-	$($('.delivery-routes').find('[index=' + index + ']')).addClass('selected');
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: json_markers[0].lat, 
+    				 lng: json_markers[0].lng},
+    zoom: 13
+  });
 
-	var subindex = (index < markers.length-1)? index+1 : index-1
-	$($('.delivery-routes').find('[index=' + (subindex) + ']')).addClass('subselected');			
-	
-	markers.forEach(function(marker){
-		marker.closeInfoWindow();
-	})
-
-	markers[index].openInfoWindow();
-	markers[subindex].openInfoWindow();
-}
-
-
-$(document).ready(function(){
-
-//route page
-	var customer_markers = <%=raw @markers %>;
-
-	initMap(customer_markers[0].lat, customer_markers[0].lng);
-
-	for(i=0;i<customer_markers.length;i++){
-		var cm = customer_markers[i]
-		var vm = new vMarker(cm.lat, cm.lng, cm.info, map)
+	for(i=0;i<json_markers.length;i++){
+		var json_marker = json_markers[i]
+		var vm = new vMarker(json_marker.lat, json_marker.lng, json_marker.info, map)
 		markers.push(vm);
 	}
 	// navigator.geolocation.getCurrentPosition(markCurrentLocation);
@@ -157,9 +159,20 @@ $(document).ready(function(){
 		marker.showMarker();
 	})
 
-	setBound(markers,map);
+	setBound(markers);
+}
+
+$(document).ready(function(){
+	initMarkersAndMap();
 });
 
 </script>
+
+<% if !mobile_device? %>
+	<%= render "customers/delivery_routes_web_js.html" %>
+<% else %>
+	<%= render "customers/delivery_routes_mobile_js.html" %>
+<% end %>
+
 
 

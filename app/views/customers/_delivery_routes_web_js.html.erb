@@ -1,0 +1,27 @@
+
+
+<script>
+
+$('.delivery-routes').on('click','tr',function(e){
+	var index = parseInt($(this).attr('index'));
+	updateMap(index);
+})
+
+var updateMap = function(index){
+	$('.delivery-routes').find('[index]').removeClass('selected');
+	$('.delivery-routes').find('[index]').removeClass('subselected');
+	$($('.delivery-routes').find('[index=' + index + ']')).addClass('selected');
+
+	// var subindex = (index < markers.length-1)? index+1 : index-1
+	// $($('.delivery-routes').find('[index=' + (subindex) + ']')).addClass('subselected');			
+	
+	markers.forEach(function(marker){
+		marker.closeInfoWindow();
+	})
+
+	markers[index].openInfoWindow();
+	// markers[subindex].openInfoWindow();
+}
+
+
+</script>

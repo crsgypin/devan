@@ -12,7 +12,11 @@ class CustomersController < ApplicationController
 
 	def delivery_routes
 		@before_day = params[:day] ? params[:day].to_i : 0
-		@delivery_person = current_user.delivery_person
+		if params[:delivery_person] && params[:delivery_person].to_i >0
+			@delivery_person = DeliveryPerson.find(params[:delivery_person])
+		else
+			@delivery_person = current_user.delivery_person
+		end
 		set_customer_routes(@before_day, @delivery_person)
 
 		respond_to do |format|
@@ -36,11 +40,11 @@ private
 			if customer.address && customer.address.lat != nil
 				lat = customer.address.lat
 				lng = customer.address.lng
-				info = "#{customer.name} <br> #{customer.address_address}"
+				info = "#{customer.name} <br> #{customer.address_address} <br> #{customer.phones.map{|p| p.number}.join(',')}"
 			else
-				lat = 25
-				lng = 121.5
-				info = customer.name
+				lat = 25.055	
+				lng = 121.502
+				info = "#{customer.name} <br> #{customer.phones.map{|p| p.number}.join(',')}"
 			end
 			customer_markers << {:lat=>lat, :lng=>lng,:info=>info}
 		end

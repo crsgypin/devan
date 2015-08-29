@@ -1,0 +1,51 @@
+
+
+<script>
+
+
+
+$('.delivery-routes').on('click','tr',function(e){
+	var index = parseInt($(this).attr('index'));
+	updateMap(index);
+})
+
+var marker1;
+var marker2;
+var currentVMarker;
+
+var updateMap = function(index){
+	$('.delivery-routes').find('[index]').removeClass('selected');
+	$('.delivery-routes').find('[index]').removeClass('subselected');
+	$($('.delivery-routes').find('[index=' + index + ']')).addClass('selected');
+
+	var subindex = (index < markers.length-1)? index+1 : index-1
+	$($('.delivery-routes').find('[index=' + (subindex) + ']')).addClass('subselected');			
+	
+	markers.forEach(function(marker){
+		marker.closeInfoWindow();
+	})
+
+	marker1 = markers[index];
+	marker2 = markers[subindex];
+	marker1.openInfoWindow();
+	marker2.openInfoWindow();
+	setBound([markers[index],markers[subindex]])
+
+	// navigator.geolocation.getCurrentPosition(markCurrentLocation);
+}
+
+function markCurrentLocation(current_loc){
+	var lat = current_loc.coords.latitude;
+	var lng = current_loc.coords.longitude;
+
+	if(currentVMarker){currentVMarker.hideMarker()}
+	currentVMarker = new vMarker(lat, lng, "你的位置", map)
+	currentVMarker.showMarker();
+	currentVMarker.openInfoWindow();
+	markers.forEach(function(marker){
+		marker.hideMarker();
+	})
+	setBound([currentVMarker]);
+}
+
+</script>
