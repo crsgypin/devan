@@ -78,3 +78,66 @@
 
 }
 
+.admin-customer-show{
+	h3{
+		padding: 20px 0;
+	}
+
+	.edit-box{
+		float: left;
+	}
+
+	.destroy-box{
+		float: right;
+		a {
+			color:red
+		}
+	}
+
+	.table{
+		margin: 20px 0;
+	}
+}
+
+.admin-customer-form{
+
+	h3{
+		padding:20px 0;
+	}
+	
+	form{
+		.admin-customer-btn{
+			padding: 5px 5px 15px;
+
+			.admin-customer-cancel{
+				float: left;
+			}
+
+			.admin-customer-submit{
+				float: right;
+			}			
+		}
+
+		.admin-customer-btn::after{
+			display: block;
+			content: "";
+			clear:both;
+		}
+
+		input[type=text]{
+			width:250px;
+			margin: 0px 20px 10px 0px;
+		}
+
+		select{
+			border-radius: 0px;
+		}
+
+		.remove{
+			color:red;
+		}		
+
+	}
+
+}
+

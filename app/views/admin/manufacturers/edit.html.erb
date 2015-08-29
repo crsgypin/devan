@@ -15,7 +15,7 @@
 					<%= form.submit "儲存並回清單", :class=>"btn btn-warning save" %>
 				</div>
 				<%= render :partial=>'admin/manufacturers/form', :locals=>{:form=>form, :cities=>@cities} %>
-
+				
 			<% end %>
 			<div class="manufacturer-remove">
 				<%= link_to "移除這家廠商資料", admin_manufacturer_path(@manufacturer),:method=>:delete, :data=>{:confirm=>"即將移除，如果有表單資料，將會移除失敗"} %>

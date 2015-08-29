@@ -40,9 +40,10 @@
 	<thead>
 		<tr>
 			<td width="3%">  </td>
-			<td width="7%"> 編號 </td>
+			<td width="5%"> 編號 </td>
 			<td width="10%"> 店名 </td>
 			<td width="8%"> 狀態 </td>
+			<td width="7%"> 縣市 </td>
 			<td width="20%"> 地址 </td>
 			<td width="12%"> 電話 </td>
 			<td width="12%"> 傳真 </td>
@@ -58,6 +59,9 @@
 			<td> <%= customer.name %> </td>
 			<td> 
 				<%= link_to setup_customer_status(customer).status, "", :onClick=>"adminCustomer.setStatus(event,#{customer.id},this)", :class=>"customer-status" %> 
+			</td>
+			<td>
+				<%= customer.address.city.name if customer.address && customer.address.city %>
 			</td>
 			<td>
 				<%= customer.address_address %>

@@ -43,7 +43,7 @@ class Admin::CustomersController < ApplicationController
 	def edit
 		@customer.phones.new if @customer.phones.count ==0
 		@customer.faxes.new if @customer.faxes.count ==0
-		@customer.buidl_address if @customer.address ==nil
+		@customer.build_address if @customer.address ==nil
 
 		respond_to do |format|
 			format.json {render :json=>{:template=>render_to_string(:partial=>"admin/customers/form.html",:locals=>{:customer=>@customer})}}

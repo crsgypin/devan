@@ -16,10 +16,10 @@
 					<div class="attribute-field">
 						<%= hidden_field_tag "manufacturer[phones_attributes][#{index}][id]", phone.id %> 
 						<%= text_field_tag "manufacturer[phones_attributes][#{index}][number]", phone.number,:class=>"t-field" %> 
-						<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+						<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"remove" %>	
 					</div>
 				<% end %>
-				<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-primary btn-xs" %>				
+				<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-default btn-xs" %>				
 			</div>
 		</td>
 	</tr>
@@ -32,10 +32,10 @@
 					<div class="attribute-field">
 						<%= hidden_field_tag "manufacturer[faxes_attributes][#{index}][id]", fax.id %> 
 						<%= text_field_tag "manufacturer[faxes_attributes][#{index}][number]", fax.number,:class=>"t-field" %> 
-						<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"btn btn-danger btn-xs" %>	
+						<%= link_to "x","", :onClick=>"vAttributeRemoveRow(event,this)", :class=>"remove" %>	
 					</div>
 				<% end %>
-			<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-primary btn-xs" %>				
+			<%= link_to "新增欄位","", :onClick=>"vAttributeAddRow(event,this)", :class=>"btn btn-default btn-xs" %>				
 			</div>
 		</td>
 	</tr>
@@ -44,22 +44,11 @@
 		<td> 描述 </td>
 		<td> <%= form.text_field :description,:class=>"t-area" %> </td>
 	</tr>
-
-	<tr>
-		<td> 縣市 </td>
-		<td> <%= select_tag "manufacturer[address_attributes][0][city_id]", options_from_collection_for_select(City.all, "id", "name"),:class=>"manufacturer-city-select"%> </td>
-	</tr>
-
-	<tr>
-		<td> 市/鎮/區 </td>
-		<td> <%= select_tag "manufacturer[address_attributes][0][district_id]",
-			 options_from_collection_for_select(City.all.first.districts, "id", "name"),:class=>"manufacturer-district-select"%> </td>
-	</tr>
-
 	<tr>
 		<td> 地址 </td>
 		<td> 
 			<%= hidden_field_tag "manufacturer[address_attributes][id]",@manufacturer.address.try(:id) %>
+			<%= select_tag "manufacturer[address_attributes][city_id]", options_from_collection_for_select(City.all, "id", "name"),:class=>"manufacturer-city-select"%>			
 			<%= text_field_tag "manufacturer[address_attributes][address]", @manufacturer.address_address,:class=>"t-area" %>
 		</td>
 	</tr>

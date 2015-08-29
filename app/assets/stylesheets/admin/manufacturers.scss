@@ -43,7 +43,22 @@
 		.save{
 			float: right;
 		}
+	}
 
+	table{
+
+		input[type=text]{
+			width:250px;
+			margin: 0 20px 10px 0;
+		}
+
+		select{
+			border-radius: 0px;
+		}
+
+		.remove{
+			color:red;
+		}
 	}
 
 	.info-box::after{
@@ -53,6 +68,7 @@
 	}
 
 	.manufacturer-remove{
+		float:right;
 		a{
 			color:#faa;
 		}
