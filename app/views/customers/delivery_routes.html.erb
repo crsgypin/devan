@@ -23,7 +23,7 @@
 
 				<h1>
 					<% if current_user.edit_setting? %>
-							<% delivery_people = (DeliveryPerson.on_job.map{|d| [d.name,d.id]} <<["無",0]) %>
+							<% delivery_people = (DeliveryPerson.on_duty.map{|d| [d.name,d.id]} <<["無",0]) %>
 							<% select_delivery_person = @delivery_person ? @delivery_person.id : 0 %>
 							運送員 <%= select_tag "delivery_person", 
 												options_for_select(delivery_people, select_delivery_person),

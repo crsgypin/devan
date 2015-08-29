@@ -5,36 +5,27 @@
 		<div class="customer-routes">
 			<%= form_tag customer_routes_path, :class=>"day-form", :method=>:get do %>
 				<%= select_tag "wday", options_for_select(weekday_list.map{|w| [t("week_day.#{w}"),w]} ,@wday), :class=>"date-selector" %>
+				<%= select_tag "delivery_person", 
+							options_for_select(DeliveryPerson.on_duty.map{|d| [d.name,d.id]},@delivery_person.id), :class=>"delivery-person-selector" %>
 			<% end %>
 
 			<table class="table content">
 				<tr>
-					<% @delivery_people.each do |delivery_person| %>					
-						<td> 
-							<div>
-								<%= delivery_person.name %>
-													
-							</div>
-							<%= form_tag customer_routes_path, 
-										:target=>".delivery-person-#{delivery_person.id}",
-										:class=>"new-form" do %>
-								<%= text_field_tag :customer_id, "",:class=>"customer-select" %>
-								<%= hidden_field_tag :delivery_person_id, delivery_person.id %>
-								<%= hidden_field_tag :wday, @wday %>
-								<%= submit_tag "+", :class=>"btn btn-success btn-sm add-new" %>
-							<% end %>
-						</td>
+					<td> 
+						<%= form_tag customer_routes_path, 
+									:target=>".delivery-person-#{@delivery_person.id}",
+									:class=>"new-form" do %>
+							<%= text_field_tag :customer_id, "",:class=>"customer-select" %>
+							<%= hidden_field_tag :delivery_person_id, @delivery_person.id %>
+							<%= hidden_field_tag :wday, @wday %>
+							<%= submit_tag "+", :class=>"btn btn-success btn-sm add-new" %>
+					</td>
 					<% end %>
 				</tr>
 				<tr>
-
-					<% @delivery_people.each do |delivery_person| %>
-						<td class="delivery-person-<%= delivery_person.id %>" >
-							<%= render :partial=>"customer_routes/route_list", :locals=>{:delivery_person=>delivery_person, :wday=>@wday} %>
-
+						<td class="customer-route-list" >
+							<%= render :partial=>"customer_routes/route_list", :locals=>{:delivery_person=>@delivery_person, :wday=>@wday} %>
 						</td>	
-					<% end %>
-
 				</tr>
 			</table>
 		</div>
@@ -43,21 +34,21 @@
 
 
 <script>
+
 $(document).ready(function(){
-	$('.customer-routes').on('change','.date-selector',function(){
+	$('.customer-routes').on('change','.date-selector,.delivery-person-selector',function(){
 		$('.customer-routes .day-form').submit();		
 	})
 
 	$('.customer-routes').on('click','.remove',function(e){
 		e.preventDefault();
-		var target = $(this).attr('target')
 
 		$.ajax({
 			url:$(this).attr('href'),
 			dataType: 'json',
 			method: 'delete',
 			success: function(data){
-				$(target).html(data['template'])
+				$('.customer-route-list').html(data['template'])
 				tableSortable();
 			}
 		})	
@@ -75,7 +66,7 @@ $(document).ready(function(){
 			method: 'post',
 			dataType: 'json',
 			success: function(data){
-				$(target).html(data['template'])
+				$('.customer-route-list').html(data['template'])
 				tableSortable();
 			}
 		})
@@ -85,7 +76,7 @@ $(document).ready(function(){
 	<% customerList = Customer.active.map{|c| {:id=>c.id, :text=>"#{c.code}-#{c.name}"}} %>
 
 	$('.customer-routes .customer-select').select2({
-		width: '180px',
+		width: '600px',
 		height: '16px',
 		data: <%= raw customerList.to_json %>
 	})
@@ -106,17 +97,58 @@ $(document).ready(function(){
 	            url: url,
 	            dataType: "json",
 	            data: {
-	                to_index: ui.item.index(),
+	              to_index: ui.item.index(),
 	            },
 	            success: function(data){
-
+				      	if (data['result']){
+				      		$('.customer-route-list').html(data['template'])
+				    			tableSortable();
+				      	}
 	            }
-
 	        })
 	    }
 		});
 	}
 
+	$('.customer-routes').on('click','.move-up',function(e){
+		e.preventDefault();
+		var index = parseInt($(this).closest('tr').attr('index'))
+		var url = $(this).closest('tr').attr('url')
+    $.ajax({
+      type: "POST",
+      url: url,
+      dataType: "json",
+      data: {
+        to_index: (index-1),
+      },
+      success: function(data){
+      	if (data['result']){
+      		$('.customer-route-list').html(data['template'])
+    			tableSortable();
+      	}
+      }
+    })
+	})
+
+	$('.customer-routes').on('click','.move-down',function(e){
+		e.preventDefault();
+		var index = parseInt($(this).closest('tr').attr('index'))
+		var url = $(this).closest('tr').attr('url')
+    $.ajax({
+      type: "POST",
+      url: url,
+      dataType: "json",
+      data: {
+        to_index: (index+1),
+      },
+      success: function(data){
+      	if (data['result']){
+      		$('.customer-route-list').html(data['template'])
+    			tableSortable();
+      	}
+      }
+    })
+	})
 
 </script>
 

@@ -110,7 +110,7 @@ private
 
 	def set_selection_list
 		@customer_list = Customer.active.map{|c| {:id=>c.id, :text=> c.name}}
-		@delivery_people_list = DeliveryPerson.on_job.map{|d| [d.name, d.id]}
+		@delivery_people_list = DeliveryPerson.on_duty.map{|d| [d.name, d.id]}
 		@manufacturer_list = Manufacturer.all.map{|m| [m.name, m.id]}
 	end
 

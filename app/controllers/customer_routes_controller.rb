@@ -3,7 +3,11 @@ class CustomerRoutesController < ApplicationController
 	before_action :check_edit_form?
 
 	def index
-		@delivery_people = DeliveryPerson.on_job.includes(:customer_routes)
+		if params[:delivery_person]
+			@delivery_person = DeliveryPerson.find(params[:delivery_person])
+		else
+			@delivery_person = current_user.delivery_person || DeliveryPerson.on_duty.first
+		end
 		@wday = params[:wday] ? params[:wday] : Date.today.strftime('%A')
 	end
 
@@ -36,8 +40,12 @@ class CustomerRoutesController < ApplicationController
 		
 		CustomerRoute.move_order(@move_customer_route, @to_index)
 
+		@delivery_person = @move_customer_route.delivery_person
+		@wday = @move_customer_route.wday
+
 		respond_to do |format|
-			format.json {render :json=>{:result=>true}}
+			format.json {render :json=>{:result=>true, 
+																	:template=> render_to_string(:partial=>"customer_routes/route_list.html", :locals=>{:delivery_person=>@delivery_person, :wday=>@wday})}}
 		end
 	end
 
